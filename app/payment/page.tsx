@@ -119,7 +119,7 @@ const PaymentPage: React.FC = () => {
             localStorage.setItem('order', order.id);
 
             const options = {
-                key: process.env.RAZORPAY_KEY_ID,
+                key: 'rzp_test_y5kB7jPsNn1fCY',
                 amount: order.amount,
                 currency: "INR",
                 name: "Labhkari",
