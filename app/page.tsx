@@ -302,7 +302,7 @@ export default function Home() {
   return (
     <>
       <Navbar onSearch={handleSearch} />
-      
+
       <div className={`md:mt-16 mt-36 ${isSearching ? 'blur-sm' : ''}`}>
         <div id="default-carousel" className={`relative w-auto -mr-1 ml-1 ${isSearching ? 'hidden' : ''}`} data-carousel="slide" ref={carouselRef}>
           <div className="relative overflow-hidden rounded-lg  h-52 md:h-[400px] mb-6">
@@ -361,6 +361,13 @@ export default function Home() {
             </span>
           </button>
         </div>
+      </div>
+
+      <h1 className='text-center md:text-3xl text-xl font-bold mb-2'>OUR PRODUCTS</h1>
+      <div className="flex items-center justify-center mb-4">
+        <hr className="w-1/4 md:border-t-4 border-t-2 border-black mr-4" />
+        <span className="text-[#103178] md:text-5xl text-2xl"><AiOutlineShoppingCart /></span>
+        <hr className="w-1/4 md:border-t-4 border-t-2 border-black ml-4" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ml-5 mr-5">
