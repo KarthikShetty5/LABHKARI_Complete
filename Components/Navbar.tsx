@@ -334,7 +334,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             }
         }
         uid && handleCart();
-    })
+    }, [])
 
     useEffect(() => {
         const items = document.querySelectorAll('[data-carousel-item1]');
@@ -688,32 +688,29 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
 
             {/* searchbar mobile view toggle */}
-            {
-                isSearchOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                        <div className="bg-white p-4 rounded-lg shadow-lg relative w-11/12 max-w-md">
-                            <button onClick={toggleSearch} className="absolute top-0 right-0 text-gray-600 hover:text-gray-800 focus:outline-none">
-                                <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+            {isSearchOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-4 rounded-lg shadow-lg relative w-11/12 max-w-md">
+                        <button onClick={toggleSearch} className="absolute top-0 right-0 text-gray-600 hover:text-gray-800 focus:outline-none">
+                            <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <form onSubmit={handleSearchSubmit} className="flex items-center">
+                            <input
+                                type="text"
+                                className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:border-blue-300"
+                                placeholder="Search Product name..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                required
+                            />
+                            <button type="submit" className="bg-blue-500 text-white px-2 py-2 ml-2 mr-2 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+                                Search
                             </button>
-                            <form onSubmit={handleSearchSubmit} className="flex items-center">
-                                <input
-                                    type="text"
-                                    className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring focus:border-blue-300"
-                                    placeholder="Search Product name..."
-                                    value={searchQuery}
-                                    onChange={handleSearchChange}
-                                    required
-                                />
-                                <button type="submit" className="bg-blue-500 text-white px-2 py-2 ml-2 mr-2 rounded-md focus:outline-none focus:ring focus:border-blue-300">
-                                    Search
-                                </button>
-                            </form>
-                        </div>
+                        </form>
                     </div>
-                )
-            }
+                </div>)}
 
             {/* Sub Navbar */}
             <div id="default-carousel" className="fixed w-full top-14 md:border-0 border-t-2 border-gray-300 z-30 shadow-lg" data-carousel="slide1">

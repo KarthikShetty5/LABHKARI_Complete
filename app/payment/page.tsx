@@ -380,7 +380,7 @@ const PaymentPage: React.FC = () => {
                         </ul>
                         <div className="flex justify-between mt-4 font-semibold text-lg">
                             <span>Total</span>
-                            <span>₹ {amount + shipcost}.00</span>
+                            <span>₹ {amount + shipcost}</span>
                         </div>
                         <button onClick={handlePayment} className={`w-full mt-4 py-2 rounded-md ${isFormValid() ? 'bg-green-500 text-white' : 'bg-gray-400 text-gray-700 cursor-not-allowed'}`} disabled={!isFormValid()}>PROCEED TO PAY</button>
                     </div>
