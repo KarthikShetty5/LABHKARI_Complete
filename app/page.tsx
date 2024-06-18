@@ -302,9 +302,10 @@ export default function Home() {
   return (
     <>
       <Navbar onSearch={handleSearch} />
+      
       <div className={`md:mt-16 mt-36 ${isSearching ? 'blur-sm' : ''}`}>
         <div id="default-carousel" className={`relative w-auto -mr-1 ml-1 ${isSearching ? 'hidden' : ''}`} data-carousel="slide" ref={carouselRef}>
-          <div className="relative overflow-hidden rounded-lg h-52 md:h-[400px] mb-6">
+          <div className="relative overflow-hidden rounded-lg  h-52 md:h-[400px] mb-6">
             <div className="duration-700 ease-in-out" data-carousel-item>
               <Image
                 src={banner3}

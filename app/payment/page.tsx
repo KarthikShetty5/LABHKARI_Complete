@@ -67,14 +67,14 @@ const PaymentPage: React.FC = () => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addShipway";
         try {
             await axios.post(url, {
-                orderId,
-                email,
-                amount,
-                name,
-                phone,
-                amountPaid,
-                userId,
-                count,
+                orderId: orderId,
+                email: email,
+                amount: amount,
+                name: name,
+                phone: phone,
+                amountPaid: amountPaid,
+                userId: userId,
+                itemCount: count,
                 shippingAddress,
                 state,
                 country,
@@ -142,7 +142,7 @@ const PaymentPage: React.FC = () => {
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
 
-            await handleSubmit(order.id, formData.email, order.name, order.phoneNumber, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
+            await handleSubmit(order.id, formData.email, order.amount, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
 
             paymentObject.on("payment.failed", function () {
                 toast.error("Payment failed. Please try again. Contact support for help", {

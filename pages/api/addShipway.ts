@@ -27,7 +27,7 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
         try {
             const { orderId, email, phone, name, amount, amountPaid, userId, itemCount, shippingAddress, state, country, landmark, city, tag, pinCode } = req.body;
             // Add the order details to your order table
-            const orderApiUrl = process.env.NEXT_PUBLIC_SERVER_URL + "/order/addOrder";
+            const orderApiUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addorder";
             await axios.post(orderApiUrl, {
                 orderId,
                 email,

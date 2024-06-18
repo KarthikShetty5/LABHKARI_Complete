@@ -29,7 +29,7 @@ const Page: React.FC = () => {
 
     useEffect(() => {
         const handler = async () => {
-            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/getproductcat";
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getproductcat";
             try {
                 const response = await fetch(url, {
                     method: 'POST',

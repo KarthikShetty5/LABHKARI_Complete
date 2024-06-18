@@ -4,9 +4,9 @@ import connectDb from '@/middleware/mongoose';
 
 const fetchOrderHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const { orderId } = req.query;
+        const { orderId } = req.body;
 
-        const order = await Order.findOne({ orderId });
+        const order = await Order.findOne({ orderId: orderId });
 
         if (!order) {
             return res.status(404).json({

@@ -48,11 +48,11 @@ const sendMail = async (to: string, subject: string, trackingUrl: string, status
 const handleShip = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
         const { order_id } = req.body;
-        const url = process.env.NEXT_PUBLIC_SERVER_URL + "/order/fetchOrder";
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorder";
         try {
             // Fetch order details from your Orders API
-            const orderResponse = await axios.post('http://localhost:4000/order/fetchOrder', {
-                "order_id": order_id
+            const orderResponse = await axios.post(url, {
+                "orderId": order_id
             });
             const order = orderResponse.data;
             // Check if order exists

@@ -1,5 +1,6 @@
 'use client'
 import axios from 'axios';
+import { urlToUrlWithoutFlightMarker } from 'next/dist/client/components/app-router';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
@@ -10,9 +11,10 @@ const Page = () => {
 
     useEffect(() => {
         const handler = async () => {
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/order";
             const oid = localStorage.getItem('order');
             try {
-                await axios.post('/api/order', {
+                await axios.post(url, {
                     "order_id": oid,
                 });
             } catch (e) {

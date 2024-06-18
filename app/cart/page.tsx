@@ -80,7 +80,7 @@ const Page = () => {
             }
         }
         uid && handleCart();
-    }, []);
+    });
 
 
     return (
@@ -170,10 +170,10 @@ const Page = () => {
                                     </div>
                                     <div className="flex justify-between border-b py-1">
                                         <p>Taxes</p>
-                                        <p>₹ {gst.toFixed(2)}</p>
+                                        <p>₹ {Math.round(gst)}</p>
                                     </div>
                                 </div>
-                                <button className="w-full bg-gray-500 text-white py-2 mt-4 rounded mb-10">CONTINUE SHOPPING</button>
+                                <Link href={'/'}><button className="w-full bg-gray-500 text-white py-2 mt-4 rounded mb-10">CONTINUE SHOPPING</button></Link>
                             </div>
                             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white p-4 shadow-lg lg:hidden">
                                 <button className="w-full bg-black text-white py-2 rounded"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>CHECKOUT</Link>

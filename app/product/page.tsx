@@ -88,7 +88,7 @@ const PageContent: React.FC = () => {
             });
             const res = await response.json();
             if (res.success) {
-                toast.error("Added to Cart successfully", {
+                toast.success("Added to Cart successfully", {
                     position: "top-left",
                     autoClose: 1000,
                     hideProgressBar: false,

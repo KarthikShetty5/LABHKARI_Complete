@@ -17,6 +17,7 @@ import Logo2 from '../assets/logo2.png'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RedirectStatusCode } from 'next/dist/client/components/redirect-status-code';
+import axios from 'axios';
 
 interface Item {
     id: number;
@@ -110,14 +111,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const handleUserId = async (userId: string) => {
         const cartUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/updatecart";
         try {
-            const response = await fetch(cartUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ oldUid: localStorage.getItem('userId'), newUid: userId }),
-            });
-            const res = await response.json();
+            const response = await axios.post(cartUrl, {
+                oldUid: localStorage.getItem('userId') || '12345',
+                newUid: userId
+            })
         } catch (error) {
             toast.error("Error updating user ID in cart:", {
                 position: "top-left",
@@ -177,16 +174,14 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         }
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: username, email, phone, password }),
-            });
-            const res = await response.json();
-            if (res.success) {
-                toggleModal();
+            const response = await axios.post(url, {
+                name: username,
+                email: email,
+                phone: phone,
+                password: password
+            })
+            console.log(response)
+            if (response.data.success) {
                 toast.success("Registered successfully", {
                     position: "top-left",
                     autoClose: 1000,
@@ -196,8 +191,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     draggable: true,
                     progress: undefined,
                 });
-                await handleUserId(res.users.userId);
-                localStorage.setItem('userId', res.users.userId)
+                toggleModal();
+                await handleUserId(response.data.user.userId);
+                localStorage.setItem('userId', response.data.user.userId);
             } else {
                 toast.error("Email already exists", {
                     position: "top-left",
@@ -224,7 +220,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
     const handleSignUp = async (e: any) => {
         e.preventDefault();
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/login";
+        const url = `${process.env.NEXT_PUBLIC_CLIENT_URL}/api/login`; // Adjust this URL according to your API endpoint
 
         if (!semail?.endsWith('@gmail.com')) {
             toast.error("Please enter a valid Gmail address", {
@@ -240,18 +236,12 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         }
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: semail, password: spassword }),
+            const response = await axios.post(url, {
+                email: semail,
+                password: spassword,
             });
-
-            console.log('Response status:', response.status); // Log response status for debugging
-
-            if (!response.ok) {
-                toast.error("Error occurred while logging in", {
+            if (!response.data.success) {
+                toast.error("Password dont match", {
                     position: "top-left",
                     autoClose: 1000,
                     hideProgressBar: false,
@@ -263,39 +253,28 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 return;
             }
 
-            const res = await response.json();
+            const { userId } = response.data.user;
 
-            if (res.success) {
-                toggleModal();
-                toast.success("Logged in", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                if (semail == "admin@gmail.com") {
-                    localStorage.setItem('adminLoggedIn', "true");
-                } else {
-                    await handleUserId(res.userIds[0].userId);
-                    localStorage.setItem('userId', res.userIds[0].userId)
-                }
-                return;
+            toast.success("Logged in", {
+                position: "top-left",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            toggleModal();
+
+            if (semail === "admin@gmail.com") {
+                localStorage.setItem('adminLoggedIn', "true");
             } else {
-                toast.error("Password do not Match", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                await handleUserId(userId); // Assuming userIds.userId is the correct property from your response
+                localStorage.setItem('userId', userId);
             }
         } catch (error) {
-            toast.error("Error Occurred ", {
+            console.log(error)
+            toast.error("Error occurred ", {
                 position: "top-left",
                 autoClose: 1000,
                 hideProgressBar: false,
@@ -305,7 +284,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 progress: undefined,
             });
         }
-    }
+    };
 
 
 
@@ -355,7 +334,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             }
         }
         uid && handleCart();
-    }, [])
+    })
 
     useEffect(() => {
         const items = document.querySelectorAll('[data-carousel-item1]');
@@ -426,6 +405,17 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
     return (
         <>
+            <ToastContainer
+                position='top-left'
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             {modalOpen && (
                 <div id="default-modal" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 flex justify-center items-center">
                     <div className="relative p-4 w-full max-w-md">
@@ -726,7 +716,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             }
 
             {/* Sub Navbar */}
-            <div id="default-carousel" className="fixed w-full top-14 border-t-2 border-gray-300 z-30 shadow-lg" data-carousel="slide1">
+            <div id="default-carousel" className="fixed w-full top-14 md:border-0 border-t-2 border-gray-300 z-30 shadow-lg" data-carousel="slide1">
                 <div className="relative overflow-hidden h-20 lg:hidden">
                     <ul className="flex bg-white w-full flex-wrap justify-center items-center py-3 bottom-0 lg:hidden" data-carousel-item1>
                         <li className="border-r  px-5 last:border-r-0">

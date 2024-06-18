@@ -88,21 +88,23 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
 
     return (
         <>
-            <ToastContainer
-                position='top-center'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className="max-w-md w-full bg-gray-100 shadow-lg rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ marginTop: "-1rem" }}>
+                    <div>
+                        <ToastContainer
+                            position='top-center'
+                            autoClose={2000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                        />
+                    </div>
                     <Link href={{ pathname: '/product', query: { customId: customId } }}>
-                        <div className="w-full h-[500px] relative">
+                        <div className="w-full h-[400px] relative">
                             <Image
                                 src={image}
                                 alt={title}
