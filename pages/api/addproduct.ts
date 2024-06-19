@@ -25,7 +25,7 @@ const addProductHandler = async (req: any, res: NextApiResponse) => {
             }
 
             // File upload successful, now handle product addition
-            const { title, ratings, price, description, tag, gst, weight } = req.body;
+            const { title, ratings, price, description, tag, category, gst, weight } = req.body;
 
             // Ensure req.files exists and is of the expected type
             if (!req.file || !Array.isArray(req.files)) {
@@ -43,7 +43,7 @@ const addProductHandler = async (req: any, res: NextApiResponse) => {
                 tag,
                 gst,
                 weight,
-                category: "Food" // Example: replace with your actual category logic
+                category: category // Example: replace with your actual category logic
             });
 
             const savedProduct = await newProduct.save();

@@ -30,10 +30,10 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
-  /* * {
-    margin-left: 2px;
-    margin-right: 4px;
-  } */
+  * {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 @layer utilities {

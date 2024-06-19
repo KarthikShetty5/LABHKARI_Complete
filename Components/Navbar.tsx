@@ -584,20 +584,25 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                     </ul>
                                 </li>
                                 <li>
-                                    <button onClick={toggleModal}>
-                                        <span className="flex items-center border-t pt-1 text-gray-800 hover:text-orange-500 transition-colors duration-300">
-                                            <FaUserCircle className="mr-3 text-orange-500 text-2xl" />
-                                            <span className="font-semibold text-lg">Login / Signup</span>
-                                        </span>
-                                    </button>
+                                    {
+                                        localStorage.getItem('userId') && localStorage.getItem('userId') != '12345' ?
+
+                                            <button>
+                                                <span className="flex items-center border-t pt-1 text-gray-800 hover:text-orange-500 transition-colors duration-300">
+                                                    <FaUser className="mr-3 text-blue-500 text-2xl" />
+                                                    <span className="font-semibold text-lg">Account</span>
+                                                </span>
+                                            </button>
+                                            :
+                                            <button onClick={toggleModal}>
+                                                <span className="flex items-center border-t pt-1 text-gray-800 hover:text-orange-500 transition-colors duration-300">
+                                                    <FaUserCircle className="mr-3 text-orange-500 text-2xl" />
+                                                    <span className="font-semibold text-lg">Login / Signup</span>
+                                                </span>
+                                            </button>
+                                    }
                                 </li>
                                 <li className="border-t pt-4">
-                                    {
-                                        localStorage.getItem('userId') && localStorage.getItem('userId') != '12345' && <div className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300">
-                                            <FaUser className="mr-3 text-blue-500 text-2xl" />
-                                            <span className="font-semibold text-lg">Account</span>
-                                        </div>
-                                    }
                                     <div className="flex items-center text-gray-800 hover:text-green-500 mt-4 transition-colors duration-300">
                                         <Link href="/about" passHref><FaInfoCircle className="mr-3 text-green-500 text-2xl" /></Link>
                                         <span className="font-semibold text-lg">About Us</span>
@@ -668,7 +673,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 </span>
                             </a>
                             {admin && (
-                                <Link href="/admin/product">
+                                <Link href="/admin/Home">
                                     <span className="block text-black text-2xl md:mr-0 font-medium rounded-lg px-5 py-2.5 text-center">
                                         <RiAdminFill />
                                     </span>
@@ -789,7 +794,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <a href="/under" className="text-black text-2xl">
                     <BsSuitcaseLgFill className='text-[#103178]' />
                 </a>
-                <a href="/under" className="text-black text-2xl">
+                <a href="/user/notification" className="text-black text-2xl">
                     <FaBell className='text-[#103178]' />
                 </a>
                 <a onClick={toggleDropdown} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center">
@@ -815,7 +820,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/under" passHref>
+                                <Link href="/user/profile" passHref>
                                     <span className="flex items-center text-gray-800 hover:text-yellow-500 transition-colors duration-300 py-2 px-4">
                                         <FaUser className="mr-2 text-yellow-500" />
                                         <span>Profile</span>

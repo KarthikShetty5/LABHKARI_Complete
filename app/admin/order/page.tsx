@@ -1,29 +1,33 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import ProductCard from '@/Components/AdCard'; // Adjust the import path as per your project structure
+import OrderCard from '@/Components/OrCard';
 
-interface Item {
-    desc: string;
-    customId: number;
-    title: string;
-    count: number;
+export interface Order {
+    _id: string;
+    orderId: string;
+    email: string;
+    name: string;
+    phone: string;
+    amount: number;
+    amountPaid: boolean;
+    state: string;
+    country: string;
+    landmark: string;
+    city: string;
     userId: string;
-    image: string;
-    price: number;
-    ratings: number;
+    itemCount: number;
     tag: string;
-    path: string;
-    weight: string;
-    gst: string;
-    category: string;
+    pinCode: number;
+    shippingAddress: string;
 }
 
+
 const Page: React.FC = () => {
-    const [products, setProducts] = useState<Item[]>([]);
+    const [order, setOrder] = useState<Order[]>([]);
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getproduct";
+        const fetchUser = async () => {
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getorder";
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -35,21 +39,21 @@ const Page: React.FC = () => {
                     throw new Error('Failed to fetch products');
                 }
                 const data = await response.json();
-                setProducts(data.data);
+                setOrder(data.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
         };
 
-        fetchProducts();
+        fetchUser();
     }, []);
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-semibold mb-8 text-center">Product List</h1>
+            <h1 className="text-3xl font-semibold mb-8 text-center">User Cards</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                    <ProductCard key={product.customId} product={product} />
+                {order && order.map((ord) => (
+                    <OrderCard key={ord.userId} order={ord} />
                 ))}
             </div>
         </div>

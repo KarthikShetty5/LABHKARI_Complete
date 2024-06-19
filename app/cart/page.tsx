@@ -82,6 +82,11 @@ const Page = () => {
         uid && handleCart();
     }, []);
 
+    const [showPopup, setShowPopup] = useState(false);
+    const handleCheckout = () => {
+        setShowPopup(true);
+    };
+
 
     return (
         <>
@@ -97,6 +102,28 @@ const Page = () => {
                 draggable
                 pauseOnHover
             />
+
+            {showPopup && (
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75">
+                    <div className="bg-white p-6 rounded shadow-lg">
+                        <p className="mb-4 text-lg">Choose an option:</p>
+                        <div className="flex flex-col gap-4">
+                            <button
+                                className="bg-blue-500 text-white py-2 rounded"
+                                onClick={() => { }}
+                            >
+                                Shipping Address
+                            </button>
+                            <button
+                                className="bg-green-500 text-white py-2 rounded"
+                                onClick={() => { }}
+                            >
+                                Self Pickup (Select E-Shop)
+                            </button>
+                        </div>
+                    </div>
+                </div >
+            )}
             <div className="container mx-auto p-4 md:mt-28 mt-36">
                 {count === 0 ? (
                     <div className="text-center flex flex-col items-center">
