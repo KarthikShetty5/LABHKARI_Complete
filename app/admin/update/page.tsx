@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 
@@ -201,4 +201,12 @@ const ProductEditPage = () => {
     );
 };
 
-export default ProductEditPage;
+const Page: React.FC = () => {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ProductEditPage />
+        </Suspense>
+    );
+};
+
+export default Page;
