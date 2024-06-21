@@ -26,31 +26,40 @@ const Footer = () => {
             </section>
 
             <div className="border-t border-[#CCCCCC]"></div>
-            <div className="bg-[#103178] py-4">
-                <div className="container mx-auto flex justify-center space-x-6">
-                    <Link href="/terms">
-                        <span className="text-white text-xl hover:text-gray-800">Terms and Conditions</span>
-                    </Link>
-                    <Link href="/refund">
-                        <span className="text-white text-xl hover:text-gray-800">Refund Policy</span>
-                    </Link>
-                    <Link href="/faqs">
-                        <span className="text-white text-xl hover:text-gray-800">FAQs</span>
-                    </Link>
-                    <Link href="/rules">
-                        <span className="text-white text-xl hover:text-gray-800">Labhkari Rules</span>
-                    </Link>
-                    <Link href="/contactus">
-                        <span className="text-white text-xl hover:text-gray-800">Contact Us</span>
-                    </Link>
-                    <Link href="/privacy">
-                        <span className="text-white text-xl hover:text-gray-800">Privacy Policy</span>
-                    </Link>
-                    <Link href="/share">
-                        <span className="text-white text-xl hover:text-gray-800">Share and Earn</span>
-                    </Link>
+            <section className="bg-[#103178] py-6 shadow-lg">
+                <div className="container mx-auto">
+                    <div className="flex flex-wrap items-center justify-around text-center md:text-left">
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/terms">
+                            <span className="text-white text-xl hover:text-gray-800">Terms and Conditions</span>
+                        </Link>
+                        </div>
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/refund">
+                            <span className="text-white text-xl hover:text-gray-800">Refund Policy</span>
+                        </Link>
+                        </div>
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/faqs">
+                            <span className="text-white text-xl hover:text-gray-800">FAQs</span>
+                        </Link>
+                        </div>
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/rules">
+                            <span className="text-white text-xl hover:text-gray-800">Labhkari Rules</span>
+                        </Link>
+                        </div>
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/contactus">
+                            <span className="text-white text-xl hover:text-gray-800">Contact Us</span>
+                        </Link>
+                        </div>
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/privacy">
+                            <span className="text-white text-xl hover:text-gray-800">Privacy Policy</span>
+                        </Link>
+                        </div>
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/share">
+                            <span className="text-white text-xl hover:text-gray-800">Share and Earn</span>
+                        </Link>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <div className="border-t border-[#CCCCCC]"></div>
             <footer className="bg-[#103178] shadow-lg w-full py-6 dark:bg-[#103178] md:mb-0 mb-14">
