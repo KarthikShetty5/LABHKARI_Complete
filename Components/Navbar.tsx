@@ -1,23 +1,18 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import shoe from '../assets/shoe.jpeg'
-import HorizontalCard from './HorizontalCard';
 import Link from 'next/link';
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import { FaRegHeart, FaSearch, FaShareAlt, FaSuitcase, FaThList, FaTimes } from "react-icons/fa";
+import { FaGift, FaRegHeart, FaSearch, FaShareAlt, FaSuitcase, FaThList, FaTimes } from "react-icons/fa";
 import { MdCleanHands, MdOutlineShoppingBag } from "react-icons/md";
 import { FaCartShopping } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
 import Image from 'next/image';
-import { BsSuitcaseLgFill } from "react-icons/bs";
-import { FaHome, FaInfoCircle, FaHeartbeat, FaSpa, FaUtensils, FaSeedling, FaHome as FaHomeIcon, FaPaw, FaEllipsisH, FaUserCircle, FaUser, FaWhatsapp, FaBell, FaThumbsUp, FaTruck } from 'react-icons/fa';
-import Logo from '../assets/logo.png'
-import Logo1 from '../assets/logo1.png'
+import { FaInfoCircle, FaHeartbeat, FaSpa, FaUtensils, FaSeedling, FaHome as FaHomeIcon, FaPaw, FaEllipsisH, FaUserCircle, FaUser, FaWhatsapp, FaBell, FaThumbsUp, FaTruck } from 'react-icons/fa';
 import Logo2 from '../assets/logo2.png'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { RedirectStatusCode } from 'next/dist/client/components/redirect-status-code';
 import axios from 'axios';
+import { BiSolidNetworkChart } from 'react-icons/bi';
+import { usePathname } from 'next/navigation';
 
 interface Item {
     id: number;
@@ -52,7 +47,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isMenuOpen, setMenuOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [useId, setUseId] = useState('');
+    const pathname = usePathname();
 
 
     const handleSearchChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -102,11 +100,25 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         setDropdownOpen(!isDropdownOpen);
     };
 
+
+    const toggleDropMenu = () => {
+        setMenuOpen(!isMenuOpen);
+    };
+
     function shareOnWhatsApp() {
         const message = `${process.env.NEXT_PUBLIC_CLIENT_URL}?ref=${localStorage.getItem('userId')}`;
         const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
         window.open(whatsappLink, '_blank');
     }
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedUserId = localStorage.getItem('userId');
+            if (storedUserId && storedUserId !== '12345') {
+                setUseId(storedUserId);
+            }
+        }
+    }, []);
 
     const handleUserId = async (userId: string) => {
         const cartUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/updatecart";
@@ -585,14 +597,61 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 </li>
                                 <li>
                                     {
-                                        localStorage.getItem('userId') && localStorage.getItem('userId') != '12345' ?
-
-                                            <button>
-                                                <span className="flex items-center border-t pt-1 text-gray-800 hover:text-orange-500 transition-colors duration-300">
-                                                    <FaUser className="mr-3 text-blue-500 text-2xl" />
-                                                    <span className="font-semibold text-lg">Account</span>
-                                                </span>
-                                            </button>
+                                        useId ?
+                                            <>
+                                                <button onClick={toggleDropMenu}>
+                                                    <span className="flex items-center border-t pt-1 text-gray-800 hover:text-orange-500 transition-colors duration-300">
+                                                        <FaUser className="mr-3 text-blue-500 text-2xl" />
+                                                        <span className="font-semibold text-lg">Account</span>
+                                                    </span>
+                                                </button>
+                                                {
+                                                    isMenuOpen && (
+                                                        <ul className="relative bottom-0 right-4 w-48 bg-white rounded-lg shadow-lg py-2 z-40">
+                                                            <li>
+                                                                <Link href="/under" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaUser className="mr-2 text-blue-500" />
+                                                                        <span>Dashboard</span>
+                                                                    </span>
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="/orders" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaTruck className="mr-2 text-green-500" />
+                                                                        <span>Order History</span>
+                                                                    </span>
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="/user/profile" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-yellow-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaUser className="mr-2 text-yellow-500" />
+                                                                        <span>Profile</span>
+                                                                    </span>
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="/under" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-red-500 transition-colors duration-300 py-2 px-4">
+                                                                        <BiSolidNetworkChart className="mr-2 text-red-500" />
+                                                                        <span>Network</span>
+                                                                    </span>
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="/under" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaBell className="mr-2 text-indigo-500" />
+                                                                        <span>eShop</span>
+                                                                    </span>
+                                                                </Link>
+                                                            </li>
+                                                        </ul>
+                                                    )
+                                                }
+                                            </>
                                             :
                                             <button onClick={toggleModal}>
                                                 <span className="flex items-center border-t pt-1 text-gray-800 hover:text-orange-500 transition-colors duration-300">
@@ -603,18 +662,24 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                     }
                                 </li>
                                 <li className="border-t pt-4">
-                                    <div className="flex items-center text-gray-800 hover:text-green-500 mt-4 transition-colors duration-300">
-                                        <Link href="/about" passHref><FaInfoCircle className="mr-3 text-green-500 text-2xl" /></Link>
-                                        <span className="font-semibold text-lg">About Us</span>
-                                    </div>
-                                    <div className="flex items-center text-gray-800 hover:text-yellow-500 mt-4 transition-colors duration-300">
-                                        <Link href="/under" passHref><FaBell className="mr-3 text-yellow-500 text-2xl" /></Link>
-                                        <span className="font-semibold text-lg">Notification</span>
-                                    </div>
-                                    <div className="flex items-center text-gray-800 hover:text-red-500 mt-4 transition-colors duration-300">
-                                        <Link href="/under" passHref><FaThumbsUp className="mr-3 text-red-500 text-2xl" /></Link>
-                                        <span className="font-semibold text-lg">Success Story</span>
-                                    </div>
+                                    <Link href="/about" passHref>
+                                        <div className="flex items-center text-gray-800 hover:text-green-500 mt-4 transition-colors duration-300">
+                                            <FaInfoCircle className="mr-3 text-green-500 text-2xl" />
+                                            <span className="font-semibold text-lg">About Us</span>
+                                        </div>
+                                    </Link>
+                                    <Link href="/user/notification" passHref>
+                                        <div className="flex items-center text-gray-800 hover:text-yellow-500 mt-4 transition-colors duration-300">
+                                            <FaBell className="mr-3 text-yellow-500 text-2xl" />
+                                            <span className="font-semibold text-lg">Notification</span>
+                                        </div>
+                                    </Link>
+                                    <Link href="/under" passHref>
+                                        <div className="flex items-center text-gray-800 hover:text-red-500 mt-4 transition-colors duration-300">
+                                            <FaThumbsUp className="mr-3 text-red-500 text-2xl" />
+                                            <span className="font-semibold text-lg">Success Story</span>
+                                        </div>
+                                    </Link>
                                     <Link href='/orders'>
                                         <div className="flex items-center text-gray-800 hover:text-indigo-500 mt-4 transition-colors duration-300">
                                             <FaTruck className="mr-3 text-indigo-500 text-2xl" />
@@ -641,31 +706,35 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                         </Link>
                         <div className="flex items-center lg:order-2">
                             {/* Search bar for large screens */}
-                            <div className="hidden lg:flex items-center flex-1 justify-center">
-                                <form className="flex items-center max-w-md w-full" onSubmit={handleSearchSubmit}>
-                                    <input
-                                        type="text"
-                                        id="simple-search"
-                                        className="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-[#103178] focus:border-[#103178] block w-full pl-10 p-1.5 dark:placeholder-gray-400 dark:focus:ring-[#103178] border-[#103178] dark:focus:border-[#103178]"
-                                        placeholder="Search Product name..."
-                                        value={searchQuery}
-                                        onChange={handleSearchChange}
-                                        required
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="p-2 ml-2 text-sm font-medium text-white bg-[#103178] rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-[#103178] dark:hover:bg-[#103178] dark:focus:ring-[#103178]"
-                                    >
+                            {
+                                pathname === "/" && <div className="hidden lg:flex items-center flex-1 justify-center">
+                                    <form className="flex items-center max-w-md w-full" onSubmit={handleSearchSubmit}>
+                                        <input
+                                            type="text"
+                                            id="simple-search"
+                                            className="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-[#103178] focus:border-[#103178] block w-full pl-10 p-1.5 dark:placeholder-gray-400 dark:focus:ring-[#103178] border-[#103178] dark:focus:border-[#103178]"
+                                            placeholder="Search Product name..."
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
+                                            required
+                                        />
+                                        <button
+                                            type="submit"
+                                            className="p-2 ml-2 text-sm font-medium text-white bg-[#103178] rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-[#103178] dark:hover:bg-[#103178] dark:focus:ring-[#103178]"
+                                        >
+                                            <FaSearch />
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            {
+                                pathname === "/" && <div className="flex items-center">
+                                    {/* Search icon for mobile */}
+                                    <button onClick={toggleSearch} className="block lg:hidden text-black focus:outline-none mr-4">
                                         <FaSearch />
                                     </button>
-                                </form>
-                            </div>
-                            <div className="flex items-center">
-                                {/* Search icon for mobile */}
-                                <button onClick={toggleSearch} className="block lg:hidden text-black focus:outline-none mr-4">
-                                    <FaSearch />
-                                </button>
-                            </div>
+                                </div>
+                            }
                             <a href="/cart" className="relative block md:ml-4 text-black text-2xl font-medium rounded-lg px-5 py-2.5 text-center">
                                 <FaCartShopping />
                                 <span className="absolute -top-1 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-[#103178] rounded-full">
@@ -693,7 +762,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
 
             {/* searchbar mobile view toggle */}
-            {isSearchOpen && (
+            {pathname === "/" && isSearchOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-4 rounded-lg shadow-lg relative w-11/12 max-w-md">
                         <button onClick={toggleSearch} className="absolute top-0 right-0 text-gray-600 hover:text-gray-800 focus:outline-none">
@@ -753,19 +822,17 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 <span>Home</span>
                             </Link>
                         </li>
-                        <li className="px-3 border-r border-[#103178] last:border-r-0">
+                        <li className="px-3 border-r last:border-r-0">
                             <Link href={{ pathname: '/category', query: { cat: 'Vet' } }} className="text-black hover:text-black flex flex-col items-center space-y-1">
                                 <FaPaw className="text-3xl text-purple-400" />
                                 <span>Vet</span>
                             </Link>
                         </li>
-                    </ul>
-                    <ul className="flex bg-white w-full flex-wrap justify-center items-center py-5 bottom-0 z-40 lg:hidden" data-carousel-item1>
-                        <li className="px-3 last:border-r-0">
-                            <a href="#" className="text-black hover:text-black flex flex-col items-center space-y-1">
+                        <li className="px-3 border-r last:border-r-0">
+                            <Link href="#" className="text-black hover:text-black flex flex-col items-center space-y-1">
                                 <FaEllipsisH className="text-3xl text-gray-500" />
                                 <span>More</span>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -792,17 +859,19 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     <FaTruck className='text-[#103178]' />
                 </a>
                 <a href="/under" className="text-black text-2xl">
-                    <BsSuitcaseLgFill className='text-[#103178]' />
+                    <FaGift className='text-[#103178]' />
                 </a>
                 <a href="/user/notification" className="text-black text-2xl">
                     <FaBell className='text-[#103178]' />
                 </a>
-                <a onClick={toggleDropdown} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center">
-                    <FaUser className='text-[#103178]' />
-                </a>
+                {
+                    useId && <Link onClick={toggleDropdown} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center" href={''}>
+                        <FaUser className='text-[#103178]' />
+                    </Link>
+                }
                 {
                     isDropdownOpen && (
-                        <ul className="absolute bottom-12 right-0 w-48 bg-white rounded-lg shadow-lg py-2">
+                        <ul className="absolute bottom-12 right-0 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                             <li>
                                 <Link href="/under" passHref>
                                     <span className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
@@ -812,7 +881,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/under" passHref>
+                                <Link href="/orders" passHref>
                                     <span className="flex items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
                                         <FaTruck className="mr-2 text-green-500" />
                                         <span>Order History</span>
@@ -830,8 +899,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                             <li>
                                 <Link href="/under" passHref>
                                     <span className="flex items-center text-gray-800 hover:text-red-500 transition-colors duration-300 py-2 px-4">
-                                        <FaThumbsUp className="mr-2 text-red-500" />
-                                        <span>Ledger</span>
+                                        <BiSolidNetworkChart className="mr-2 text-red-500" />
+                                        <span>Network</span>
                                     </span>
                                 </Link>
                             </li>

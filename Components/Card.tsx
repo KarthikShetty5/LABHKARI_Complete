@@ -80,11 +80,13 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
         }
     }
 
-    function shareOnWhatsApp(id: number) {
-        const message = `${process.env.NEXT_PUBLIC_CLIENT_URL}/product?id=${id}&ref=${localStorage.getItem('userId')}`;
-        const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    const shareOnWhatsApp = (customId: number) => {
+        const message = `Check out ${title} for ₹${price}. ${process.env.NEXT_PUBLIC_CLIENT_URL}/product?id=${customId}&ref=${localStorage.getItem('userId')}`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappLink = `https://wa.me/?text=${encodedMessage}`;
         window.open(whatsappLink, '_blank');
-    }
+    };
+
 
     return (
         <>

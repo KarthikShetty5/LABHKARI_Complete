@@ -357,18 +357,18 @@ const PaymentPage: React.FC = () => {
                         </div>
                         <h2 className="text-lg font-semibold border-b pb-2">Total price</h2>
                         <ul className="mt-4 space-y-2 text-sm">
-                            <li className="flex justify-between">
+                            {/* <li className="flex justify-between">
                                 <span>Distributor price discount</span>
                                 <span className="text-green-500">- ₹ 00.00</span>
-                            </li>
+                            </li> */}
                             <li className="flex justify-between">
                                 <span>Delivery charges</span>
                                 {amount > 1000 ? <span className="text-green-500">Free </span> : <span className="text-black">₹ {shipcost}</span>}
                             </li>
-                            <li className="flex justify-between">
+                            {/* <li className="flex justify-between">
                                 <span>Rounding Item amount</span>
                                 <span className="text-green-500">₹ 0.00</span>
-                            </li>
+                            </li> */}
                             <li className="flex justify-between">
                                 <span>Price before taxes</span>
                                 <span>₹ {(amount - gst).toFixed(2)}</span>

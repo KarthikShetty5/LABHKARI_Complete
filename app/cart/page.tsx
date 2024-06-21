@@ -159,38 +159,42 @@ const Page = () => {
                                     <p className="text-2xl font-bold">₹{cartAmount.toFixed(2)}</p>
                                 </div>
                                 <div className='flex justify-between'>
-                                    <p className="text-green-500 underline">View Our Order Policy</p>
+                                    <Link href={'/terms'}>
+                                        <p className="text-green-500 underline">View Our Order Policy</p>
+                                    </Link>
                                     <span className="text-lg font-normal">(incl. of all taxes)</span>
                                 </div>
-                                <div className="w-full shadow-md mt-4 mb-4 p-2 bg-green-500 text-white rounded">
+                                {/* <div className="w-full shadow-md mt-4 mb-4 p-2 bg-green-500 text-white rounded">
                                     <p className="text-lg">✓ You saved ₹ 0.00 on this order</p>
-                                </div>
-                                <button className="hidden lg:block w-full bg-black text-white py-2 rounded"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>CHECKOUT</Link></button>
+                                </div> */}
+                                <div className="mt-6"></div>
+                                <button className="hidden lg:block w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>Shipping Address</Link></button>
+                                <button className="hidden lg:block w-full bg-black text-white py-2 rounded"><Link href={'/under'}>Select E-Shop</Link></button>
                             </div>
-                            <div className="mt-4 border p-4 rounded-lg shadow-md mb-4">
+                            {/* <div className="mt-4 border p-4 rounded-lg shadow-md mb-4">
                                 <label className="flex items-center">
                                     <input type="checkbox" className="mr-2" />
                                     <span>I would like to voluntarily contribute Rs.10/-</span>
                                 </label>
-                            </div>
+                            </div> */}
                             <div className="border p-4 rounded-lg shadow-md">
                                 <div className="border-t mt-4 pt-4">
                                     <div className="flex justify-between border-b py-1">
                                         <p>Total price MRP</p>
                                         <p>₹{cartAmount.toFixed(2)}</p>
                                     </div>
-                                    <div className="flex justify-between border-b py-1">
+                                    {/* <div className="flex justify-between border-b py-1">
                                         <p>Distributor price discount</p>
                                         <p>- ₹ 0.00</p>
-                                    </div>
+                                    </div> */}
                                     <div className="flex justify-between border-b py-1">
                                         <p>Delivery charges</p>
                                         {cartAmount > 1000 ? <p className="text-green-500">Free</p> : <p>₹ {shipCost}</p>}
                                     </div>
-                                    <div className="flex justify-between border-b py-1">
+                                    {/* <div className="flex justify-between border-b py-1">
                                         <p>Rounding Item amount</p>
                                         <p>- ₹0.00</p>
-                                    </div>
+                                    </div> */}
                                     <div className="flex justify-between border-b py-1">
                                         <p>Price before taxes</p>
                                         <p>₹{actCost.toFixed(2)}</p>

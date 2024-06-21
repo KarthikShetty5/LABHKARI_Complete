@@ -1,3 +1,5 @@
+'use client';
+import Link from 'next/link';
 import React from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaWhatsapp, FaLinkedin, FaYoutube, FaPinterest } from 'react-icons/fa';
 
@@ -22,6 +24,34 @@ const Footer = () => {
                     </div>
                 </div>
             </section>
+
+            <div className="border-t border-[#CCCCCC]"></div>
+            <div className="bg-[#103178] py-4">
+                <div className="container mx-auto flex justify-center space-x-6">
+                    <Link href="/terms">
+                        <span className="text-white text-xl hover:text-gray-800">Terms and Conditions</span>
+                    </Link>
+                    <Link href="/refund">
+                        <span className="text-white text-xl hover:text-gray-800">Refund Policy</span>
+                    </Link>
+                    <Link href="/faqs">
+                        <span className="text-white text-xl hover:text-gray-800">FAQs</span>
+                    </Link>
+                    <Link href="/rules">
+                        <span className="text-white text-xl hover:text-gray-800">Labhkari Rules</span>
+                    </Link>
+                    <Link href="/contactus">
+                        <span className="text-white text-xl hover:text-gray-800">Contact Us</span>
+                    </Link>
+                    <Link href="/privacy">
+                        <span className="text-white text-xl hover:text-gray-800">Privacy Policy</span>
+                    </Link>
+                    <Link href="/share">
+                        <span className="text-white text-xl hover:text-gray-800">Share and Earn</span>
+                    </Link>
+                </div>
+            </div>
+
             <div className="border-t border-[#CCCCCC]"></div>
             <footer className="bg-[#103178] shadow-lg w-full py-6 dark:bg-[#103178] md:mb-0 mb-14">
                 <div className="container mx-auto">
@@ -37,6 +67,9 @@ const Footer = () => {
                         </a>
                         <a href="https://www.youtube.com/@labhkari" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">
                             <FaYoutube className="text-2xl" />
+                        </a>
+                        <a href="https://www.facebook.com/labhkarishop" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">
+                            <FaFacebook className="text-2xl" />
                         </a>
                     </div>
                     <div className="text-center">

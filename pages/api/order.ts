@@ -16,7 +16,7 @@ const sendMail = async (to: string, subject: string, trackingUrl: string, status
             <br/><br/>
             <div>Tracker: <a href="${trackingUrl}">${trackingUrl}</a></div>
             <p>Thank you, ${name}</p>
-            <img src="https://i.postimg.cc/YqpVfbHN/playstore2.png" width="90" height="40">
+            <img src="https://labhkari.s3.ap-south-1.amazonaws.com/logo2.png" width="90" height="40">
         </body>
         </html>`;
 

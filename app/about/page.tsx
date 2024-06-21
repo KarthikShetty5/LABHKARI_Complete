@@ -1,17 +1,14 @@
-// pages/about-us.js
-
+'use client';
 import Navbar from '@/Components/Navbar';
 import Head from 'next/head';
 
 const Page = () => {
     return (
         <>
-            {/* <Navbar onSearch={() => { }} /> */}
-            <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 mt-28">
-                <Head>
-                    <title>About Us</title>
-                </Head>
+            <Navbar onSearch={() => { }} />
+            <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 mt-28 md:mt-20">
                 <div className="max-w-4xl mx-auto">
+                    <h1 className="text-3xl font-semibold text-gray-900 mb-4 justify-center text-center">About Us</h1>
                     <div className="bg-white rounded-lg overflow-hidden shadow-lg p-6 mb-6">
                         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Welcome to Labhkari.com</h2>
                         <p className="text-gray-700 leading-relaxed">

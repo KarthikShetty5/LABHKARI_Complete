@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Order from '@/model/Order.model';
 import connectDb from '@/middleware/mongoose';
+import Cart from '@/model/Cart.model';
 
 const addOrderHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
@@ -11,6 +12,7 @@ const addOrderHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
 
         const savedOrder = await newOrder.save();
+        await Cart.deleteMany({ userId: userId });
 
         return res.status(200).json({
             success: true,

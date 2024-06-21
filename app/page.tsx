@@ -397,14 +397,14 @@ export default function Home() {
         }
       </div>
 
-      <a
+      <Link
         href="https://wa.me/+918607863200"
         className="fixed right-4 bottom-20 bg-green-500 text-white md:p-3 p-1 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300"
         target="_blank"
         rel="noopener noreferrer"
       >
         <FaWhatsapp size={30} className="text-xl md:text-3xl z-50" />
-      </a>
+      </Link>
 
       {/* <div className="grid sm:grid-cols-2 grid-cols-3 gap-4 mt-8">
         <Status />

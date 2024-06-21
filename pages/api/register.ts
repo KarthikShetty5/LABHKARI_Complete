@@ -3,6 +3,50 @@ import connectDb from '../../middleware/mongoose'; // Adjust the path based on y
 import User from '../../model/User.model'; // Adjust the path based on your actual structure
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+
+const sendMail = async (to: string, subject: string, name: string) => {
+    try {
+        const htmlContent = `<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Registered Successfully</title>
+        </head>
+        <body>
+            <h1>Welcom to Labhkari World</h1>
+            <p>User Created Successfully</p> 
+            <br/><br/>
+            <div>Update your account by visiting <a href="https://labhkari.com/user/profile">https://labhkari.com/user/profile</a></div>
+            <p>Thank you, ${name}</p>
+            <img src="https://labhkari.s3.ap-south-1.amazonaws.com/logo2.png" width="90" height="40">
+        </body>
+        </html>`;
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: "wear.from.brand@gmail.com",
+                pass: "xdfz zzgj bmhr dtxq",
+            },
+            connectionTimeout: 5 * 60 * 1000, // 5 min
+        });
+
+        const info = await transporter.sendMail({
+            from: "wear.from.brand@gmail.com",
+            to,
+            subject,
+            html: htmlContent,
+        });
+
+        console.log('Message sent: %s', info.messageId);
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
     const userId = ((length, chars) => Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join(''))(5, '0123456789');
@@ -51,6 +95,7 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
             password: encryptedPassword
         });
         await newUser.save();
+        await sendMail(email, "User created successfully", name);
 
         return res.status(200).json({
             success: true,
