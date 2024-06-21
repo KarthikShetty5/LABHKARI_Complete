@@ -190,7 +190,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 name: username,
                 email: email,
                 phone: phone,
-                password: password
+                password: password,
+                referralId: localStorage.getItem('ref') || null
             })
             console.log(response)
             if (response.data.success) {
@@ -633,7 +634,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                                 </Link>
                                                             </li>
                                                             <li>
-                                                                <Link href="/under" passHref>
+                                                                <Link href="/user/network" passHref>
                                                                     <span className="flex items-center text-gray-800 hover:text-red-500 transition-colors duration-300 py-2 px-4">
                                                                         <BiSolidNetworkChart className="mr-2 text-red-500" />
                                                                         <span>Network</span>
@@ -897,7 +898,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/under" passHref>
+                                <Link href="/user/network" passHref>
                                     <span className="flex items-center text-gray-800 hover:text-red-500 transition-colors duration-300 py-2 px-4">
                                         <BiSolidNetworkChart className="mr-2 text-red-500" />
                                         <span>Network</span>

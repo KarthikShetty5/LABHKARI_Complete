@@ -7,9 +7,9 @@ const userRef = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json({ error: "This method is not allowed" });
     }
 
-    const { ref } = req.body;
+    const { uid } = req.body;
 
-    if (!ref) {
+    if (!uid) {
         return res.status(400).json({
             success: false,
             message: "Reference ID is required"
@@ -18,11 +18,12 @@ const userRef = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Find user by ref directly
     try {
-        const user = await User.findOne({ userId: ref });
+        const user = await User.find({ referralId: uid });
         if (user) {
             return res.status(200).json({
                 success: true,
                 message: "User related to reference ID",
+                data: user
             });
         } else {
             return res.status(400).json({

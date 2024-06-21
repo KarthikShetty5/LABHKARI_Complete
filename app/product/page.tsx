@@ -25,10 +25,14 @@ interface Item {
 const PageContent: React.FC = () => {
     const searchParams = useSearchParams();
     const id = searchParams ? searchParams.get('customId') : null;
-    const ref = searchParams ? searchParams.get('ref') : null;
     const [data, setData] = useState<Item[]>([]);
-    const [image, setImage] = useState('');
-    const [buffer, setBuffer] = useState();
+    const ref = searchParams ? searchParams.get('ref') : "";
+
+    useEffect(() => {
+        if (ref) {
+            localStorage.setItem('ref', ref);
+        }
+    }, [ref]);
 
     useEffect(() => {
         const handleCart = async () => {

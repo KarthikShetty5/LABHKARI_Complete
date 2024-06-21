@@ -55,7 +55,7 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json({ error: "This method is not allowed" });
     }
 
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone, password, referralId } = req.body;
 
     if (!name || !email || !phone || !password) {
         return res.status(400).json({
@@ -92,7 +92,8 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
             name,
             email,
             phone,
-            password: encryptedPassword
+            password: encryptedPassword,
+            referralId,
         });
         await newUser.save();
         await sendMail(email, "User created successfully", name);

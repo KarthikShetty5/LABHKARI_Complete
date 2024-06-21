@@ -188,7 +188,7 @@
 // }
 
 'use client'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Suspense } from 'react'
 import Navbar from '@/Components/Navbar'
 import Link from 'next/link'
 import Card from '@/Components/Card'
@@ -202,6 +202,7 @@ import Head from 'next/head'
 import banner1 from '../assets/banner1.png'
 import banner2 from '../assets/banner2.png'
 import banner3 from '../assets/banner3.png'
+import { useSearchParams } from 'next/navigation'
 
 interface Item {
   desc: string
@@ -218,13 +219,20 @@ interface Item {
   gst: string;
   category: string;
 }
-
-export default function Home() {
+function Home() {
   const [data, setData] = useState<Item[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Item[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const searchParams = useSearchParams();
+  const referralId = searchParams ? searchParams.get('ref') : "";
+
+  useEffect(() => {
+    if (referralId) {
+      localStorage.setItem('ref', referralId);
+    }
+  }, [referralId]);
 
   function setCookie(name: string, value: string, minutes: number) {
     if (typeof document === 'undefined') return;
@@ -420,3 +428,14 @@ export default function Home() {
     </>
   )
 }
+
+const Page: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Home />
+    </Suspense>
+  );
+};
+
+export default Page;
+
