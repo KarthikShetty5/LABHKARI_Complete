@@ -1,5 +1,6 @@
 'use client'
 import Card from '@/Components/Card';
+import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 import { useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react';
@@ -77,7 +78,7 @@ const Page: React.FC = () => {
             <Navbar onSearch={() => { }} />
             <div className="container mx-auto px-4 py-8 mt-36 md:mt-0">
                 {cat && (
-                    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white mx-auto mb-8 p-6 text-center">
+                    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white mx-auto mb-8 p-6 text-center md:mt-6">
                         <h1 className="text-2xl font-bold">
                             {data && data.length > 0 ? `Showing ${data.length} ${capitalizeFirstLetter(cat)} Items` : `Sorry, there are no ${capitalizeFirstLetter(cat)} items found`}
                         </h1>
@@ -103,6 +104,7 @@ const Page: React.FC = () => {
                     </div>
                 )}
             </div>
+            <Footer />
         </>
     );
 };

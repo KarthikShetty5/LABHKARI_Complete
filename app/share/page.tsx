@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 
 const sections = [
@@ -52,6 +53,7 @@ export default function ShareAndEarn() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

@@ -1,4 +1,5 @@
 'use client';
+import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 import Head from 'next/head';
 
@@ -24,6 +25,7 @@ const RulesPage = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

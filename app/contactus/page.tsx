@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 
 const contactSections = [
@@ -37,9 +38,9 @@ export default function ContactUs() {
     return (
         <>
             <Navbar onSearch={() => { }} />
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 md:mt-14 mt-24">
+            <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 md:mt-14 mt-28">
                 <div className="max-w-5xl w-full space-y-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Contact Us</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3 text-center">Contact Us</h2>
                     <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8">
                         <div className="bg-white p-8 rounded-lg shadow-lg lg:w-1/2">
                             <h3 className="text-xl font-semibold mb-2">Contact Form</h3>
@@ -71,6 +72,7 @@ export default function ContactUs() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

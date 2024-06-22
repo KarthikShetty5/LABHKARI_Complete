@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import NetworkCard from '@/Components/NetCard';
+import Navbar from '@/Components/Navbar';
+import Footer from '@/Components/Footer';
 
 
 interface Item {
@@ -38,9 +40,13 @@ const Home = () => {
         fetchNetwork();
     }, []);
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-200">
-            <NetworkCard connections={network} />
-        </div>
+        <>
+            <Navbar onSearch={() => { }} />
+            <div className="flex justify-center items-center min-h-screen bg-gray-200">
+                <NetworkCard connections={network} />
+            </div>
+            <Footer />
+        </>
     );
 };
 

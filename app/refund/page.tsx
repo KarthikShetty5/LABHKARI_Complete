@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 
 const cancellationRefundSections = [
@@ -53,6 +54,7 @@ export default function CancellationRefundPolicy() {
                     ))}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

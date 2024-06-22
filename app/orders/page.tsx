@@ -1,4 +1,5 @@
 'use client'
+import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 import Orders from '@/Components/Orders';
 import axios from 'axios';
@@ -77,6 +78,7 @@ const Page: React.FC = () => {
                     ))}
                 </div>
             )}
+            <Footer />
         </>
     );
 };

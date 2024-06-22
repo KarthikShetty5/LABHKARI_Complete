@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 
 const sections = [
@@ -67,6 +68,7 @@ export default function PrivacyPolicy() {
                     ))}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from '@/Components/Footer';
 interface Item {
     description: string;
     customId: number;
@@ -252,6 +253,7 @@ const PageContent: React.FC = () => {
                     </div>
                 </div >
             }
+            <Footer />
         </>
     );
 };

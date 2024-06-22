@@ -1,4 +1,5 @@
 'use client';
+import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 import Head from 'next/head';
 
@@ -56,7 +57,9 @@ const Page = () => {
                     </div>
 
                 </div>
-            </div></>
+            </div>
+            <Footer />
+        </>
     );
 };
 

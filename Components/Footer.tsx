@@ -37,7 +37,7 @@ const Footer = () => {
                             <span className="text-white text-xl hover:text-gray-800">Refund Policy</span>
                         </Link>
                         </div>
-                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/faqs">
+                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/faq">
                             <span className="text-white text-xl hover:text-gray-800">FAQs</span>
                         </Link>
                         </div>

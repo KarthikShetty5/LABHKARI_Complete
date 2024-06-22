@@ -8,6 +8,7 @@ import Navbar from '@/Components/Navbar';
 import { RxCardStackMinus } from 'react-icons/rx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from '@/Components/Footer';
 
 declare global {
     interface Window {
@@ -389,6 +390,7 @@ const PaymentPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

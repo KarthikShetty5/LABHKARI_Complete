@@ -1,5 +1,6 @@
 'use client';
 import FaqItem from '@/Components/FaCard';
+import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 
 const faqSections = [
@@ -282,6 +283,7 @@ export default function FAQ() {
                     ))}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

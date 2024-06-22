@@ -204,11 +204,11 @@ const Page = () => {
                                         <p>₹ {Math.round(gst)}</p>
                                     </div>
                                 </div>
-                                <Link href={'/'}><button className="w-full bg-gray-500 text-white py-2 mt-4 rounded mb-10">CONTINUE SHOPPING</button></Link>
+                                <Link href={'/'}><button className="w-full bg-gray-500 text-white py-2 mt-4 rounded md:mb-10 mb-24">CONTINUE SHOPPING</button></Link>
                             </div>
                             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white p-4 shadow-lg lg:hidden">
-                                <button className="w-full bg-black text-white py-2 rounded"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>CHECKOUT</Link>
-                                </button>
+                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>Shipping Address</Link></button>
+                                <button className=" w-full bg-black text-white py-2 rounded"><Link href={'/under'}>Select E-Shop</Link></button>
                             </div>
                         </div>
                     </div>

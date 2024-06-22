@@ -47,7 +47,7 @@ const ProductEditPage = () => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/updateproduct";
         axios.post(url, {
             title: product.title,
-            customId: 11,
+            customId: productId,
             ratings: product.ratings,
             image: product.image,
             price: product.price,

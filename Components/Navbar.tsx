@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { BiSolidNetworkChart } from 'react-icons/bi';
 import { usePathname } from 'next/navigation';
+import { IoMdLogOut } from 'react-icons/io';
 
 interface Item {
     id: number;
@@ -414,6 +415,42 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     }, []);
 
 
+    const handleLogOut = () => {
+        try {
+            localStorage.removeItem('userId');
+            toast.success("Logged Out successfully", {
+                position: "top-left",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } catch (e) {
+            console.log("Error occured");
+        }
+    }
+
+    const handleAdminLogOut = () => {
+        try {
+            localStorage.removeItem('adminLoggedIn');
+            toast.success("Admin Logged Out successfully", {
+                position: "top-left",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } catch (e) {
+            console.log("Error occured");
+        }
+    }
+
+
+
 
 
     return (
@@ -649,6 +686,14 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                                     </span>
                                                                 </Link>
                                                             </li>
+                                                            <li>
+                                                                <button onClick={handleLogOut}>
+                                                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                                                        <IoMdLogOut className="mr-2 text-indigo-500" />
+                                                                        <span>LogOut</span>
+                                                                    </span>
+                                                                </button>
+                                                            </li>
                                                         </ul>
                                                     )
                                                 }
@@ -662,6 +707,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                             </button>
                                     }
                                 </li>
+                                {
+                                    admin && <li>
+                                        <button onClick={handleAdminLogOut}>
+                                            <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                                <IoMdLogOut className="mr-2 text-indigo-500" />
+                                                <span>Admin LogOut</span>
+                                            </span>
+                                        </button>
+                                    </li>
+                                }
                                 <li className="border-t pt-4">
                                     <Link href="/about" passHref>
                                         <div className="flex items-center text-gray-800 hover:text-green-500 mt-4 transition-colors duration-300">
@@ -859,7 +914,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 <a href="/orders" className="text-black text-2xl">
                     <FaTruck className='text-[#103178]' />
                 </a>
-                <a href="/under" className="text-black text-2xl">
+                <a href="/share" className="text-black text-2xl">
                     <FaGift className='text-[#103178]' />
                 </a>
                 <a href="/user/notification" className="text-black text-2xl">
@@ -912,6 +967,14 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                         <span>eShop</span>
                                     </span>
                                 </Link>
+                            </li>
+                            <li>
+                                <button onClick={handleLogOut}>
+                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                        <IoMdLogOut className="mr-2 text-indigo-500" />
+                                        <span>LogOut</span>
+                                    </span>
+                                </button>
                             </li>
                         </ul>
                     )
