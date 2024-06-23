@@ -53,10 +53,10 @@ const Footer = () => {
                             <span className="text-white text-xl hover:text-gray-800">Privacy Policy</span>
                         </Link>
                         </div>
-                        <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/share">
+                        {/* <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/share">
                             <span className="text-white text-xl hover:text-gray-800">Share and Earn</span>
                         </Link>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </section>

@@ -2,6 +2,8 @@
 
 import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
+import Link from "next/link";
+import { FaShare, FaWhatsapp } from "react-icons/fa";
 
 const sections = [
     {
@@ -39,6 +41,12 @@ function Card({ title, content }: any) {
     );
 }
 
+function shareOnWhatsApp() {
+    const message = `${process.env.NEXT_PUBLIC_CLIENT_URL}?ref=${localStorage.getItem('userId')}`;
+    const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappLink, '_blank');
+}
+
 export default function ShareAndEarn() {
     return (
         <>
@@ -52,7 +60,10 @@ export default function ShareAndEarn() {
                         ))}
                     </div>
                 </div>
-            </div>
+                <button onClick={shareOnWhatsApp} className="fixed right-4 bottom-20 bg-[#103178] text-white md:p-3 p-1 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
+                    <FaShare size={30} className="text-xl md:text-3xl z-50" />
+                </button>
+            </div >
             <Footer />
         </>
     );

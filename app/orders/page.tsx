@@ -23,14 +23,18 @@ const Page: React.FC = () => {
             if (!userId) {
                 setLoggedIn(false);
                 return;
+            } else {
+                setLoggedIn(true);
             }
-            setLoggedIn(true);
 
             try {
                 // First API call to get orders based on userId
                 const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/fetchorderid";
                 const res = await axios.post<{ data: Order[] }>(url, { userId });
                 const ordersData = res.data.data;
+
+                // Update the state with orders data
+                setOrders(ordersData);
 
                 // Array of promises for the second API call to get shipment details for each order
                 const detailsPromises = ordersData.map(async (order) => {
@@ -59,23 +63,31 @@ const Page: React.FC = () => {
         <>
             <Navbar onSearch={() => { }} />
             {!loggedIn && (
-                <div className="flex justify-center items-center h-screen">
+                <div className="flex justify-center items-center mb-28">
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">Please login to get your order details</h2>
                     </div>
                 </div>
             )}
             {loggedIn && (
-                <div className='mt-36 md:mt-0 mb-12 md:mb-0'>
-                    {orderDetails.map((orderDetail) => (
-                        <Orders
-                            key={orderDetail.shipmentDetails.orderId}
-                            orderId={orderDetail.shipmentDetails.orderId}
-                            tracking_url={orderDetail.shipmentDetails.tracking_url}
-                            name={orderDetail.shipmentDetails.customer_name}
-                            current_status={orderDetail.shipmentDetails.current_status}
-                        />
-                    ))}
+                <div className='mt-36 md:mt-0 mb-12 md:mb-28'>
+                    {orderDetails.length > 0 ? (
+                        orderDetails.map((orderDetail) => (
+                            <Orders
+                                key={orderDetail.shipmentDetails.orderId}
+                                orderId={orderDetail.shipmentDetails.orderId}
+                                tracking_url={orderDetail.shipmentDetails.tracking_url}
+                                name={orderDetail.shipmentDetails.customer_name}
+                                current_status={orderDetail.shipmentDetails.current_status}
+                            />
+                        ))
+                    ) : (
+                        <div className="flex justify-center items-center mb-48 mt-32">
+                            <div className="bg-white rounded-lg shadow-lg p-6">
+                                <h2 className="text-2xl font-bold text-gray-800 mb-4">You havent made any orders yet</h2>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
             <Footer />

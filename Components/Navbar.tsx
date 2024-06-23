@@ -107,9 +107,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     };
 
     function shareOnWhatsApp() {
-        const message = `${process.env.NEXT_PUBLIC_CLIENT_URL}?ref=${localStorage.getItem('userId')}`;
-        const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
-        window.open(whatsappLink, '_blank');
+        if (!localStorage.getItem('userId')) {
+            toast.error("Please Login to share", {
+                position: "top-left",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            const message = `${process.env.NEXT_PUBLIC_CLIENT_URL}?ref=${localStorage.getItem('userId')}`;
+            const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappLink, '_blank');
+        }
     }
 
     useEffect(() => {
@@ -254,6 +266,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 email: semail,
                 password: spassword,
             });
+
             if (!response.data.success) {
                 toast.error("Password dont match", {
                     position: "top-left",
@@ -347,8 +360,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 });
             }
         }
-        uid && handleCart();
-    }, [])
+
+        setTimeout(() => {
+            uid && handleCart();
+        }, 90000);
+    });
 
     useEffect(() => {
         const items = document.querySelectorAll('[data-carousel-item1]');
@@ -482,7 +498,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 </button>
                             </div>
                             <div className="relative p-4 w-full max-w-md">
-                                {showSignIn ? (
+                                {!showSignIn ? (
                                     <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 dark:bg-white">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
@@ -501,7 +517,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={handleSignUp}>
                                                 Sign In
                                             </button>
-                                            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+                                            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/forgot">
                                                 Forgot Password?
                                             </a>
                                         </div>
@@ -537,7 +553,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={handleSignIn}>
                                                 Sign Up
                                             </button>
-                                            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+                                            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/forgot">
                                                 Forgot Password?
                                             </a>
                                         </div>
@@ -921,7 +937,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     <FaBell className='text-[#103178]' />
                 </a>
                 {
-                    useId && <Link onClick={toggleDropdown} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center" href={''}>
+                    useId ? <Link onClick={toggleDropdown} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center" href={''}>
+                        <FaUser className='text-[#103178]' />
+                    </Link> : <Link onClick={toggleModal} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center" href={''}>
                         <FaUser className='text-[#103178]' />
                     </Link>
                 }
