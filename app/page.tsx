@@ -225,8 +225,8 @@ function Home() {
   const [isSearching, setIsSearching] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
+  const searchParams = useSearchParams();
   const referralId = searchParams ? searchParams.get('ref') : "";
 
   useEffect(() => {

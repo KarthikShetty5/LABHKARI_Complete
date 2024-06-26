@@ -10,7 +10,7 @@ const connectDb = (handler: NextApiHandler) => async (req: NextApiRequest, res: 
     const dbUri = process.env.MONGO_URI || '';
 
     try {
-        await mongoose.connect('mongodb+srv://karhtikshetty1:karthiks563@cluster0.u72062k.mongodb.net/labhkari?retryWrites=true&w=majority', {
+        await mongoose.connect(dbUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         } as any); // Use type assertion to avoid TypeScript error

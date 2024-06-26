@@ -476,7 +476,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                         <div className="relative bg-white rounded-lg shadow dark:bg-white">
                             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                 <h3 className="text-xl font-semibold text-gray-900 dark:black">
-                                    {showSignIn ? 'Sign In' : 'Sign Up'}
+                                    {showSignIn ? 'Sign Up' : 'Sign In'}
                                 </h3>
                                 <button onClick={toggleModal} type="button" className="text-[#103178] bg-transparent hover:bg-[#103178] hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
                                     <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -487,7 +487,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                             </div>
                             <div className="relative p-4 w-full max-w-md">
                                 {!showSignIn ? (
-                                    <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 dark:bg-white">
+                                    <form className="bg-white rounded px-8 pt-6 pb-8 mb-4 dark:bg-white">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                                                 Email
@@ -498,8 +498,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                                                 Password
                                             </label>
-                                            <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" value={spassword} onChange={(e) => setSPassword(e.target.value)} autoComplete="off" />
-                                            <p className="text-red-500 text-xs italic">Please choose a password.</p>
+                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" value={spassword} onChange={(e) => setSPassword(e.target.value)} autoComplete="off" />
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={handleSignUp}>
@@ -511,7 +510,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                         </div>
                                     </form>
                                 ) : (
-                                    <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 dark:bg-white">
+                                    <form className="bg-white rounded px-8 pt-6 pb-8 mb-4 dark:bg-white">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                                                 Username
@@ -534,8 +533,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                                                 Password
                                             </label>
-                                            <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="off" />
-                                            <p className="text-red-500 text-xs italic">Please choose a password.</p>
+                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="off" />
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={handleSignIn}>
@@ -549,9 +547,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                 )}
                                 {
                                     showSignIn ? (
-                                        <p className="text-center text-white text-sm">Dont have an account? <button onClick={handleSignUpClick} className="text-blue-600 hover:underline focus:outline-none" type="button">Sign Up</button></p>
+                                        <p className="text-center text-black text-sm">Already have an account? <button onClick={handleSignUpClick} className="text-blue-600 hover:underline focus:outline-none" type="button">Sign In</button></p>
                                     ) : (
-                                        <p className="text-center text-white text-sm">Already have an account? <button onClick={handleSignInClick} className="text-blue-600 hover:underline focus:outline-none" type="button">Sign In</button></p>
+                                        <p className="text-center text-black text-sm">Dont have an account? <button onClick={handleSignInClick} className="text-blue-600 hover:underline focus:outline-none" type="button">Sign Up</button></p>
                                     )
                                 }
                             </div>
