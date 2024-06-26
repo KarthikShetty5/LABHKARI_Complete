@@ -59,10 +59,14 @@ export default function ShareAndEarn() {
                             <Card key={index} title={section.title} content={section.content} />
                         ))}
                     </div>
+                <div className="bg-white p-8 rounded-lg shadow-lg mb-6">
+                    <h3 className="text-xl font-semibold mb-2">Click to Share</h3>
+                    <div className="text-gray-700" />
                 </div>
-                <button onClick={shareOnWhatsApp} className="fixed right-4 bottom-20 bg-[#103178] text-white md:p-3 p-1 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
+                </div>
+                {/* <button onClick={shareOnWhatsApp} className="fixed right-4 bottom-20 bg-[#103178] text-white md:p-3 p-1 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
                     <FaShare size={30} className="text-xl md:text-3xl z-50" />
-                </button>
+                </button> */}
             </div >
             <Footer />
         </>

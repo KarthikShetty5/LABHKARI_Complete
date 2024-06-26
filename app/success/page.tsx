@@ -18,7 +18,7 @@ const Page = () => {
                     "order_id": oid,
                 });
             } catch (e) {
-                console.log(e);
+                alert("Error adding order");
             }
         };
         if (success) {

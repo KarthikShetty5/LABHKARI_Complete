@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '@/Components/Footer';
+import { useCart } from '@/context/CartContext';
 interface Item {
     description: string;
     customId: number;
@@ -28,6 +29,8 @@ const PageContent: React.FC = () => {
     const id = searchParams ? searchParams.get('customId') : null;
     const [data, setData] = useState<Item[]>([]);
     const ref = searchParams ? searchParams.get('ref') : "";
+    const { addToCart } = useCart();
+
 
     useEffect(() => {
         if (ref) {
@@ -73,48 +76,30 @@ const PageContent: React.FC = () => {
 
     const handleAddToCart = async (event: any, title: string, image: string, price: number, gst: string, weight: string) => {
         event.preventDefault();
-        let uid = localStorage.getItem('userId');
+        const item = {
+            customId: id,
+            title: title,
+            price: price,
+            ref: ref ? ref : '',
+            image: image,
+            gst: gst,
+            weight: weight,
+            count: 1,
+        };
 
-        if (uid === null) {
-            uid = '12345';
-            localStorage.setItem('userId', uid);
-        } else if (uid !== '12345') {
-            uid = localStorage.getItem('userId');
-        }
-
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addcart";
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ customId: id, userId: uid, count: 1, title: title, image: image, price: price, ref: ref ? ref : '', gst: gst, weight: weight }),
+            await addToCart(item);
+            toast.success("Added to Cart successfully", {
+                position: "top-left",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
             });
-            const res = await response.json();
-            if (res.success) {
-                toast.success("Added to Cart successfully", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            } else {
-                toast.error("Failed to Add to Cart", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
         } catch (error) {
-            toast.error("Error Occured", {
+            toast.error("Failed to Add to Cart", {
                 position: "top-left",
                 autoClose: 1000,
                 hideProgressBar: false,
@@ -124,12 +109,8 @@ const PageContent: React.FC = () => {
                 progress: undefined,
             });
         }
-    }
-
-    const handleBuyNow = () => {
-        // Add logic to proceed to checkout
-        console.log('Proceeding to checkout with product:');
     };
+
 
     return (
         <>

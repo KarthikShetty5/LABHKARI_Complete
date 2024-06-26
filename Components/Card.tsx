@@ -7,6 +7,8 @@ import { AiOutlineShareAlt, AiOutlineShoppingCart } from 'react-icons/ai';
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCart } from '@/context/CartContext';
+
 
 interface CardProps {
     customId: number;
@@ -24,61 +26,32 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ customId, title, image, description, price, rating, tag, path, gst, weight }) => {
     const searchParams = useSearchParams();
     const ref = searchParams ? searchParams.get('ref') : null;
+    const { addToCart } = useCart();
+    const notifyError = () => toast("Failed to Add to Cart");
+    const notifySuccess = () => toast("Added to Cart successfully!");
+
+
 
     const handleAddToCart = async (event: any) => {
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addcart";
         event.preventDefault();
-        let uid = localStorage.getItem('userId');
-
-        if (uid === null) {
-            uid = '12345';
-            localStorage.setItem('userId', uid);
-        } else if (uid !== '12345') {
-            uid = localStorage.getItem('userId');
-        }
+        const item = {
+            customId: customId,
+            title: title,
+            price: price,
+            ref: ref ? ref : '',
+            image: image,
+            gst: gst,
+            weight: weight,
+            count: 1,
+        };
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ customId: customId, userId: uid, count: 1, title: title, price: price, ref: ref ? ref : '', image: image, gst: gst, weight: weight }),
-            });
-            const res = await response.json();
-            if (res.success) {
-                toast.success("Added to Cart successfully", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            } else {
-                toast.error("Failed to Add to Cart", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
+            await addToCart(item);
+            notifySuccess();
         } catch (error) {
-            toast.error("Error Occured", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            notifyError();
         }
-    }
+    };
 
     const shareOnWhatsApp = (customId: number) => {
         const message = `Check out ${title} for ₹${price}. ${process.env.NEXT_PUBLIC_CLIENT_URL}/product?customId=${customId}&ref=${localStorage.getItem('userId')}`;
@@ -93,17 +66,7 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
             <div className="max-w-md w-full bg-gray-100 shadow-lg rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ marginTop: "-1rem" }}>
                     <div>
-                        <ToastContainer
-                            position='top-center'
-                            autoClose={2000}
-                            hideProgressBar={false}
-                            newestOnTop={false}
-                            closeOnClick
-                            rtl={false}
-                            pauseOnFocusLoss
-                            draggable
-                            pauseOnHover
-                        />
+                        <ToastContainer />
                     </div>
                     <Link href={{ pathname: '/product', query: { customId: customId } }}>
                         <div className="w-full h-[400px] relative">

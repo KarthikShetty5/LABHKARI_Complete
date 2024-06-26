@@ -66,7 +66,6 @@ const ProfilePage = () => {
     const handleSaveField = (field: keyof EditMode) => {
         setEditMode({ ...editMode, [field]: false });
         // Here you can add logic to save the updated field to your backend
-        console.log(`Saved ${field}: ${user[field]}`);
     };
 
     // Toggle edit mode for a field

@@ -226,6 +226,7 @@ function Home() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
   const referralId = searchParams ? searchParams.get('ref') : "";
 
   useEffect(() => {
@@ -248,7 +249,6 @@ function Home() {
   useEffect(() => {
     const handleCart = async () => {
       const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getproduct";
-      console.log(url);
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -257,11 +257,12 @@ function Home() {
           },
         });
         const res = await response.json();
-        console.log(res.data)
         setData(res.data);
         setFilteredProducts(res.data); // Initialize filteredProducts with all data
       } catch (error) {
         console.error('Error:', error);
+      } finally {
+        setIsLoading(false); // Step 2: Update Loading State
       }
     }
     handleCart();
@@ -379,40 +380,35 @@ function Home() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ml-5 mr-5">
-        {
-          filteredProducts && filteredProducts.length > 0 ? (
-            filteredProducts.map((item) => (
-              <Card
-                key={item.customId}
-                customId={item.customId}
-                title={item.title}
-                description={item.desc}
-                price={item.price}
-                image={item.image}
-                rating={item.ratings}
-                tag={item.tag}
-                path={item.path}
-                gst={item.gst}
-                weight={item.weight}
-              />
-            ))
-          ) : (
-            <div className='flex flex-col items-center justify-center w-full md:h-screen md:mb-0 mb-20 text-center text-black font-bold'>
-              <FaSearch className="text-6xl md:mb-4" />
-              <p className="text-xl">Oops! Can&apos;t find what you&apos;re looking for.</p>
-            </div>
-          )
-        }
+        {isLoading ? (
+          <div className="flex items-center justify-center w-full h-screen">
+            <div className="loader">Loading...</div> {/* Step 3: Display Loader */}
+          </div>
+        ) : filteredProducts && filteredProducts.length > 0 ? (
+          filteredProducts.map((item) => (
+            <Card
+              key={item.customId}
+              customId={item.customId}
+              title={item.title}
+              description={item.desc}
+              price={item.price}
+              image={item.image}
+              rating={item.ratings}
+              tag={item.tag}
+              path={item.path}
+              gst={item.gst}
+              weight={item.weight}
+            />
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center w-full md:h-screen md:mb-0 mb-20 text-center text-black font-bold">
+            <FaSearch className="text-6xl md:mb-4" />
+            <p className="text-xl">Oops! Can&apos;t find what you&apos;re looking for.</p>
+          </div>
+        )}
       </div>
 
-      <Link
-        href="https://wa.me/+918607863200"
-        className="fixed right-4 bottom-20 bg-green-500 text-white md:p-3 p-1 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <FaWhatsapp size={30} className="text-xl md:text-3xl z-50" />
-      </Link>
+     
 
       {/* <div className="grid sm:grid-cols-2 grid-cols-3 gap-4 mt-8">
         <Status />
@@ -438,4 +434,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

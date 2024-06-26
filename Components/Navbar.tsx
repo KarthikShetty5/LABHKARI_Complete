@@ -14,6 +14,8 @@ import axios from 'axios';
 import { BiSolidNetworkChart } from 'react-icons/bi';
 import { usePathname } from 'next/navigation';
 import { IoMdLogOut } from 'react-icons/io';
+import { useCart } from '@/context/CartContext';
+import { useRouter } from 'next/navigation';
 
 interface Item {
     id: number;
@@ -52,6 +54,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [useId, setUseId] = useState('');
     const pathname = usePathname();
+    const router = useRouter();
+    const { cartCount } = useCart();
+
 
 
     const handleSearchChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -220,6 +225,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 toggleModal();
                 await handleUserId(response.data.user.userId);
                 localStorage.setItem('userId', response.data.user.userId);
+                router.refresh(); // refresh the page after successful operation
             } else {
                 toast.error("Email already exists", {
                     position: "top-left",
@@ -299,6 +305,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 await handleUserId(userId); // Assuming userIds.userId is the correct property from your response
                 localStorage.setItem('userId', userId);
             }
+            router.refresh(); // refresh the page after successful operation
         } catch (error) {
             console.log(error)
             toast.error("Error occurred ", {
@@ -338,15 +345,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     body: JSON.stringify({ uid: uid }),
                 });
                 const res = await response.json();
-                const totalCount = res.data.reduce((acc: any, item: { price: number, count: number, gst: string, shipCost: string }) => {
-                    const gstNumber = parseFloat(item.gst);
-                    const shipCostNumber = parseFloat(item.shipCost);
-                    const itemTotal = (item.price * item.count) + gstNumber + shipCostNumber;
-                    return acc + itemTotal;
-                }, 0);
-                setCartAmount(totalCount)
-                setArr(res.data)
-                setDone(true)
                 setCount(res.data.length)
             } catch (error) {
                 toast.error("Error Occured", {
@@ -361,10 +359,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             }
         }
 
-        setTimeout(() => {
-            uid && handleCart();
-        }, 90000);
-    });
+        uid && handleCart();
+
+    }, []);
 
     useEffect(() => {
         const items = document.querySelectorAll('[data-carousel-item1]');
@@ -443,6 +440,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 draggable: true,
                 progress: undefined,
             });
+            router.refresh(); // refresh the page after successful operation
         } catch (e) {
             console.log("Error occured");
         }
@@ -460,6 +458,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 draggable: true,
                 progress: undefined,
             });
+            router.refresh(); // refresh the page after successful operation
         } catch (e) {
             console.log("Error occured");
         }
@@ -468,20 +467,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
 
 
-
     return (
         <>
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
+            <ToastContainer />
             {modalOpen && (
                 <div id="default-modal" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 flex justify-center items-center">
                     <div className="relative p-4 w-full max-w-md">
@@ -810,7 +798,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                             <a href="/cart" className="relative block md:ml-4 text-black text-2xl font-medium rounded-lg px-5 py-2.5 text-center">
                                 <FaCartShopping />
                                 <span className="absolute -top-1 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-[#103178] rounded-full">
-                                    {count}
+                                    {cartCount}
                                 </span>
                             </a>
                             {admin && (

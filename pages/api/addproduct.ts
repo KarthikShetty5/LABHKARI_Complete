@@ -1,49 +1,51 @@
-// pages/api/addProduct.ts (or other API route file)
 import { NextApiRequest, NextApiResponse } from 'next';
 import connectDb from '@/middleware/mongoose';
 import Product from '@/model/Product.model';
 import { uploadWithMulter } from '@/utils/aws';
-import express, { request } from 'express';
+import multer from 'multer';
 
-// Create an express app instance
-const app = express();
+const upload = uploadWithMulter().array('s3Images', 2);
 
-// Use middleware
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
 
-// Example API route handler
-const addProductHandler = async (req: any, res: NextApiResponse) => {
-    try {
-        // Handle file upload with multer
-        const upload = uploadWithMulter();
-
-        upload(req as any, res as any, async (err: any) => {
-            if (err) {
-                console.error("Error uploading to S3:", err);
-                return res.status(500).json({ success: false, message: "Error occurred while uploading" });
+const runMiddleware = (req: any, res: any, fn: any) => {
+    return new Promise((resolve, reject) => {
+        fn(req, res, (result: any) => {
+            if (result instanceof Error) {
+                return reject(result);
             }
+            return resolve(result);
+        });
+    });
+};
 
-            // File upload successful, now handle product addition
-            const { title, ratings, price, description, tag, category, gst, weight } = req.body;
+const handler = async (req: any, res: any) => {
+    await runMiddleware(req, res, upload);
 
-            // Ensure req.files exists and is of the expected type
-            if (!req.file || !Array.isArray(req.files)) {
+    if (req.method === 'POST') {
+        try {
+            if (!req.files || req.files.length === 0) {
                 return res.status(400).json({ success: false, message: "Images are required" });
             }
+
+            const { title, ratings, price, description, tag, category, gst, weight } = req.body;
 
             const imageUrls = (req.files as Express.MulterS3.File[]).map(file => file.location).join(',');
 
             const newProduct = new Product({
                 title,
                 ratings,
-                image: imageUrls, // Store the image URLs in the image field
+                image: imageUrls,
                 price,
                 description,
                 tag,
                 gst,
                 weight,
-                category: category // Example: replace with your actual category logic
+                category
             });
 
             const savedProduct = await newProduct.save();
@@ -53,15 +55,18 @@ const addProductHandler = async (req: any, res: NextApiResponse) => {
                 message: "Product added successfully",
                 data: savedProduct
             });
-        });
-    } catch (error: any) {
-        console.error("Error adding product:", error);
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error",
-            error: error.message
-        });
+        } catch (error: any) {
+            console.error("Error adding product:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+                error: error.message
+            });
+        }
+    } else {
+        res.setHeader('Allow', ['POST']);
+        res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 };
 
-export default connectDb(addProductHandler);
+export default connectDb(handler);

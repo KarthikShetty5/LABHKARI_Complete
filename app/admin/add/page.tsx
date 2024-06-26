@@ -13,6 +13,7 @@ const page: React.FC = () => {
     const [tags, setTags] = useState('');
     const [gst, setGst] = useState('');
     const [weight, setWeight] = useState('');
+    const [category, setCategory] = useState('');
     const [files, setFiles] = useState<File[]>([]);
     const dropzoneOptions: DropzoneOptions = { accept: 'image/*' as unknown as DropzoneOptions['accept'] };
 
@@ -32,7 +33,7 @@ const page: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const url = 'https://universalgoi.com/product/add';
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addproduct";
 
         if (files.length === 0) {
             toast.error("Please select file", {
@@ -69,6 +70,7 @@ const page: React.FC = () => {
             formData.append("tag", tags);
             formData.append("gst", gst);
             formData.append("weight", weight);
+            formData.append("category", category);
             files.forEach((file, index) => {
                 formData.append(`s3Images`, file);
             });
@@ -77,7 +79,6 @@ const page: React.FC = () => {
                 method: 'POST',
                 body: formData,
             });
-            console.log(response)
 
             if (response.ok) {
                 toast.success('Product added successfully', {
@@ -198,6 +199,16 @@ const page: React.FC = () => {
                                 onChange={(e) => setWeight(e.target.value)}
                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
                                 placeholder="Enter Weight of product"
+                            />
+                        </div>
+                        <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
+                            <label className="block mb-1 text-gray-600">Category:</label>
+                            <input
+                                type="text"
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                                placeholder="Enter Category of product"
                             />
                         </div>
                         <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">

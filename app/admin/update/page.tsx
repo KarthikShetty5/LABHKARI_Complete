@@ -59,7 +59,6 @@ const ProductEditPage = () => {
         })
             .then((response) => {
                 alert('Product updated:');
-                console.log(response)
             })
             .catch((error) => {
                 alert('Error updating product:');

@@ -115,7 +115,6 @@ const PaymentPage: React.FC = () => {
             const { data: { order } } = await axios.post(curl, {
                 amount: amount + shipcost
             });
-            // console.log(key, order)
 
             localStorage.setItem('order', order.id);
 

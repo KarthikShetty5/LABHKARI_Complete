@@ -1,10 +1,9 @@
-// utils/aws.ts
 import multer from 'multer';
 import multerS3 from 'multer-s3';
-import path from 'path';
+import aws from 'aws-sdk';
 import { S3Client } from '@aws-sdk/client-s3';
-import { Request } from 'express';
 
+// Ensure that the AWS credentials and region are set
 const s3 = new S3Client({
     region: process.env.REGION!,
     credentials: {
@@ -13,19 +12,23 @@ const s3 = new S3Client({
     },
 });
 
-const uploadWithMulter = () =>
-    multer({
+export const uploadWithMulter = () => {
+    const bucketName = process.env.BUCKET_NAME;
+    if (!bucketName) {
+        throw new Error('AWS_BUCKET_NAME is not defined');
+    }
+
+    return multer({
         storage: multerS3({
-            s3,
-            bucket: process.env.BUCKET_NAME!,
-            metadata: (req: Request, file, cb) => {
+            s3: s3,
+            bucket: bucketName,
+            // acl: 'public-read',
+            metadata: function (req, file, cb) {
                 cb(null, { fieldName: file.fieldname });
             },
-            key: (req: Request, file, cb) => {
-                cb(null, Date.now().toString() + path.extname(file.originalname));
+            key: function (req, file, cb) {
+                cb(null, Date.now().toString() + '-' + file.originalname);
             },
         }),
-        limits: { fileSize: 5 * 1024 * 1024 }, // Example limit: 5MB
-    }).array('s3Images', 2); // Accepts up to 2 files with field name "s3Images"
-
-export { uploadWithMulter };
+    });
+};
