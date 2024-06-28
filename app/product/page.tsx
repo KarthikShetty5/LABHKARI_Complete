@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState, Suspense } from 'react';
 import Image from 'next/image';
 import Navbar from '@/Components/Navbar';
@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '@/Components/Footer';
 import { useCart } from '@/context/CartContext';
+
 interface Item {
     description: string;
     customId: number;
@@ -24,13 +25,24 @@ interface Item {
     weight: string;
 }
 
+interface CartItem {
+    customId: number;
+    title: string;
+    price: number;
+    ref: string;
+    image: string;
+    gst: string;
+    weight: string;
+    count: number;
+    userId: string;
+}
+
 const PageContent: React.FC = () => {
     const searchParams = useSearchParams();
     const id = searchParams ? searchParams.get('customId') : null;
     const [data, setData] = useState<Item[]>([]);
     const ref = searchParams ? searchParams.get('ref') : "";
     const { addToCart } = useCart();
-
 
     useEffect(() => {
         if (ref) {
@@ -62,8 +74,10 @@ const PageContent: React.FC = () => {
                     progress: undefined,
                 });
             }
+        };
+        if (id) {
+            handleCart();
         }
-        id && handleCart();
     }, [id]);
 
     const [pincode, setPincode] = useState<string>('');
@@ -76,8 +90,22 @@ const PageContent: React.FC = () => {
 
     const handleAddToCart = async (event: any, title: string, image: string, price: number, gst: string, weight: string) => {
         event.preventDefault();
-        const item = {
-            customId: id,
+        const customIdNumber = id ? parseInt(id) : NaN;
+        if (isNaN(customIdNumber)) {
+            toast.error("Invalid Product ID", {
+                position: "top-left",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
+        const item: CartItem = {
+            customId: customIdNumber,
             title: title,
             price: price,
             ref: ref ? ref : '',
@@ -85,6 +113,7 @@ const PageContent: React.FC = () => {
             gst: gst,
             weight: weight,
             count: 1,
+            userId: localStorage.getItem('userId') || " "
         };
 
         try {
@@ -111,7 +140,6 @@ const PageContent: React.FC = () => {
         }
     };
 
-
     return (
         <>
             <Navbar onSearch={() => { }} />
@@ -126,8 +154,8 @@ const PageContent: React.FC = () => {
                 draggable
                 pauseOnHover
             />
-            {
-                data.length > 0 && <div className="py-8 md:mt-24 mt-28">
+            {data.length > 0 && (
+                <div className="py-8 md:mt-24 mt-28">
                     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row -mx-4">
                             <div className="md:flex-1 px-4">
@@ -232,8 +260,8 @@ const PageContent: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </div >
-            }
+                </div>
+            )}
             <Footer />
         </>
     );

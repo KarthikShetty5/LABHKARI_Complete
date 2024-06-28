@@ -13,7 +13,7 @@ interface CardProps {
     customId: number;
     userId: string;
     count: number;
-    weight: number;
+    weight: string;
     gst: string;
 }
 

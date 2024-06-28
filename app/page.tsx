@@ -398,6 +398,7 @@ function Home() {
               path={item.path}
               gst={item.gst}
               weight={item.weight}
+              userId=''
             />
           ))
         ) : (
@@ -408,7 +409,7 @@ function Home() {
         )}
       </div>
 
-     
+
 
       {/* <div className="grid sm:grid-cols-2 grid-cols-3 gap-4 mt-8">
         <Status />

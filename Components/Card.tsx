@@ -22,7 +22,7 @@ interface CardProps {
     tag: string;
     path: string;
     gst: string;
-    weight: number;
+    weight: string;
 }
 
 const Card: React.FC<CardProps> = ({ customId, title, image, description, price, rating, tag, path, gst, weight }) => {

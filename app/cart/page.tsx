@@ -15,7 +15,7 @@ interface Item {
     userId: string;
     image: string;
     price: number;
-    weight: number;
+    weight: string;
     gst: string;
 }
 

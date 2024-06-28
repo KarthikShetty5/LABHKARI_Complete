@@ -99,6 +99,7 @@ const Page: React.FC = () => {
                                 path={item.path}
                                 gst={item.gst}
                                 weight={item.weight}
+                                userId=''
                             />
                         ))}
                     </div>
