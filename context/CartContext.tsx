@@ -12,23 +12,96 @@ interface CartContextProps {
     handleDelete: (customId: number) => Promise<void>;
 }
 
-const CartContext = createContext<CartContextProps | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-    const [cartCount, setCartCount] = useState<number>(0);
+interface CartItem {
+    customId: number;
+    title: string;
+    count: number;
+    userId: string;
+    image: string;
+    price: number;
+    weight: number;
+    gst: string;
+}
 
-    useEffect(() => {
-        // Initialize cart count from local storage or server
-        const initCartCount = async () => {
-            // Fetch initial cart count from local storage or server
-            const storedCount = parseInt(localStorage.getItem('cartCount') || '0', 10);
-            setCartCount(storedCount);
-        };
-        initCartCount();
-    }, []);
+interface CartContextState {
+    actCost: number;
+    gst: number;
+    shipCost: number;
+    cartAmount: number;
+    cartItems: CartItem[];
+    count: number;
+    addToCart: (item: CartItem) => Promise<void>;
+    fetchCart: () => Promise<void>;
+}
 
-    const updateLocalStorage = (count: number) => {
-        localStorage.setItem('cartCount', count.toString());
+const CartContext = createContext<CartContextState | undefined>(undefined);
+
+export const useCart = () => {
+    const context = useContext(CartContext);
+    if (!context) {
+        throw new Error('useCart must be used within a CartProvider');
+    }
+    return context;
+};
+
+interface CartProviderProps {
+    children: ReactNode;
+}
+
+export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+    const [actCost, setActCost] = useState(0);
+    const [gst, setGst] = useState(0);
+    const [shipCost, setShipCost] = useState(0);
+    const [cartAmount, setCartAmount] = useState(0);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [count, setCount] = useState(0);
+    const [done, setDone] = useState(false);
+
+    const fetchCart = async () => {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchcart";
+        const uid = localStorage.getItem('userId');
+        if (!uid) return;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ uid: uid }),
+            });
+            const res = await response.json();
+            const totals = res.data.reduce((acc: { totalCount: number, totalShipCost: number, totalGst: number, totalActualCost: number }, item: { price: number, count: number, gst: string, weight: string }) => {
+                const weightInGrams = parseFloat(item.weight);
+                const weightInKg = isNaN(weightInGrams) ? 0 : weightInGrams / 1000;
+                const shipCost = weightInKg * 60;
+                const gstPercentMatch = item.gst;
+                const gstPercent = gstPercentMatch ? parseFloat(gstPercentMatch) : 0;
+                const price = parseFloat(item.price.toString());
+                const priceExcludingGST = price / (1 + (gstPercent / 100));
+                const gstAmount = price - priceExcludingGST;
+                const itemTotalExcludingGST = priceExcludingGST * item.count;
+                const itemTotalGST = gstAmount * item.count;
+                const itemTotalShipCost = shipCost * item.count;
+                const itemTotal = itemTotalExcludingGST + itemTotalGST + itemTotalShipCost;
+                acc.totalCount += itemTotal;
+                acc.totalShipCost += itemTotalShipCost;
+                acc.totalGst += itemTotalGST;
+                acc.totalActualCost += itemTotalExcludingGST;
+                return acc;
+            }, { totalCount: 0, totalShipCost: 0, totalGst: 0, totalActualCost: 0 });
+
+            setActCost(totals.totalActualCost);
+            setGst(totals.totalGst);
+            setShipCost(totals.totalShipCost);
+            setCartAmount(totals.totalCount);
+            setCartItems(res.data);
+            setCount(res.data.length);
+            setDone(true);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
     };
 
     const addToCart = async (item: any) => {
@@ -46,11 +119,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             });
             const res = await response.json();
             if (res.success) {
-                setCartCount((prevCount) => {
-                    const newCount = prevCount + 1;
-                    updateLocalStorage(newCount);
-                    return newCount;
-                });
+                // setCartCount((prevCount) => {
+                //     const newCount = prevCount + res.count;
+                //     updateLocalStorage(newCount);
+                //     return newCount;
+                // });
             } else {
                 throw new Error('Failed to add to cart');
             }
@@ -59,112 +132,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const updateQuantity = async (customId: number, newQuantity: number) => {
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addcart";
-        const uid = localStorage.getItem('userId') || '12345';
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ customId, userId: uid, count: newQuantity }),
-            });
-            const res = await response.json();
-            if (res.success) {
-                // Optionally update cart count if it reflects quantity
-                // setCartCount(res.newCartCount);
-            }
-        } catch (e) {
-            toast.error("Error Occured", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }
-    };
-
-    const incrementOrDecrementQuantity = (customId: number, amount: number) => {
-        const newQuantity = amount;
-        updateQuantity(customId, newQuantity);
-    };
-
-    const handleDelete = async (customId: number) => {
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/deletecart";
-        const uid = localStorage.getItem('userId') || '12345';
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ uid, customId }),
-            });
-            const res = await response.json();
-            if (res.success) {
-                setCartCount((prevCount) => {
-                    const newCount = Math.max(prevCount - 1, 0);
-                    updateLocalStorage(newCount);
-                    return newCount;
-                });
-            }
-        } catch (e) {
-            toast.error("Error Occured", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }
-    };
-
-    const removeFromCart = async (itemId: string) => {
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/removecart";
-        const uid = localStorage.getItem('userId') || '12345';
-
-        try {
-            const response = await fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ itemId, userId: uid }),
-            });
-            const res = await response.json();
-            if (res.success) {
-                setCartCount((prevCount) => {
-                    const newCount = Math.max(prevCount - 1, 0);
-                    updateLocalStorage(newCount);
-                    return newCount;
-                });
-            } else {
-                throw new Error('Failed to remove from cart');
-            }
-        } catch (error) {
-            console.error("Error removing from cart:", error);
-        }
-    };
 
     return (
-        <CartContext.Provider value={{ cartCount, setCartCount, addToCart, updateQuantity, incrementOrDecrementQuantity, removeFromCart, handleDelete }}>
+        <CartContext.Provider value={{ actCost, gst, shipCost, cartAmount, cartItems, count, addToCart, fetchCart }}>
             {children}
         </CartContext.Provider>
     );
 };
 
-export const useCart = () => {
-    const context = useContext(CartContext);
-    if (context === undefined) {
-        throw new Error('useCart must be used within a CartProvider');
-    }
-    return context;
-};

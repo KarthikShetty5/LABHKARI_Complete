@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCart } from '@/context/CartContext';
 
 interface CardProps {
     title: string;
@@ -18,6 +19,7 @@ interface CardProps {
 
 const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, userId, count, weight, gst }) => {
     const [quantity, setQuantity] = useState(count);
+    const { fetchCart } = useCart();
 
 
     const updateQuantity = async (newQuantity: React.SetStateAction<number>) => {
@@ -32,6 +34,7 @@ const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, us
             });
             const res = await response.json();
             setQuantity(res.count);
+            await fetchCart();
         } catch (e) {
             toast.error("Error Occured", {
                 position: "top-left",
@@ -61,6 +64,7 @@ const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, us
                 body: JSON.stringify({ uid: userId, customId: customId }),
             });
             const res = await response.json();
+            await fetchCart();
         } catch (e) {
             toast.error("Error Occured", {
                 position: "top-left",

@@ -8,25 +8,27 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCart } from '@/context/CartContext';
+import fetchcart from '@/pages/api/fetchcart';
 
 
 interface CardProps {
     customId: number;
     title: string;
-    image: string | StaticImport;
+    image: string;
     description: string;
+    userId: string;
     price: number;
     rating: number;
     tag: string;
     path: string;
     gst: string;
-    weight: string;
+    weight: number;
 }
 
 const Card: React.FC<CardProps> = ({ customId, title, image, description, price, rating, tag, path, gst, weight }) => {
     const searchParams = useSearchParams();
     const ref = searchParams ? searchParams.get('ref') : null;
-    const { addToCart } = useCart();
+    const { addToCart, fetchCart } = useCart();
     const notifyError = () => toast("Failed to Add to Cart");
     const notifySuccess = () => toast("Added to Cart successfully!");
 
@@ -43,10 +45,12 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
             gst: gst,
             weight: weight,
             count: 1,
+            userId: localStorage.getItem('userId') || " "
         };
 
         try {
             await addToCart(item);
+            await fetchCart();
             notifySuccess();
         } catch (error) {
             notifyError();

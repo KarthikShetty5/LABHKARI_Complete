@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Navbar from '@/Components/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCart } from '@/context/CartContext';
 
 interface Item {
     customId: number;
@@ -19,69 +20,15 @@ interface Item {
 }
 
 const Page = () => {
+    const { actCost, gst, cartAmount, count, shipCost, cartItems, fetchCart } = useCart();
+    useEffect(() => {
+        const handleCart = async () => {
+            await fetchCart();
+        }
+        handleCart();
+    });
     const [arr, setArr] = useState<Item[]>([]);
     const [done, setDone] = useState<boolean>(false);
-    const [count, setCount] = useState(0);
-    const [cartAmount, setCartAmount] = useState(0);
-    const [gst, setGst] = useState(0);
-    const [shipCost, setShipCost] = useState(0);
-    const [actCost, setActCost] = useState(0);
-
-    useEffect(() => {
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchcart";
-        const uid = localStorage.getItem('userId');
-        const handleCart = async () => {
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ uid: uid }),
-                });
-                const res = await response.json();
-                const totals = res.data.reduce((acc: { totalCount: number, totalShipCost: number, totalGst: number, totalActualCost: number }, item: { price: number, count: number, gst: string, weight: string }) => {
-                    const weightInGrams = parseFloat(item.weight);
-                    const weightInKg = isNaN(weightInGrams) ? 0 : weightInGrams / 1000;
-                    const shipCost = weightInKg * 60;
-                    const gstPercentMatch = item.gst;
-                    const gstPercent = gstPercentMatch ? parseFloat(gstPercentMatch) : 0;
-                    const price = parseFloat(item.price.toString());  // Ensure price is a number
-                    const priceExcludingGST = price / (1 + (gstPercent / 100));
-                    const gstAmount = price - priceExcludingGST;
-                    const itemTotalExcludingGST = priceExcludingGST * item.count;
-                    const itemTotalGST = gstAmount * item.count;
-                    const itemTotalShipCost = shipCost * item.count;
-                    const itemTotal = itemTotalExcludingGST + itemTotalGST + itemTotalShipCost;
-                    acc.totalCount += itemTotal;
-                    acc.totalShipCost += itemTotalShipCost;
-                    acc.totalGst += itemTotalGST;
-                    acc.totalActualCost += itemTotalExcludingGST;
-                    return acc;
-                }, { totalCount: 0, totalShipCost: 0, totalGst: 0, totalActualCost: 0 });
-
-                setActCost(totals.totalActualCost)
-                setGst(totals.totalGst)
-                setShipCost(totals.totalShipCost);
-                setCartAmount(totals.totalCount)
-                setArr(res.data)
-                setDone(true)
-                setCount(res.data.length)
-            } catch (error) {
-                toast.error("Error occured", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
-        }
-        uid && handleCart();
-    }, []);
-
     const [showPopup, setShowPopup] = useState(false);
     const handleCheckout = () => {
         setShowPopup(true);
@@ -148,7 +95,7 @@ const Page = () => {
                                     <p className="text-green-500">Add products worth ₹{(1000 - cartAmount).toFixed(2)} to avail free delivery</p>
                                 )}
                             </div>
-                            {done && arr.map((i) => (
+                            {cartItems && cartItems.map((i) => (
                                 <HorizontalCard key={i.customId} title={i.title} customId={i.customId} gst={i.gst} count={i.count} userId={i.userId} image={i.image} price={i.price} weight={i.weight} />
                             ))}
                         </div>

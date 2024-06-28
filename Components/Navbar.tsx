@@ -45,7 +45,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const [arr, setArr] = useState<Item[]>([]);
     const [done, setDone] = useState<boolean>(false);
     const [admin, setAdmin] = useState(false);
-    const [count, setCount] = useState(0);
     const [cartAmount, setCartAmount] = useState(0);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -55,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const [useId, setUseId] = useState('');
     const pathname = usePathname();
     const router = useRouter();
-    const { cartCount } = useCart();
+    const { count } = useCart();
 
 
 
@@ -345,7 +344,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     body: JSON.stringify({ uid: uid }),
                 });
                 const res = await response.json();
-                setCount(res.data.length)
             } catch (error) {
                 toast.error("Error Occured", {
                     position: "top-left",
@@ -796,7 +794,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                             <a href="/cart" className="relative block md:ml-4 text-black text-2xl font-medium rounded-lg px-5 py-2.5 text-center">
                                 <FaCartShopping />
                                 <span className="absolute -top-1 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-[#103178] rounded-full">
-                                    {cartCount}
+                                    {count}
                                 </span>
                             </a>
                             {admin && (

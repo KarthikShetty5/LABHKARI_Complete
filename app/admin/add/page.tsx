@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
+import NavbarAdmin from '@/Components/NavbarAdmin';
 import React, { useEffect, useState } from 'react';
 import Dropzone, { DropzoneOptions } from 'react-dropzone';
 import { ToastContainer, toast } from 'react-toastify';
@@ -127,6 +128,7 @@ const page: React.FC = () => {
                 draggable
                 pauseOnHover
             />
+            <NavbarAdmin />
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-6 text-center">Add Product</h1>
                 <form onSubmit={handleSubmit} className="space-y-4" encType='multipart/form-data'>
