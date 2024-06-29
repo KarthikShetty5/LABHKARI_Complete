@@ -53,12 +53,11 @@ const PaymentPage: React.FC = () => {
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
     const [showNewAddressForm, setShowNewAddressForm] = useState(false);
 
-
     const fetchAddresses = async () => {
-        const url = "http://localhost:3000/api/fetchorderid";
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorderid";
         try {
             const response = await axios.post(url, {
-                userId: 92845
+                userId: localStorage.getItem('userId')
             });
             setAddresses(response.data.data);
         } catch (error) {
@@ -67,11 +66,9 @@ const PaymentPage: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchAddresses();
         const uid = localStorage.getItem('userId');
-        if (uid == '12345') {
-            alert("Login to make payment")
-            return;
+        if (uid !== '12345') {
+            fetchAddresses();
         }
     }, []);
 
@@ -113,12 +110,53 @@ const PaymentPage: React.FC = () => {
         setShowNewAddressForm(true);
     };
 
-    const handleChange = (e: { target: { name: any; value: any; }; }) => {
+    const handleChange = async (e: { target: { name: any; value: any; }; }) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value
         });
+
+        if (name === 'phoneNumber' && value.length === 10) {
+            const userId = localStorage.getItem('userId');
+            if (1) {
+                const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchusernumber";
+                try {
+                    const response = await axios.post(url, { phone: value });
+                    if (response.data.success) {
+                        const userConfirmed = window.confirm(`Do you want to continue as ${response.data.data.name}?`);
+                        if (userConfirmed) {
+                            localStorage.setItem('userId', response.data.data.userId);
+                            fetchAddresses();
+                        } else {
+                            alert('Please log in .');
+                        }
+                    } else {
+                        alert('Please log in.');
+                    }
+                } catch (error) {
+                    alert('Error checking phone number');
+                }
+            }
+        }
+    };
+
+    const handlePinCodeBlur = async () => {
+        const pincode = formData.pinCode;
+        if (pincode.length === 6) {
+            const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+            const postOffice = response.data[0]?.PostOffice?.[0];
+            if (postOffice) {
+                setFormData({
+                    ...formData,
+                    state: postOffice.State,
+                    country: postOffice.Country,
+                    city: postOffice.District
+                });
+            } else {
+                alert('Invalid pincode');
+            }
+        }
     };
 
     const handleSubmit = async (orderId: any, email: string, amount: any, amountPaid: any, userId: string | null, shippingAddress: string, phone: string, name: string, state: string, country: string, landmark: string, city: string, tag: string, pinCode: string) => {
@@ -158,8 +196,6 @@ const PaymentPage: React.FC = () => {
             const url = process.env.NEXT_PUBLIC_SERVER_URL + "/payment/getkey";
             const curl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/payment";
             const rurl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/paymentv";
-
-            // const { data: { key } } = await axios.get(url);
 
             const { data: { order } } = await axios.post(curl, {
                 amount: amount + shipcost
@@ -265,12 +301,12 @@ const PaymentPage: React.FC = () => {
                                 <form onSubmit={handlePayment} className="grid gap-4">
                                     <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded-md" required />
                                     <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="border p-2 rounded-md" required />
+                                    <input type="text" name="pinCode" value={formData.pinCode} onBlur={handlePinCodeBlur} onChange={handleChange} placeholder="Pin Code" className="border p-2 rounded-md" required />
                                     <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border p-2 rounded-md" required />
                                     <input type="text" name="landmark" value={formData.landmark} onChange={handleChange} placeholder="Landmark" className="border p-2 rounded-md" required />
                                     <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="border p-2 rounded-md" required />
                                     <input type="text" name="state" value={formData.state} onChange={handleChange} placeholder="State" className="border p-2 rounded-md" required />
                                     <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="border p-2 rounded-md" required />
-                                    <input type="text" name="pinCode" value={formData.pinCode} onChange={handleChange} placeholder="Pin Code" className="border p-2 rounded-md" required />
 
                                     <label>Tag:</label>
                                     <select name="tag" value={formData.tag} onChange={(e) => handleTagChange(e.target.value)} className="border p-2 rounded-md">

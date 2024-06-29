@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo2 from '../../../assets/logo2.png';
 import { useRouter } from 'next/navigation';
+import Navbar from '@/Components/Navbar';
+import Footer from '@/Components/Footer';
 
 const Home = () => {
 
@@ -13,7 +15,7 @@ const Home = () => {
 
     return (
         <>
-            <header className="bg-white py-4 px-8 flex justify-between items-center fixed top-0 left-0 right-0 z-10 shadow-md">
+            {/* <header className="bg-white py-4 px-8 flex justify-between items-center fixed top-0 left-0 right-0 z-10 shadow-md">
                 <Link href="/">
                     <span className="relative flex items-center overflow-hidden">
                         <Image src={logo2} width={120} height={120} alt='logo' />
@@ -23,8 +25,9 @@ const Home = () => {
                 <div className="flex items-center">
                     <button onClick={handleBack} className="bg-[#103178] text-white px-3 py-1 rounded-md shadow-sm font-medium">Back</button>
                 </div>
-            </header>
-            <div className="min-h-screen bg-gray-100 text-black">
+            </header> */}
+            <Navbar onSearch={() => { }} />
+            <div className="min-h-screen bg-gray-100 text-black md:mt-4 mt-32 md:mb-0 mb-36">
                 <div className="pt-20 px-4">
                     <div className="bg-[#103178] text-white rounded-lg p-6">
                         <div className="text-lg">My Wallet Balance</div>
@@ -35,7 +38,7 @@ const Home = () => {
                             <svg className="w-8 h-8 text-[#103178]" fill="currentColor" viewBox="0 0 24 24">
                                 <svg className="w-8 h-8 text-[#103178]" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </svg>
                             <span className="mt-2 text-sm font-medium">Add</span>
@@ -118,6 +121,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

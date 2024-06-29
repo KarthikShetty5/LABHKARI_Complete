@@ -48,8 +48,8 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
 
             // Add shipment details to Shipway
             const shipwayResponse = await axios.post('https://shipway.in/api/PushOrderData', {
-                "username": "karhtikshetty1@gmail.com",
-                "password": "84b0beb51d36f306bd5999249134e792",
+                "username": "gyankulnetwork@gmail.com",
+                "password": "gyankul@123",
                 "carrier_id": "1",
                 "awb": '1122334455', // Replace with actual AWB if needed
                 "order_id": orderId,

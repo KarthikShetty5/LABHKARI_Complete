@@ -19,7 +19,6 @@ const page: React.FC = () => {
 
     useEffect(() => {
         const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
-
         if (!isAdmin) {
             window.location.href = '/'; // Redirect to home page
             return; // Prevent rendering the rest of the component

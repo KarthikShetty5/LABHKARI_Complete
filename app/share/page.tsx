@@ -8,10 +8,6 @@ import { FaShare, FaWhatsapp } from "react-icons/fa";
 
 const sections = [
     {
-        title: "लाभकारी व्यापार",
-        content: `ऑनलाइन की स्पीड, ऑफ़लाइन का भरोसा`
-    },
-    {
         title: "Earn referral income upto 30%",
         content: `Our referral program offers generous commissions on sales generated through your referrals.`
     },
@@ -71,18 +67,19 @@ function ShareAndEarn() {
             <Navbar onSearch={() => { }} />
             <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 md:mt-16 mt-24">
                 <div className="max-w-5xl w-full space-y-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Labhkari Business</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 text-center mb-0">Labhkari Business</h2>
+                    <h3 className="text-xl text-gray-900 mb-6 text-center">Online Ki Speed Offline Ka Bharosha</h3>
                     <div className="space-y-8">
                         {sections.map((section, index) => (
                             <Card key={index} title={section.title} content={section.content} />
                         ))}
                     </div>
-                    <div className="flex justify-center space-x-4 mt-6">
-                        <button onClick={shareOnWhatsApp} className="bg-[#103178] text-white py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
+                    <div className="flex flex-col space-y-4 mt-6">
+                        <button onClick={shareOnWhatsApp} className="bg-[#103178] text-white py-3 px-8 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-300 w-full">
                             Share
                         </button>
-                        <Link href="/signup">
-                            <span className="bg-[#103178] text-white py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300 inline-block">
+                        <Link href="/signup" className="w-full">
+                            <span className="bg-[#103178] text-white py-3 px-8 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-300 w-full text-center block">
                                 Signup or Upgrade
                             </span>
                         </Link>

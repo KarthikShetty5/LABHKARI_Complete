@@ -62,8 +62,8 @@ const handleShip = async (req: NextApiRequest, res: NextApiResponse) => {
 
             // Fetch shipment details from Shipway
             const shipmentResponse = await axios.post('https://shipway.in/api/getOrderShipmentDetails', {
-                "username": "karhtikshetty1@gmail.com",
-                "password": "84b0beb51d36f306bd5999249134e792",
+                "username": "gyankulnetwork@gmail.com",
+                "password": "gyankul@123",
                 "order_id": order_id
             });
 

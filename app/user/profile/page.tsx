@@ -39,7 +39,12 @@ interface Order {
 }
 
 const ProfilePage = () => {
-    const userId = '92845'; // Replace with actual userId
+    const [userId, setUserId] = useState<string | null>();
+
+    useEffect(() => {
+        const uid = localStorage.getItem('userId'); // Replace with actual userId
+        setUserId(uid);
+    }, [])
 
     // State to store user data
     const [user, setUser] = useState<User>({
@@ -197,7 +202,6 @@ const ProfilePage = () => {
                 )}
             </div>
             <div className='mb-48'></div>
-
             <Footer />
         </div>
     );

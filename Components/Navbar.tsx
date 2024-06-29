@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { FaGift, FaRegHeart, FaSearch, FaShareAlt, FaSuitcase, FaThList, FaTimes } from "react-icons/fa";
+import { FaGift, FaRegHeart, FaSearch, FaShareAlt, FaSuitcase, FaThList, FaTimes, FaWallet } from "react-icons/fa";
 import { MdCleanHands, MdOutlineShoppingBag } from "react-icons/md";
 import { FaCartShopping } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
@@ -51,8 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [useId, setUseId] = useState('');
     const pathname = usePathname();
-    const router = useRouter();
-    const { count } = useCart();
+    const { count, fetchCart } = useCart();
 
 
 
@@ -106,6 +105,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
     const toggleDropMenu = () => {
         setMenuOpen(!isMenuOpen);
+    };
+
+    const handleRefresh = () => {
+        window.location.reload();
     };
 
     function shareOnWhatsApp() {
@@ -168,13 +171,13 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 password: password,
                 referralId: localStorage.getItem('ref') || null
             })
-            console.log(response)
             if (response.data.success) {
-                alert("Registered successfully")
                 toggleModal();
+                toggleSidebar();
                 await handleUserId(response.data.user.userId);
                 localStorage.setItem('userId', response.data.user.userId);
-                router.refresh(); // refresh the page after successful operation
+                handleRefresh();
+                alert("Registered successfully")
             } else {
                 alert("Email already exists")
             }
@@ -182,6 +185,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             alert("Error occured");
         }
     }
+
 
     const handleSignUp = async (e: any) => {
         e.preventDefault();
@@ -205,8 +209,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
             const { userId } = response.data.user;
 
-            alert("Logged in")
             toggleModal();
+            toggleSidebar();
 
             if (semail === "admin@gmail.com") {
                 localStorage.setItem('adminLoggedIn', "true");
@@ -214,9 +218,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 await handleUserId(userId); // Assuming userIds.userId is the correct property from your response
                 localStorage.setItem('userId', userId);
             }
-            router.refresh(); // refresh the page after successful operation
+            handleRefresh();
+            alert("Logged in")
         } catch (error) {
-            console.log(error)
             alert("Error occured");
         }
     };
@@ -230,7 +234,12 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         } else {
             setAdmin(false); // Convert null or other strings to boolean false
         }
-    });
+    }, []);
+
+
+    useEffect(() => {
+        fetchCart();
+    }, [])
 
 
     useEffect(() => {
@@ -324,7 +333,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         try {
             localStorage.removeItem('userId');
             alert("Logged out successfully")
-            router.refresh(); // refresh the page after successful operation
+            handleRefresh();
         } catch (e) {
             alert("Error occured");
         }
@@ -334,7 +343,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         try {
             localStorage.removeItem('adminLoggedIn');
             alert("Admin Logged Out successfully")
-            router.refresh(); // refresh the page after successful operation
+            handleRefresh();
         } catch (e) {
             alert("Error occured");
         }
@@ -522,7 +531,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                 </button>
                                                 {
                                                     isMenuOpen && (
-                                                        <ul className="relative bottom-0 right-4 w-48 bg-white rounded-lg shadow-lg py-2 z-40">
+                                                        <ul className="relative bottom-0 right-4 w-48 bg-white rounded-lg shadow-lg py-1 z-40">
                                                             <li>
                                                                 <Link href="/user/dashboard" passHref>
                                                                     <span className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
@@ -534,16 +543,24 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                             <li>
                                                                 <Link href="/orders" passHref>
                                                                     <span className="flex items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
-                                                                        <FaTruck className="mr-2 text-green-500" />
-                                                                        <span>Order History</span>
+                                                                        <FaWallet className="mr-2 text-pink-500" />
+                                                                        <span>Wallet</span>
                                                                     </span>
                                                                 </Link>
                                                             </li>
                                                             <li>
-                                                                <Link href="/user/profile" passHref>
-                                                                    <span className="flex items-center text-gray-800 hover:text-yellow-500 transition-colors duration-300 py-2 px-4">
-                                                                        <FaUser className="mr-2 text-yellow-500" />
-                                                                        <span>Profile</span>
+                                                                <Link href="/orders" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaTruck className="mr-2 text-green-500" />
+                                                                        <span>Orders</span>
+                                                                    </span>
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Link href="/under" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaBell className="mr-2 text-indigo-500" />
+                                                                        <span>eShop</span>
                                                                     </span>
                                                                 </Link>
                                                             </li>
@@ -556,10 +573,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                                 </Link>
                                                             </li>
                                                             <li>
-                                                                <Link href="/under" passHref>
-                                                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
-                                                                        <FaBell className="mr-2 text-indigo-500" />
-                                                                        <span>eShop</span>
+                                                                <Link href="/user/profile" passHref>
+                                                                    <span className="flex items-center text-gray-800 hover:text-yellow-500 transition-colors duration-300 py-2 px-4">
+                                                                        <FaUser className="mr-2 text-yellow-500" />
+                                                                        <span>Profile</span>
                                                                     </span>
                                                                 </Link>
                                                             </li>
@@ -798,59 +815,67 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     <FaBell className='text-[#103178]' />
                 </a>
                 {
-                    useId ? <Link onClick={toggleDropdown} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center" href={''}>
+                    useId ? <Link onClick={toggleDropdown} className="bloc text-black font-medium rounded-lg text-2xl text-center" href={''}>
                         <FaUser className='text-[#103178]' />
-                    </Link> : <Link onClick={toggleModal} className="bloc text-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-2xl text-center" href={''}>
+                    </Link> : <Link onClick={toggleModal} className="bloc text-black font-medium rounded-lg text-2xl text-center" href={''}>
                         <FaUser className='text-[#103178]' />
                     </Link>
                 }
                 {
                     isDropdownOpen && (
-                        <ul className="absolute bottom-12 right-0 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                        <ul className="absolute bottom-12 right-0 w-full bg-white rounded-lg shadow-lg py-2 z-50">
                             <li>
                                 <Link href="/user/dashboard" passHref>
-                                    <span className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
-                                        <FaUser className="mr-2 text-blue-500" />
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
+                                        <FaUser className="mr-4 text-blue-500" />
                                         <span>Dashboard</span>
                                     </span>
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/user/wallet" passHref>
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
+                                        <FaWallet className="mr-4 text-pink-500" />
+                                        <span>Wallet</span>
+                                    </span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/orders" passHref>
-                                    <span className="flex items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
-                                        <FaTruck className="mr-2 text-green-500" />
-                                        <span>Order History</span>
-                                    </span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/user/profile" passHref>
-                                    <span className="flex items-center text-gray-800 hover:text-yellow-500 transition-colors duration-300 py-2 px-4">
-                                        <FaUser className="mr-2 text-yellow-500" />
-                                        <span>Profile</span>
-                                    </span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/user/network" passHref>
-                                    <span className="flex items-center text-gray-800 hover:text-red-500 transition-colors duration-300 py-2 px-4">
-                                        <BiSolidNetworkChart className="mr-2 text-red-500" />
-                                        <span>Network</span>
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
+                                        <FaTruck className="mr-4 text-green-500" />
+                                        <span>Orders</span>
                                     </span>
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/under" passHref>
-                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
-                                        <FaBell className="mr-2 text-indigo-500" />
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                        <FaBell className="mr-4 text-indigo-500" />
                                         <span>eShop</span>
                                     </span>
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/user/network" passHref>
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-red-500 transition-colors duration-300 py-2 px-4">
+                                        <BiSolidNetworkChart className="mr-4 text-red-500" />
+                                        <span>Network</span>
+                                    </span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/user/profile" passHref>
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-yellow-500 transition-colors duration-300 py-2 px-4">
+                                        <FaUser className="mr-4 text-yellow-500" />
+                                        <span>Profile</span>
+                                    </span>
+                                </Link>
+                            </li>
+                            <li>
                                 <button onClick={handleLogOut}>
-                                    <span className="flex items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
-                                        <IoMdLogOut className="mr-2 text-indigo-500" />
+                                    <span className="flex text-xl items-center text-gray-800 hover:text-indigo-500 transition-colors duration-300 py-2 px-4">
+                                        <IoMdLogOut className="mr-4 text-indigo-500" />
                                         <span>LogOut</span>
                                     </span>
                                 </button>

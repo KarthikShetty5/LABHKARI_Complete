@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import test from '../../../assets/test.png';
 import Link from 'next/link';
 import logo2 from '../../../assets/logo2.png';
+import Navbar from '@/Components/Navbar';
+import Footer from '@/Components/Footer';
 
 interface User {
     _id: string;
@@ -80,7 +82,7 @@ const Page = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 text-black">
-            <header className="bg-white py-4 px-8 flex justify-between items-center fixed top-0 left-0 right-0 z-10 shadow-md">
+            {/* <header className="bg-white py-4 px-8 flex justify-between items-center fixed top-0 left-0 right-0 z-10 shadow-md">
                 <Link href="/">
                     <span className="relative flex items-center overflow-hidden">
                         <Image src={logo2} width={120} height={120} alt='logo' />
@@ -90,9 +92,9 @@ const Page = () => {
                 <div className="flex items-center">
                     <button className="bg-[#103178] text-white px-3 py-1 rounded-md shadow-sm font-medium">Export CSV</button>
                 </div>
-            </header>
-
-            <div className="pt-20 px-4">
+            </header> */}
+            <Navbar onSearch={() => { }} />
+            <div className="pt-20 px-4 md:mt-2 mt-36">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-white shadow-md rounded-lg p-4">
                         <div className="text-lg font-bold">Wallet</div>
@@ -193,6 +195,8 @@ const Page = () => {
                     </div>
                 </div>
             </div>
+            <div className='mb-48'></div>
+            <Footer />
         </div>
     );
 }
