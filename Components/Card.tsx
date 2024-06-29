@@ -5,8 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { AiOutlineShareAlt, AiOutlineShoppingCart } from 'react-icons/ai';
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useCart } from '@/context/CartContext';
 import fetchcart from '@/pages/api/fetchcart';
 
@@ -29,8 +27,6 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
     const searchParams = useSearchParams();
     const ref = searchParams ? searchParams.get('ref') : null;
     const { addToCart, fetchCart } = useCart();
-    const notifyError = () => toast("Failed to Add to Cart");
-    const notifySuccess = () => toast("Added to Cart successfully!");
 
 
 
@@ -51,9 +47,9 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
         try {
             await addToCart(item);
             await fetchCart();
-            notifySuccess();
+            alert("Added to Cart successfully!");
         } catch (error) {
-            notifyError();
+            alert("Failed to Add to Cart")
         }
     };
 
@@ -69,9 +65,6 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
         <>
             <div className="max-w-md w-full bg-gray-100 shadow-lg rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ marginTop: "-1rem" }}>
-                    <div>
-                        <ToastContainer />
-                    </div>
                     <Link href={{ pathname: '/product', query: { customId: customId } }}>
                         <div className="w-full h-[400px] relative">
                             <Image

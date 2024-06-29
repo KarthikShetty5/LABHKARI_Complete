@@ -1,19 +1,29 @@
 'use client';
 import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
-import { AiOutlineArrowLeft, AiOutlineShoppingCart } from 'react-icons/ai';
+import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import Navbar from '@/Components/Navbar';
-import { RxCardStackMinus } from 'react-icons/rx';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Footer from '@/Components/Footer';
 
 declare global {
     interface Window {
         Razorpay: any; // or specify the type if known
     }
+}
+
+interface Address {
+    id: number;
+    name: string;
+    address: string;
+    phoneNumber: string;
+    state: string;
+    country: string;
+    landmark: string;
+    pinCode: string;
+    city: string;
+    tag: string;
 }
 
 const PaymentPage: React.FC = () => {
@@ -39,6 +49,69 @@ const PaymentPage: React.FC = () => {
         email: '',
         tag: ''
     });
+    const [addresses, setAddresses] = useState<Address[]>([]);
+    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+    const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+
+
+    const fetchAddresses = async () => {
+        const url = "http://localhost:3000/api/fetchorderid";
+        try {
+            const response = await axios.post(url, {
+                userId: 92845
+            });
+            setAddresses(response.data.data);
+        } catch (error) {
+            alert('Error fetching addresses:');
+        }
+    };
+
+    useEffect(() => {
+        fetchAddresses();
+        const uid = localStorage.getItem('userId');
+        if (uid == '12345') {
+            alert("Login to make payment")
+            return;
+        }
+    }, []);
+
+    const handleAddressSelect = (address: any) => {
+        setSelectedAddress(address);
+        setFormData({
+            ...formData,
+            name: address.name,
+            address: address.address,
+            phoneNumber: address.phoneNumber,
+            state: address.state,
+            country: address.country,
+            landmark: address.landmark,
+            pinCode: address.pinCode,
+            city: address.city,
+            tag: address.tag
+        });
+        setShowNewAddressForm(false);
+    };
+
+    const handleNewAddressSelect = () => {
+        setSelectedAddress(null);
+        setFormData({
+            name: '',
+            address: '',
+            phoneNumber: '',
+            state: '',
+            country: '',
+            landmark: '',
+            pinCode: '',
+            city: '',
+            paymentMethod: 'qr',
+            cardNumber: '',
+            expiryDate: '',
+            cvv: '',
+            email: '',
+            tag: ''
+        });
+        setShowNewAddressForm(true);
+    };
 
     const handleChange = (e: { target: { name: any; value: any; }; }) => {
         const { name, value } = e.target;
@@ -47,22 +120,6 @@ const PaymentPage: React.FC = () => {
             [name]: value
         });
     };
-
-    useEffect(() => {
-        const uid = localStorage.getItem('userId');
-        if (uid == '12345') {
-            toast.error("Login to make payments", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            return;
-        }
-    }, []);
 
     const handleSubmit = async (orderId: any, email: string, amount: any, amountPaid: any, userId: string | null, shippingAddress: string, phone: string, name: string, state: string, country: string, landmark: string, city: string, tag: string, pinCode: string) => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addShipway";
@@ -85,15 +142,7 @@ const PaymentPage: React.FC = () => {
                 pinCode
             });
         } catch (error) {
-            toast.error('Error after successful payment:', {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error after successfull payment")
         }
     };
 
@@ -145,15 +194,7 @@ const PaymentPage: React.FC = () => {
             await handleSubmit(order.id, formData.email, order.amount, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
 
             paymentObject.on("payment.failed", function () {
-                toast.error("Payment failed. Please try again. Contact support for help", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Payment failed. Please try again. Contact support for help")
             });
         }
     };
@@ -172,17 +213,6 @@ const PaymentPage: React.FC = () => {
     return (
         <>
             <Navbar onSearch={() => { }} />
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <Script
                 id="razorpay-checkout-js"
                 src="https://checkout.razorpay.com/v1/checkout.js"
@@ -193,207 +223,100 @@ const PaymentPage: React.FC = () => {
                         <AiOutlineArrowLeft className="text-lg mr-2 cursor-pointer" />
                         <h1 className="text-xl font-semibold" onClick={handleBackClick}>Shipping Details</h1>
                     </div>
-                    <form className="space-y-4 bg-white p-6 rounded-lg shadow-md">
-                        <div>
-                            {/* <label className="block text-sm font-medium">Name</label> */}
+                    <div className="bg-white p-6 rounded-lg shadow-md">
+                        <h2 className="text-lg font-semibold mb-4">Select Address</h2>
+                        {addresses && addresses.map((address, index) => (
+                            <div key={index} className="mb-4">
+                                <input
+                                    type="radio"
+                                    id={`address-${index}`}
+                                    name="address"
+                                    value={address.id}
+                                    onChange={() => handleAddressSelect(address)}
+                                    checked={selectedAddress ? selectedAddress.id === address.id : false}
+                                    className="mr-2"
+                                />
+                                <label htmlFor={`address-${index}`}>
+                                    <div>
+                                        <span className="font-semibold">{address.name}</span> - {address.phoneNumber}
+                                    </div>
+                                    <div>{address.address}</div>
+                                    <div>{address.city}, {address.state}, {address.country}, {address.pinCode}</div>
+                                    <div>{address.tag}</div>
+                                </label>
+                            </div>
+                        ))}
+                        <div className="mb-4">
                             <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Full Name"
-                            />
-                        </div>
-                        <div>
-                            {/* <label className="block text-sm font-medium">Mobile Number</label> */}
-                            <input
-                                type="text"
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                required
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Mobile No"
-                            />
-                        </div>
-                        <div>
-                            {/* <label className="block text-sm font-medium">Email</label> */}
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Email"
-                            />
-                        </div>
-                        <div>
-                            {/* <label className="block text-sm font-medium">Address Line 1</label> */}
-                            <input
-                                type="text"
+                                type="radio"
+                                id="new-address"
                                 name="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                required
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Flat, House no, Building"
+                                value="new"
+                                onChange={handleNewAddressSelect}
+                                checked={showNewAddressForm}
+                                className="mr-2"
                             />
+                            <label htmlFor="new-address">Add New Address</label>
                         </div>
-                        <div>
-                            {/* <label className="block text-sm font-medium">Landmark (Optional)</label> */}
-                            <input
-                                type="text"
-                                name="landmark"
-                                value={formData.landmark}
-                                onChange={handleChange}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Landmark, Additional info"
-                            />
-                        </div>
-                        <div className="flex space-x-4">
-                            <div className="flex-1">
-                                {/* <label className="block text-sm font-medium">Pincode</label> */}
-                                <input
-                                    type="text"
-                                    name="pinCode"
-                                    value={formData.pinCode}
-                                    onChange={handleChange}
-                                    required
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="Pincode"
-                                />
-                            </div>
-                            <div className="flex-1">
-                                {/* <label className="block text-sm font-medium">City</label> */}
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    required
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="City"
-                                />
-                            </div>
-                        </div>
-                        <div className="flex space-x-4">
-                            <div className="flex-1">
-                                {/* <label className="block text-sm font-medium">State</label> */}
-                                <input
-                                    type="text"
-                                    name="state"
-                                    value={formData.state}
-                                    onChange={handleChange}
-                                    required
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="State"
-                                />
-                            </div>
-                            <div className="flex-1">
-                                {/* <label className="block text-sm font-medium">Country</label> */}
-                                <input
-                                    type="text"
-                                    name="country"
-                                    value={formData.country}
-                                    onChange={handleChange}
-                                    required
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="Country"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            {/* <label className="block text-sm font-medium">Tag</label> */}
-                            <div className="flex space-x-2 mt-1">
-                                <button
-                                    type="button"
-                                    name="tag"
-                                    value="Home"
-                                    onClick={() => handleTagChange('Home')}
-                                    className={`px-4 py-2 rounded-md ${formData.tag === 'Home' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-                                >
-                                    Home
-                                </button>
-                                <button
-                                    type="button"
-                                    name="tag"
-                                    value="Work"
-                                    onClick={() => handleTagChange('Work')}
-                                    className={`px-4 py-2 rounded-md ${formData.tag === 'Work' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-                                >
-                                    Work
-                                </button>
-                                <button
-                                    type="button"
-                                    name="tag"
-                                    value="Others"
-                                    onClick={() => handleTagChange('Others')}
-                                    className={`px-4 py-2 rounded-md ${formData.tag === 'Others' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-                                >
-                                    Others
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        {showNewAddressForm && (
+                            <>
+                                <hr className="my-6" />
+                                <h2 className="text-lg font-semibold mb-4">New Address Details</h2>
+                                <form onSubmit={handlePayment} className="grid gap-4">
+                                    <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded-md" required />
+                                    <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="border p-2 rounded-md" required />
+                                    <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border p-2 rounded-md" required />
+                                    <input type="text" name="landmark" value={formData.landmark} onChange={handleChange} placeholder="Landmark" className="border p-2 rounded-md" required />
+                                    <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="border p-2 rounded-md" required />
+                                    <input type="text" name="state" value={formData.state} onChange={handleChange} placeholder="State" className="border p-2 rounded-md" required />
+                                    <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="border p-2 rounded-md" required />
+                                    <input type="text" name="pinCode" value={formData.pinCode} onChange={handleChange} placeholder="Pin Code" className="border p-2 rounded-md" required />
+
+                                    <label>Tag:</label>
+                                    <select name="tag" value={formData.tag} onChange={(e) => handleTagChange(e.target.value)} className="border p-2 rounded-md">
+                                        <option value="Home">Home</option>
+                                        <option value="Office">Office</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+
+                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded-md" required />
+
+                                </form>
+                            </>
+                        )}
+                    </div>
                 </div>
-                <div className="w-full md:w-1/3 mt-8 md:mt-0 md:ml-8">
-                    <div className="bg-green-50 p-6 rounded-lg shadow-md">
-                        <div className="flex items-center mb-4">
-                            <div className="relative">
-                                <AiOutlineShoppingCart className="text-lg mr-2" />
-                                {count && (
-                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                                        {count}
-                                    </span>
-                                )}
-                            </div>
-                            <div className='ml-6'>
-                                <div className="text-xl font-semibold">₹ {amount}.00</div>
-                                <div className="text-sm text-gray-500">(incl. of all taxes)</div>
-                            </div>
+                <div className="w-full md:w-1/3 mt-6 md:mt-0 md:ml-6">
+                    <div className="bg-white p-6 rounded-lg shadow-md">
+                        <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+                        <div className="flex justify-between mb-2">
+                            <span>Amount:</span>
+                            <span>₹{amount.toFixed(2)}</span>
                         </div>
-                        <h2 className="text-lg font-semibold border-b pb-2">Total price</h2>
-                        <ul className="mt-4 space-y-2 text-sm">
-                            {/* <li className="flex justify-between">
-                                <span>Distributor price discount</span>
-                                <span className="text-green-500">- ₹ 00.00</span>
-                            </li> */}
-                            <li className="flex justify-between">
-                                <span>Delivery charges</span>
-                                {amount > 1000 ? <span className="text-green-500">Free </span> : <span className="text-black">₹ {shipcost}</span>}
-                            </li>
-                            {/* <li className="flex justify-between">
-                                <span>Rounding Item amount</span>
-                                <span className="text-green-500">₹ 0.00</span>
-                            </li> */}
-                            <li className="flex justify-between">
-                                <span>Price before taxes</span>
-                                <span>₹ {(amount - gst).toFixed(2)}</span>
-                            </li>
-                            <li className="flex justify-between border-b pb-1">
-                                <span>Taxes</span>
-                                <span>₹ {gst.toFixed(2)}</span>
-                            </li>
-                        </ul>
-                        <div className="flex justify-between mt-4 font-semibold text-lg">
-                            <span>Total</span>
-                            <span>₹ {amount + shipcost}</span>
+                        <div className="flex justify-between mb-2">
+                            <span>GST:</span>
+                            <span>₹{gst.toFixed(2)}</span>
                         </div>
-                        <button onClick={handlePayment} className={`w-full mt-4 py-2 rounded-md ${isFormValid() ? 'bg-green-500 text-white' : 'bg-gray-400 text-gray-700 cursor-not-allowed'}`} disabled={!isFormValid()}>PROCEED TO PAY</button>
+                        <div className="flex justify-between mb-2">
+                            <span>Shipping Cost:</span>
+                            <span>₹{shipcost.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between font-semibold">
+                            <span>Total:</span>
+                            <span>₹{(amount + gst + shipcost).toFixed(2)}</span>
+                        </div>
                     </div>
-                    <div className="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
-                        <p><strong>Stay Vigilant Stay Safe.</strong> The total payment made by you as shown above in the order summary is inclusive of the delivery charges.</p>
-                    </div>
+                    {(selectedAddress || showNewAddressForm) && (
+                        <button onClick={handlePayment} className="bg-blue-500 text-white p-2 rounded-md mt-4 w-full" disabled={!isFormValid()}>
+                            Proceed to Payment
+                        </button>
+                    )}
                 </div>
             </div>
             <Footer />
         </>
     );
 };
-
 
 const Page: React.FC = () => {
     return (

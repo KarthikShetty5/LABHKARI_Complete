@@ -4,8 +4,6 @@ import Image from 'next/image';
 import Navbar from '@/Components/Navbar';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Footer from '@/Components/Footer';
 import { useCart } from '@/context/CartContext';
 
@@ -64,15 +62,7 @@ const PageContent: React.FC = () => {
                 const res = await response.json();
                 setData(res.data);
             } catch (error) {
-                toast.error("Error Occured", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Error occured");
             }
         };
         if (id) {
@@ -92,15 +82,7 @@ const PageContent: React.FC = () => {
         event.preventDefault();
         const customIdNumber = id ? parseInt(id) : NaN;
         if (isNaN(customIdNumber)) {
-            toast.error("Invalid Product ID", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Invalid Product Id")
             return;
         }
 
@@ -118,42 +100,15 @@ const PageContent: React.FC = () => {
 
         try {
             await addToCart(item);
-            toast.success("Added to Cart successfully", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Addes to Cart successfully")
         } catch (error) {
-            toast.error("Failed to Add to Cart", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Failed to add to Cart")
         }
     };
 
     return (
         <>
             <Navbar onSearch={() => { }} />
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             {data.length > 0 && (
                 <div className="py-8 md:mt-24 mt-28">
                     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

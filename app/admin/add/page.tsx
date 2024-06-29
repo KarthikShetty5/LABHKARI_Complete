@@ -3,8 +3,6 @@
 import NavbarAdmin from '@/Components/NavbarAdmin';
 import React, { useEffect, useState } from 'react';
 import Dropzone, { DropzoneOptions } from 'react-dropzone';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const page: React.FC = () => {
     const [title, setTitle] = useState('');
@@ -37,28 +35,12 @@ const page: React.FC = () => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addproduct";
 
         if (files.length === 0) {
-            toast.error("Please select file", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Please select a file")
             return;
         }
 
         if (files.length > 2) {
-            toast.error("Can't upload more than 2 files", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Can't upload more than two files")
             return;
         }
 
@@ -82,52 +64,17 @@ const page: React.FC = () => {
             });
 
             if (response.ok) {
-                toast.success('Product added successfully', {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Product successfully added")
             } else {
-                toast.error('Failed to add product:', {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Failed to add product")
             }
         } catch (error) {
-            toast.error('Error adding product', {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error adding Product")
         }
     };
 
     return (
         <>
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <NavbarAdmin />
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-6 text-center">Add Product</h1>

@@ -4,8 +4,6 @@ import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 import { useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 interface Item {
     desc: string;
@@ -42,15 +40,7 @@ const Page: React.FC = () => {
                 const res = await response.json();
                 setData(res.data);
             } catch (error) {
-                toast.error("Error Occured", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Error occured");
             }
         };
         if (cat) {
@@ -64,17 +54,6 @@ const Page: React.FC = () => {
 
     return (
         <>
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <Navbar onSearch={() => { }} />
             <div className="container mx-auto px-4 py-8 mt-36 md:mt-0">
                 {cat && (

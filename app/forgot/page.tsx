@@ -2,8 +2,6 @@
 import Link from 'next/link';
 import React, { useEffect, useState, ChangeEvent, FormEvent, Suspense } from 'react';
 import Head from 'next/head';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/Components/Navbar';
@@ -48,26 +46,10 @@ const Forgot: React.FC = () => {
 
         const res = await response.json();
         if (res.success) {
-            toast.success('Password reset link sent to your email', {
-                position: "top-left",
-                autoClose: 1500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Password reset link sent to your email")
             setEmail("");
         } else {
-            toast.error('User doesn\'t exist!', {
-                position: "top-left",
-                autoClose: 1500,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("User doesn't exist")
         }
     };
 
@@ -85,42 +67,15 @@ const Forgot: React.FC = () => {
 
             const res = await response.json();
             if (res.success) {
-                toast.success('Password has been changed', {
-                    position: "top-left",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Password has been changed")
             } else {
-                toast.error('Error occurred! Please try again!!!', {
-                    position: "top-left",
-                    autoClose: 1500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Error occured");
             }
         }
     };
 
     return (
         <>
-            <ToastContainer
-                position="top-left"
-                autoClose={1500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <Navbar onSearch={() => { }} />
             <div className="flex lg:min-h-screen items-start justify-center pt-28 px-4 sm:px-6 lg:px-8 mt-14 md:mb-0 mb-28">
                 <div className="w-full max-w-md space-y-8">

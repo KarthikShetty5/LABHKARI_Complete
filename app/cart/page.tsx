@@ -4,8 +4,6 @@ import { act, useEffect, useState } from 'react';
 import HorizontalCard from '@/Components/HorizontalCard';
 import Link from 'next/link';
 import Navbar from '@/Components/Navbar';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useCart } from '@/context/CartContext';
 
 interface Item {
@@ -38,18 +36,6 @@ const Page = () => {
     return (
         <>
             <Navbar onSearch={() => { }} />
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-
             {showPopup && (
                 <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75">
                     <div className="bg-white p-6 rounded shadow-lg">

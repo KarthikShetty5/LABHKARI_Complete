@@ -38,7 +38,7 @@ const Page: React.FC = () => {
                 const data = await response.json();
                 setProducts(data.data);
             } catch (error) {
-                console.error('Error fetching products:', error);
+                alert('Error fetching products:');
             }
         };
 

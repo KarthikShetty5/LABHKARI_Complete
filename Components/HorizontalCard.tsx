@@ -2,8 +2,6 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useCart } from '@/context/CartContext';
 
 interface CardProps {
@@ -36,15 +34,7 @@ const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, us
             setQuantity(res.count);
             await fetchCart();
         } catch (e) {
-            toast.error("Error Occured", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error occured");
         }
     };
 
@@ -66,32 +56,13 @@ const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, us
             const res = await response.json();
             await fetchCart();
         } catch (e) {
-            toast.error("Error Occured", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error occured");
         }
     }
 
 
     return (
         <>
-            <ToastContainer
-                position='top-left'
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className="flex items-center border-b border-black py-2 ml-1">
                 <Image src={image} alt={title} className="w-20 h-20 object-cover rounded-md mr-2" width={50} height={50} />
                 <div className="flex-grow">

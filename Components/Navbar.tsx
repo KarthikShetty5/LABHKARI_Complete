@@ -8,8 +8,6 @@ import { RiAdminFill } from "react-icons/ri";
 import Image from 'next/image';
 import { FaInfoCircle, FaHeartbeat, FaSpa, FaUtensils, FaSeedling, FaHome as FaHomeIcon, FaPaw, FaEllipsisH, FaUserCircle, FaUser, FaWhatsapp, FaBell, FaThumbsUp, FaTruck } from 'react-icons/fa';
 import Logo2 from '../assets/logo2.png'
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { BiSolidNetworkChart } from 'react-icons/bi';
 import { usePathname } from 'next/navigation';
@@ -112,15 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
     function shareOnWhatsApp() {
         if (!localStorage.getItem('userId')) {
-            toast.error("Please Login to share", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Please login to share")
         } else {
             const message = `${process.env.NEXT_PUBLIC_CLIENT_URL}?ref=${localStorage.getItem('userId')}`;
             const whatsappLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -145,15 +135,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 newUid: userId
             })
         } catch (error) {
-            toast.error("Error updating user ID in cart:", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error updating userId in Cart")
         }
     }
 
@@ -163,42 +145,18 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
         // Validate email format
         if (!email?.endsWith('@gmail.com')) {
-            toast.error("Please enter a valid Gmail address", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Please enter a valid Gmail address")
             return;
         }
 
         // Validate other fields
         if (!username || !email || !phone || !password) {
-            toast.error("All fields are required", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("All fields are required")
             return;
         }
 
         if (!/^\d{10}$/.test(phone)) {
-            toast.error("Please enter a valid 10-digit phone number", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Please enter a valid 10 digits mobile number")
             return;
         }
 
@@ -212,40 +170,16 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             })
             console.log(response)
             if (response.data.success) {
-                toast.success("Registered successfully", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Registered successfully")
                 toggleModal();
                 await handleUserId(response.data.user.userId);
                 localStorage.setItem('userId', response.data.user.userId);
                 router.refresh(); // refresh the page after successful operation
             } else {
-                toast.error("Email already exists", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Email already exists")
             }
         } catch (error) {
-            toast.error("Error Occured", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error occured");
         }
     }
 
@@ -254,15 +188,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         const url = `${process.env.NEXT_PUBLIC_CLIENT_URL}/api/login`; // Adjust this URL according to your API endpoint
 
         if (!semail?.endsWith('@gmail.com')) {
-            toast.error("Please enter a valid Gmail address", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Please enter a valid Gmail address")
             return;
         }
 
@@ -273,29 +199,13 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             });
 
             if (!response.data.success) {
-                toast.error("Password dont match", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Password dont match")
                 return;
             }
 
             const { userId } = response.data.user;
 
-            toast.success("Logged in", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Logged in")
             toggleModal();
 
             if (semail === "admin@gmail.com") {
@@ -307,15 +217,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             router.refresh(); // refresh the page after successful operation
         } catch (error) {
             console.log(error)
-            toast.error("Error occurred ", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Error occured");
         }
     };
 
@@ -345,15 +247,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 });
                 const res = await response.json();
             } catch (error) {
-                toast.error("Error Occured", {
-                    position: "top-left",
-                    autoClose: 1000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                alert("Error occured");
             }
         }
 
@@ -429,36 +323,20 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const handleLogOut = () => {
         try {
             localStorage.removeItem('userId');
-            toast.success("Logged Out successfully", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Logged out successfully")
             router.refresh(); // refresh the page after successful operation
         } catch (e) {
-            console.log("Error occured");
+            alert("Error occured");
         }
     }
 
     const handleAdminLogOut = () => {
         try {
             localStorage.removeItem('adminLoggedIn');
-            toast.success("Admin Logged Out successfully", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            alert("Admin Logged Out successfully")
             router.refresh(); // refresh the page after successful operation
         } catch (e) {
-            console.log("Error occured");
+            alert("Error occured");
         }
     }
 
@@ -467,7 +345,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
     return (
         <>
-            <ToastContainer />
             {modalOpen && (
                 <div id="default-modal" aria-hidden="true" className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 flex justify-center items-center">
                     <div className="relative p-4 w-full max-w-md">
@@ -647,7 +524,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                     isMenuOpen && (
                                                         <ul className="relative bottom-0 right-4 w-48 bg-white rounded-lg shadow-lg py-2 z-40">
                                                             <li>
-                                                                <Link href="/under" passHref>
+                                                                <Link href="/user/dashboard" passHref>
                                                                     <span className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
                                                                         <FaUser className="mr-2 text-blue-500" />
                                                                         <span>Dashboard</span>
@@ -931,7 +808,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                     isDropdownOpen && (
                         <ul className="absolute bottom-12 right-0 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                             <li>
-                                <Link href="/under" passHref>
+                                <Link href="/user/dashboard" passHref>
                                     <span className="flex items-center text-gray-800 hover:text-blue-500 transition-colors duration-300 py-2 px-4">
                                         <FaUser className="mr-2 text-blue-500" />
                                         <span>Dashboard</span>
