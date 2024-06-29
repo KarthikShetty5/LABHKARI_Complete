@@ -129,13 +129,13 @@ const PaymentPage: React.FC = () => {
                             localStorage.setItem('userId', response.data.data.userId);
                             fetchAddresses();
                         } else {
-                            alert('Please log in .');
+                            alert('Please SignUp.');
                         }
                     } else {
-                        alert('Please log in.');
+                        alert('Please SignUp.');
                     }
                 } catch (error) {
-                    alert('Error checking phone number');
+                    alert('Please SignUp.');
                 }
             }
         }
@@ -302,6 +302,7 @@ const PaymentPage: React.FC = () => {
                                     <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded-md" required />
                                     <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="border p-2 rounded-md" required />
                                     <input type="text" name="pinCode" value={formData.pinCode} onBlur={handlePinCodeBlur} onChange={handleChange} placeholder="Pin Code" className="border p-2 rounded-md" required />
+                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded-md" required />
                                     <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border p-2 rounded-md" required />
                                     <input type="text" name="landmark" value={formData.landmark} onChange={handleChange} placeholder="Landmark" className="border p-2 rounded-md" required />
                                     <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="border p-2 rounded-md" required />
@@ -315,7 +316,6 @@ const PaymentPage: React.FC = () => {
                                         <option value="Other">Other</option>
                                     </select>
 
-                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded-md" required />
 
                                 </form>
                             </>
