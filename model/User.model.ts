@@ -12,11 +12,13 @@ export interface UserDocument extends Document {
 const UserSchema: Schema = new Schema({
     userId: { type: String, required: true },
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: false, unique: true },
     phone: { type: Number, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     referralId: { type: String, required: false },
 });
+
+UserSchema.index({ email: 1 }, { unique: false });
 
 const User = mongoose.models.User || mongoose.model<UserDocument>('User', UserSchema);
 

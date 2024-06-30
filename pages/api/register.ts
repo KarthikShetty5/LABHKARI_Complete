@@ -4,6 +4,7 @@ import User from '../../model/User.model'; // Adjust the path based on your actu
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import axios from 'axios';
 
 const sendMail = async (to: string, subject: string, name: string) => {
     try {
@@ -48,6 +49,26 @@ const sendMail = async (to: string, subject: string, name: string) => {
     }
 };
 
+async function sendSMS(toNumbers: any) {
+    try {
+        const accountSid = process.env.NEXT_PUBLIC_ACCOUNT_SID;
+        const authToken = process.env.NEXT_PUBLIC_AUTH_TOKEN;
+        const client = require('twilio')(accountSid, authToken);
+        const formattedNumbers = toNumbers.split(',').map((number: string) => `+91${number.trim()}`).join(',');
+
+        client.messages
+            .create({
+                body: "Your account has been created. Please visit the MyProfile section at http://labhkari.com/user/profile and update your details for better enjoyment of Labhkari.",
+                to: formattedNumbers,
+                from: process.env.NEXT_PUBLIC_PHONE_NUM,
+            })
+            .then((message: any) => console.log(message.sid));
+    } catch (error: any) {
+        throw error;
+    }
+}
+
+
 const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
     const userId = ((length, chars) => Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join(''))(5, '0123456789');
 
@@ -57,12 +78,13 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { name, email, phone, password, referralId } = req.body;
 
-    if (!name || !email || !phone || !password) {
-        return res.status(400).json({
-            success: false,
-            message: "All fields (username, email, phone, password) are required"
-        });
-    }
+    // if (!name || !email || !phone || !password) {
+    //     return res.status(400).json({
+    //         success: false,
+    //         message: "All fields (username, email, phone, password) are required"
+    //     });
+    // }
+
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,11 +97,11 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Check if the email already exists in the database
     try {
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ phone });
         if (existingUser) {
             return res.status(200).json({
                 success: false,
-                message: "Email already exists",
+                message: "Phone Number already exists",
             });
         }
 
@@ -96,12 +118,16 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
             referralId,
         });
         await newUser.save();
-        await sendMail(email, "User created successfully", name);
+        if (/^user\d+@/.test(email) || password === "") {
+            await sendSMS(phone)
+        } else {
+            await sendMail(email, "User created successfully.", name);
+        }
 
         return res.status(200).json({
             success: true,
             message: "User created successfully",
-            user: { userId: newUser.userId },
+            // user: { userId: newUser.userId },
         });
     } catch (error) {
         console.error("Error:", error);

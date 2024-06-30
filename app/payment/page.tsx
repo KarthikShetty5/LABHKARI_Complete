@@ -35,6 +35,7 @@ const PaymentPage: React.FC = () => {
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
     const [otp, setOtp] = useState('');
     const [uid, setUid] = useState('');
+    const [userSelector, setUserSelector] = useState<boolean>();
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setOtp(e.target.value);
@@ -117,6 +118,33 @@ const PaymentPage: React.FC = () => {
         setShowNewAddressForm(true);
     };
 
+    let userCount = 1;
+    function generateRandomEmail() {
+        const emailDomain = 'gmail.com';
+        const emailPrefix = 'user';
+        const randomEmail = `${emailPrefix}${userCount}@${emailDomain}`;
+        userCount++;
+        return randomEmail;
+    }
+
+    const handleSign = async (phone: string) => {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/register";
+        try {
+            const response = await axios.post(url, {
+                name: formData.name,
+                email: generateRandomEmail(),
+                phone: phone,
+                password: "",
+                referralId: localStorage.getItem('ref') || " "
+            })
+            if (response.data.success) {
+                localStorage.setItem('userId', response.data.user.userId);
+            }
+        } catch (error) {
+            alert("Error please try again")
+        }
+    }
+
     const generateOtp = async (phone: string) => {
         const url = `https://2factor.in/API/V1/${process.env.NEXT_PUBLIC_2FACTOR_API_KEY}/SMS/${phone}/AUTOGEN2/${process.env.NEXT_PUBLIC_OTP_TEMPLATE_NAME}`;
         try {
@@ -139,14 +167,22 @@ const PaymentPage: React.FC = () => {
         }
     };
 
+
     const handleOtpSubmit = async () => {
         const phone = formData.phoneNumber;
         const isValidOtp = await verifyOtp(phone, otp);
         if (isValidOtp) {
-            alert('OTP verified successfully.');
-            setIsOtpModalOpen(false); // Close OTP modal after verification
-            fetchAddresses();
-            localStorage.setItem('userId', uid);
+            if (!userSelector) {
+                alert('OTP verified successfully.');
+                handleSign(phone)
+                setIsOtpModalOpen(false);
+                fetchAddresses();
+            } else {
+                alert('OTP verified successfully.');
+                setIsOtpModalOpen(false);
+                fetchAddresses();
+                localStorage.setItem('userId', uid);
+            }
         } else {
             alert('Invalid OTP. Please try again.');
         }
@@ -168,17 +204,22 @@ const PaymentPage: React.FC = () => {
                     if (response.data.success) {
                         const userConfirmed = window.confirm(`Do you want to continue as ${response.data.data.name}?`);
                         if (userConfirmed) {
-                            generateOtp(value); // Call OTP generation function
+                            generateOtp(value);
                             setUid(response.data.data.userId)
-                            // fetchAddresses();
                         } else {
-                            alert('Please SignUp.');
+                            setUserSelector(false);
+                            alert("Logging you as new User")
+                            generateOtp(value);
                         }
                     } else {
-                        alert('Please SignUp.');
+                        setUserSelector(false);
+                        alert("Logging you as new User")
+                        generateOtp(value);
                     }
                 } catch (error) {
-                    alert('Error Occured');
+                    setUserSelector(false);
+                    alert("Logging you as new User")
+                    generateOtp(value);
                 }
             }
         }

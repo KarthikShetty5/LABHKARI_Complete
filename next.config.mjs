@@ -14,6 +14,11 @@ const nextConfig = {
         REGION: process.env.REGION,
         ACCESS_KEY: process.env.ACCESS_KEY,
         SECRET_KEY: process.env.SECRET_KEY,
+        NEXT_PUBLIC_PHONE_NUM: process.env.NEXT_PUBLIC_PHONE_NUM,
+        NEXT_PUBLIC_AUTH_TOKEN: process.env.NEXT_PUBLIC_AUTH_TOKEN,
+        NEXT_PUBLIC_ACCOUNT_SID: process.env.NEXT_PUBLIC_ACCOUNT_SID,
+        NEXT_PUBLIC_OTP_TEMPLATE_NAME: process.env.NEXT_PUBLIC_OTP_TEMPLATE_NAME,
+        NEXT_PUBLIC_2FACTOR_API_KEY: process.env.NEXT_PUBLIC_2FACTOR_API_KEY
     },
 };
 
