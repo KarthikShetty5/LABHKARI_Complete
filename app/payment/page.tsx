@@ -118,12 +118,11 @@ const PaymentPage: React.FC = () => {
         setShowNewAddressForm(true);
     };
 
-    let userCount = 1;
     function generateRandomEmail() {
         const emailDomain = 'gmail.com';
         const emailPrefix = 'user';
-        const randomEmail = `${emailPrefix}${userCount}@${emailDomain}`;
-        userCount++;
+        const randomNum = Math.floor(10000 + Math.random() * 90000); // Generates a random 5-digit number
+        const randomEmail = `${emailPrefix}${randomNum}@${emailDomain}`;
         return randomEmail;
     }
 
@@ -142,6 +141,7 @@ const PaymentPage: React.FC = () => {
             }
         } catch (error) {
             alert("Error please try again")
+            console.log(error)
         }
     }
 

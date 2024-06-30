@@ -127,7 +127,7 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(200).json({
             success: true,
             message: "User created successfully",
-            // user: { userId: newUser.userId },
+            user: { userId: newUser.userId },
         });
     } catch (error) {
         console.error("Error:", error);
