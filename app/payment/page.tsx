@@ -32,6 +32,13 @@ const PaymentPage: React.FC = () => {
     const gst = searchParams ? parseFloat(searchParams.get('gst') || '0') : 0;
     const shipcost = searchParams ? parseFloat(searchParams.get('shipc') || '0') : 0;
     const count = searchParams ? parseInt(searchParams.get('count') || '0', 10) : 0;
+    const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [uid, setUid] = useState('');
+
+    const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setOtp(e.target.value);
+    };
 
     const [formData, setFormData] = useState({
         name: '',
@@ -110,6 +117,41 @@ const PaymentPage: React.FC = () => {
         setShowNewAddressForm(true);
     };
 
+    const generateOtp = async (phone: string) => {
+        const url = `https://2factor.in/API/V1/${process.env.NEXT_PUBLIC_2FACTOR_API_KEY}/SMS/${phone}/AUTOGEN2/${process.env.NEXT_PUBLIC_OTP_TEMPLATE_NAME}`;
+        try {
+            await axios.get(url);
+            alert('OTP has been sent to your phone number.');
+            setIsOtpModalOpen(true);
+        } catch (error) {
+            alert('Error generating OTP.');
+        }
+    };
+
+    const verifyOtp = async (phone: string, otp: string) => {
+        const url = `https://2factor.in/API/V1/${process.env.NEXT_PUBLIC_2FACTOR_API_KEY}/SMS/VERIFY3/${phone}/${otp}`;
+        try {
+            const response = await axios.get(url);
+            return response.data.Status === 'Success';
+        } catch (error) {
+            alert('Error verifying OTP.');
+            return false;
+        }
+    };
+
+    const handleOtpSubmit = async () => {
+        const phone = formData.phoneNumber;
+        const isValidOtp = await verifyOtp(phone, otp);
+        if (isValidOtp) {
+            alert('OTP verified successfully.');
+            setIsOtpModalOpen(false); // Close OTP modal after verification
+            fetchAddresses();
+            localStorage.setItem('userId', uid);
+        } else {
+            alert('Invalid OTP. Please try again.');
+        }
+    };
+
     const handleChange = async (e: { target: { name: any; value: any; }; }) => {
         const { name, value } = e.target;
         setFormData({
@@ -126,8 +168,9 @@ const PaymentPage: React.FC = () => {
                     if (response.data.success) {
                         const userConfirmed = window.confirm(`Do you want to continue as ${response.data.data.name}?`);
                         if (userConfirmed) {
-                            localStorage.setItem('userId', response.data.data.userId);
-                            fetchAddresses();
+                            generateOtp(value); // Call OTP generation function
+                            setUid(response.data.data.userId)
+                            // fetchAddresses();
                         } else {
                             alert('Please SignUp.');
                         }
@@ -135,7 +178,7 @@ const PaymentPage: React.FC = () => {
                         alert('Please SignUp.');
                     }
                 } catch (error) {
-                    alert('Please SignUp.');
+                    alert('Error Occured');
                 }
             }
         }
@@ -204,7 +247,7 @@ const PaymentPage: React.FC = () => {
             localStorage.setItem('order', order.id);
 
             const options = {
-                key: 'rzp_test_y5kB7jPsNn1fCY',
+                key: process.env.RAZORPAY_KEY_ID || '',
                 amount: order.amount,
                 currency: "INR",
                 name: "Labhkari",
@@ -248,6 +291,24 @@ const PaymentPage: React.FC = () => {
 
     return (
         <>
+            {isOtpModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                        <h2 className="text-lg font-semibold mb-4">Enter OTP</h2>
+                        <input
+                            type="text"
+                            value={otp}
+                            onChange={handleOtpChange}
+                            placeholder="Enter OTP"
+                            className="border p-2 rounded-md w-full mb-4"
+                        />
+                        <div className="flex justify-end">
+                            <button onClick={() => setIsOtpModalOpen(false)} className="mr-2 p-2 border rounded-md bg-gray-300">Close</button>
+                            <button onClick={handleOtpSubmit} className="p-2 border rounded-md bg-blue-500 text-white">Verify</button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Navbar onSearch={() => { }} />
             <Script
                 id="razorpay-checkout-js"

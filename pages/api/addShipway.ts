@@ -46,27 +46,59 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
                 pinCode
             });
 
-            // Add shipment details to Shipway
-            const shipwayResponse = await axios.post('https://shipway.in/api/PushOrderData', {
-                "username": "gyankulnetwork@gmail.com",
-                "password": "gyankul@123",
-                "carrier_id": "1",
-                "awb": '1122334455', // Replace with actual AWB if needed
-                "order_id": orderId,
-                "first_name": name,
-                "last_name": 'Customer',
-                "email": email,
-                "phone": phone,
-                "products": 'N/A',
-                "company": 'Shipway',
-                "shipment_type": '1'
-            });
+            const username = "gyankulnetwork@gmail.com";
+            const password = "q1IT9zj91968v6TIe669L8S7hg92HS6w";
+            const auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
 
-            console.log('Shipway response:', shipwayResponse.data.response);
-            res.status(200).json({ message: shipwayResponse.data.response });
+            // Add shipment details to Shipway
+            const shipwayResponse = await axios.post('https://app.shipway.com/api/v2orders', {
+                "order_id": orderId,
+                "ewaybill": "AD767435878734PR",
+                "products": [
+                    {
+                        "product": "My Test Product 5",
+                        "price": "200",
+                        "product_code": "JSN909",
+                        "amount": "1",
+                        "discount": "0",
+                        "tax_rate": "5",
+                        "tax_title": "IGST"
+                    },
+                    {
+                        "product": "My Test Product 23",
+                        "price": "120",
+                        "product_code": "JSN9999",
+                        "amount": "150",
+                        "discount": "0",
+                        "tax_rate": "5",
+                        "tax_title": "IGST"
+                    }
+                ],
+                "order_total": amount,
+                "payment_type": "P",
+                "email": email,
+                "billing_address": shippingAddress,
+                "billing_city": city,
+                "billing_state": state,
+                "billing_country": country,
+                "billing_firstname": name,
+                "billing_phone": phone,
+                "shipping_address": shippingAddress,
+                "shipping_city": city,
+                "shipping_state": state,
+                "shipping_country": country,
+                "shipping_firstname": name,
+                "shipping_phone": phone,
+                "shipping_zipcode": pinCode,
+                "order_date": new Date().toISOString().replace('T', ' ').slice(0, 19)
+            }, {
+                headers: {
+                    'Authorization': auth
+                }
+            });
+            res.status(200).json({ message: "Shipway order added successfully" });
         } catch (error) {
-            console.error('Error after successful payment:', error);
-            res.status(500).json({ error: 'Failed to add order or shipment details' });
+            res.status(500).json({ error: error });
         }
     } else {
         res.status(405).json({ message: 'Method not allowed' });
