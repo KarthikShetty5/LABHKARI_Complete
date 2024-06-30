@@ -8,6 +8,7 @@ import { Suspense, useEffect } from 'react';
 const Page = () => {
     const searchParams = useSearchParams();
     const success = searchParams ? searchParams.get('success') : null;
+    console.log(success)
 
     useEffect(() => {
         const handler = async () => {
@@ -18,6 +19,7 @@ const Page = () => {
                     "order_id": oid,
                 });
             } catch (e) {
+                console.log(e)
                 alert("Error adding order");
             }
         };

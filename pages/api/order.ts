@@ -67,7 +67,6 @@ const handleShip = async (req: NextApiRequest, res: NextApiResponse) => {
                 "order_id": order_id
             });
 
-
             const { tracking_url, current_status } = shipmentResponse.data.response;
             console.log(shipmentResponse);
             // Send email with shipment details

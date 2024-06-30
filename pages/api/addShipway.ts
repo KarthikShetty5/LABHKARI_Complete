@@ -63,7 +63,7 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
             });
 
             console.log('Shipway response:', shipwayResponse.data.response);
-            res.status(200).json({ message: 'Order and shipment details added successfully' });
+            res.status(200).json({ message: shipwayResponse.data.response });
         } catch (error) {
             console.error('Error after successful payment:', error);
             res.status(500).json({ error: 'Failed to add order or shipment details' });

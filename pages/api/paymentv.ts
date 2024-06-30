@@ -19,7 +19,7 @@ const paymentVerification: RequestHandler = async (req, res) => {
 
     if (isAuthentic) {
         try {
-            res.redirect(`https://labhkari.com/success?reference=${razorpay_payment_id}&success=true`);
+            res.redirect(`${process.env.NEXT_PUBLIC_CLIENT_URL}/success?reference=${razorpay_payment_id}&success=true`);
         } catch (error: any) {
             console.error('Redirect error:', error);
             res.status(500).json({
