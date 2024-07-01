@@ -28,6 +28,63 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
             const { orderId, email, phone, name, amount, amountPaid, userId, itemCount, shippingAddress, state, country, landmark, city, tag, pinCode } = req.body;
             // Add the order details to your order table
             const orderApiUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addorder";
+
+            // Add shipment details to Shipway
+            const shipwayResponse = await axios.post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
+                "order_id": orderId,
+                "order_date": new Date().toISOString().replace('T', ' ').slice(0, 19),
+                "pickup_location": "Primary",
+                "channel_id": "",
+                "billing_customer_name": name,
+                "billing_last_name": "",
+                "billing_address": shippingAddress,
+                "billing_address_2": "",
+                "billing_city": city,
+                "billing_pincode": pinCode,
+                "billing_state": state,
+                "billing_country": country,
+                "billing_email": email,
+                "billing_phone": phone,
+                "shipping_is_billing": true,
+                "shipping_customer_name": "",
+                "shipping_last_name": "",
+                "shipping_address": "",
+                "shipping_address_2": "",
+                "shipping_city": "",
+                "shipping_pincode": "",
+                "shipping_country": "",
+                "shipping_state": "",
+                "shipping_email": "",
+                "shipping_phone": "",
+                "order_items": [
+                    {
+                        "name": "Kunai",
+                        "sku": "chakra123",
+                        "units": 10,
+                        "selling_price": "900",
+                        "discount": "",
+                        "tax": "",
+                        "hsn": 441122
+                    }
+                ],
+                "payment_method": "Prepaid",
+                "shipping_charges": 0,
+                "giftwrap_charges": 0,
+                "transaction_charges": 0,
+                "total_discount": 0,
+                "sub_total": amount,
+                "length": 10,
+                "breadth": 15,
+                "height": 20,
+                "weight": 2.5
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SHIP_ROCKET_AUTH}`,
+                }
+            }
+            );
+
             await axios.post(orderApiUrl, {
                 orderId,
                 email,
@@ -43,60 +100,10 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
                 landmark,
                 city,
                 tag,
-                pinCode
+                pinCode,
+                shipment_id: shipwayResponse.data.shipment_id || ""
             });
-
-            const username = "gyankulnetwork@gmail.com";
-            const password = "q1IT9zj91968v6TIe669L8S7hg92HS6w";
-            const auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
-
-            // Add shipment details to Shipway
-            const shipwayResponse = await axios.post('https://app.shipway.com/api/v2orders', {
-                "order_id": orderId,
-                "ewaybill": "AD767435878734PR",
-                "products": [
-                    {
-                        "product": "My Test Product 5",
-                        "price": "200",
-                        "product_code": "JSN909",
-                        "amount": "1",
-                        "discount": "0",
-                        "tax_rate": "5",
-                        "tax_title": "IGST"
-                    },
-                    {
-                        "product": "My Test Product 23",
-                        "price": "120",
-                        "product_code": "JSN9999",
-                        "amount": "150",
-                        "discount": "0",
-                        "tax_rate": "5",
-                        "tax_title": "IGST"
-                    }
-                ],
-                "order_total": amount,
-                "payment_type": "P",
-                "email": email,
-                "billing_address": shippingAddress,
-                "billing_city": city,
-                "billing_state": state,
-                "billing_country": country,
-                "billing_firstname": name,
-                "billing_phone": phone,
-                "shipping_address": shippingAddress,
-                "shipping_city": city,
-                "shipping_state": state,
-                "shipping_country": country,
-                "shipping_firstname": name,
-                "shipping_phone": phone,
-                "shipping_zipcode": pinCode,
-                "order_date": new Date().toISOString().replace('T', ' ').slice(0, 19)
-            }, {
-                headers: {
-                    'Authorization': auth
-                }
-            });
-            res.status(200).json({ message: "Shipway order added successfully" });
+            res.status(200).json({ message: shipwayResponse.data.shipment_id });
         } catch (error) {
             res.status(500).json({ error: error });
         }

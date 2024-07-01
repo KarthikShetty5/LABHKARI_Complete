@@ -54,7 +54,7 @@ async function sendSMS(toNumbers: any, name: any) {
         let phone = `+91${toNumbers}`;
         const url = 'https://control.msg91.com/api/v5/flow';
         const body = {
-            "template_id": "66827ed6d6fc0554464a2cf4",
+            "template_id": process.env.NEXT_PUBLIC_TEMPLATE_IDS,
             "short_url": "0",
             "realTimeResponse": "0",
             "recipients": [
@@ -66,7 +66,7 @@ async function sendSMS(toNumbers: any, name: any) {
         };
         const headers = {
             'Content-Type': 'application/json',
-            'authkey': '425451ASmHe7ey66823449P1',
+            'authkey': process.env.NEXT_PUBLIC_AUTH_KEY,
             'Accept': 'application/json'
         };
 
@@ -115,7 +115,7 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
 
         // Encrypt password using AES
         const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret').toString();
-
+        const currentDateFormatted = new Date().toISOString().slice(0, 10).split('-').reverse().join('-');
         // Insert new user into the database
         const newUser = new User({
             userId: userId,
@@ -123,6 +123,7 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
             email,
             phone,
             password: encryptedPassword,
+            joiningdate: currentDateFormatted,
             referralId,
         });
         await newUser.save();

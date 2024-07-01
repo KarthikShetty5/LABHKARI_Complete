@@ -42,7 +42,7 @@ const Home = () => {
     return (
         <>
             <Navbar onSearch={() => { }} />
-            <div className="flex justify-center items-center min-h-screen bg-gray-200">
+            <div className="flex justify-center items-center min-h-screen bg-gray-200 mt-16">
                 <NetworkCard connections={network} />
             </div>
             <Footer />

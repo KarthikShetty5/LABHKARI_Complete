@@ -37,12 +37,15 @@ const NetworkCard = ({ connections }: { connections: any[] }) => {
 
     return (
         <>
-            <Navbar onSearch={() => { }} />
-            <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg space-y-6 md-mt-0 mt-24">
+            <div className="p-6 max-w-4xl mx-auto rounded-xl shadow-lg space-y-6 md:mt-0 mt-24">
                 <h2 className="text-3xl font-bold text-center text-gray-900">Network of Connections</h2>
                 {connections.length > 0 ? (
-                    <div className="flex justify-center">
-                        {renderConnections(connections)}
+                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                        {connections.map((connection, index) => (
+                            <div key={index} className="p-2">
+                                {renderConnections([connection])}
+                            </div>
+                        ))}
                     </div>
                 ) : (
                     <div className="text-center text-gray-500">

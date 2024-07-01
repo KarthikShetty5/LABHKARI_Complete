@@ -39,12 +39,12 @@ interface Order {
 }
 
 const ProfilePage = () => {
-    const [userId, setUserId] = useState<string | null>();
+    const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {
         const uid = localStorage.getItem('userId'); // Replace with actual userId
         setUserId(uid);
-    }, [])
+    }, []);
 
     // State to store user data
     const [user, setUser] = useState<User>({
@@ -64,38 +64,44 @@ const ProfilePage = () => {
 
     // Fetch user data
     useEffect(() => {
-        const fetchUserData = async () => {
-            const response = await fetch('/api/getuserid', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId }),
-            });
-            const data = await response.json();
-            setUser(data.data);
-        };
+        if (userId) {
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getuserid";
+            const fetchUserData = async () => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId }),
+                });
+                const data = await response.json();
+                setUser(data.data);
+            };
 
-        fetchUserData();
+            fetchUserData();
+        }
     }, [userId]);
 
     // Fetch orders for the user to get shipping address and other details
     useEffect(() => {
-        const fetchOrders = async () => {
-            const response = await fetch('/api/fetchorderid', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId }),
-            });
-            const data = await response.json();
-            if (data.data.length > 0) {
-                setOrder(data.data[0]);
-            }
-        };
+        if (userId) {
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorderid";
+            const fetchOrders = async () => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId }),
+                });
+                const data = await response.json();
+                if (data.data.length > 0) {
+                    setOrder(data.data[0]);
+                }
+            };
 
-        fetchOrders();
+            fetchOrders();
+        }
     }, [userId]);
 
     return (
@@ -111,9 +117,9 @@ const ProfilePage = () => {
                     <div className="border-t border-gray-200">
                         <div className="bg-white px-4 py-5 sm:px-6">
                             <div className="flex items-center">
-                                <Image width={50} height={50} className="h-12 w-12 rounded-full object-cover mr-4" src={test} alt={`${user.name}'s avatar`} />
+                                <Image width={50} height={50} className="h-12 w-12 rounded-full object-cover mr-4" src={test} alt='missing' />
                                 <div className="ml-2">
-                                    <h3 className="text-lg font-medium leading-6 text-gray-900">{user.fullName}</h3>
+                                    {/* <h3 className="text-lg font-medium leading-6 text-gray-900">{user.fullName}</h3> */}
                                     <p className="mt-1 text-sm text-gray-500">{user.name}</p>
                                 </div>
                             </div>
@@ -133,15 +139,15 @@ const ProfilePage = () => {
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">Gender</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">{user.gender}</dd>
+                                        {/* <dd className="mt-1 text-sm text-gray-900">{user.gender}</dd> */}
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">Language</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">{user.language}</dd>
+                                        {/* <dd className="mt-1 text-sm text-gray-900">{user.language}</dd> */}
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">Timezone</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">{user.timezone}</dd>
+                                        {/* <dd className="mt-1 text-sm text-gray-900">{user.timezone}</dd> */}
                                     </div>
                                 </dl>
                                 <div>

@@ -20,7 +20,7 @@ const forgotHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                 let phone = `+91${req.body.phone}`;
                 const url = 'https://control.msg91.com/api/v5/flow';
                 const body = {
-                    "template_id": "66824acad6fc0514e72df692",
+                    "template_id": process.env.NEXT_PUBLIC_TEMPLATE_ID,
                     "short_url": "0",
                     "realTimeResponse": "0",
                     "recipients": [
@@ -32,7 +32,7 @@ const forgotHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                 };
                 const headers = {
                     'Content-Type': 'application/json',
-                    'authkey': '425451ASmHe7ey66823449P1',
+                    'authkey': process.env.NEXT_PUBLIC_AUTH_KEY,
                     'Accept': 'application/json'
                 };
 

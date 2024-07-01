@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import nodemailer from 'nodemailer';
 
-const sendMail = async (to: string, subject: string, trackingUrl: string, status: string, name: string) => {
+const sendMail = async (to: string, subject: string, shipment_id: string, name: string) => {
     try {
         const htmlContent = `<!DOCTYPE html>
         <html>
@@ -12,9 +12,8 @@ const sendMail = async (to: string, subject: string, trackingUrl: string, status
         </head>
         <body>
             <h1>Track your order now</h1>
-            <p>Current Status: ${status}</p> 
+            <p>Your Shipment id is : ${shipment_id}</p> 
             <br/><br/>
-            <div>Tracker: <a href="${trackingUrl}">${trackingUrl}</a></div>
             <p>Thank you, ${name}</p>
             <img src="https://labhkari.s3.ap-south-1.amazonaws.com/logo2.png" width="90" height="40">
         </body>
@@ -38,8 +37,6 @@ const sendMail = async (to: string, subject: string, trackingUrl: string, status
             subject,
             html: htmlContent,
         });
-
-        console.log('Message sent: %s', info.messageId);
     } catch (error) {
         console.error(error);
     }
@@ -60,21 +57,21 @@ const handleShip = async (req: NextApiRequest, res: NextApiResponse) => {
                 return res.status(404).json({ error: 'Order not found' });
             }
 
-            // Fetch shipment details from Shipway
-            const shipmentResponse = await axios.post('https://shipway.in/api/getOrderShipmentDetails', {
-                "username": "gyankulnetwork@gmail.com",
-                "password": "gyankul@123",
-                "order_id": order_id
-            });
+            // // Fetch shipment details from Shipway
+            // const shipmentResponse = await axios.get(`https://apiv2.shiprocket.in/v1/external/shipments/${order.data.shipment_id}`, {
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SHIP_ROCKET_AUTH}`,
+            //     }
+            // });
 
-            const { tracking_url, current_status } = shipmentResponse.data.response;
-            console.log(shipmentResponse);
-            // Send email with shipment details
-            await sendMail(order.data[0].email, "Your Order Shipment Details", tracking_url, current_status, order.data[0].name);
+            // const { tracking_url, current_status } = shipmentResponse.data.response;
+            // console.log(shipmentResponse);
+            // // Send email with shipment details
+            await sendMail(order.data.email, "Your Order Shipment Details", order.data.shipment_id, order.data.name);
 
-            res.status(200).json({ message: 'Shipment details fetched and email sent successfully' });
+            res.status(200).json({ message: "shipmentResponse.data" });
         } catch (error) {
-            console.error('Error after successful payment:', error);
             res.status(500).json({ error: 'Failed to fetch shipment details or send email' });
         }
     } else {

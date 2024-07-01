@@ -3,22 +3,23 @@ import Footer from '@/Components/Footer';
 import Navbar from '@/Components/Navbar';
 import Orders from '@/Components/Orders';
 import axios from 'axios';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 interface Order {
     orderId: string;
-    tracking_url: string;
+    shipment_id: string;
     customer_name: string;
     current_status: string;
+    shippingAddress: string;
 }
 
 const Page: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);
-    const [orderDetails, setOrderDetails] = useState<{ shipmentDetails: Order }[]>([]);
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
     useEffect(() => {
-        const fetchOrdersAndDetails = async () => {
+        const fetchOrders = async () => {
             const userId = localStorage.getItem('userId');
             if (!userId) {
                 setLoggedIn(false);
@@ -28,58 +29,44 @@ const Page: React.FC = () => {
             }
 
             try {
-                // First API call to get orders based on userId
-                const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/fetchorderid";
+                const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorderid";
                 const res = await axios.post<{ data: Order[] }>(url, { userId });
                 const ordersData = res.data.data;
 
-                // Update the state with orders data
                 setOrders(ordersData);
-
-                // Array of promises for the second API call to get shipment details for each order
-                const detailsPromises = ordersData.map(async (order) => {
-                    const detailRes = await axios.post<{ response: Order }>('https://shipway.in/api/getOrderShipmentDetails', {
-                        username: "karhtikshetty1@gmail.com",
-                        password: "84b0beb51d36f306bd5999249134e792",
-                        order_id: order.orderId
-                    });
-                    // Return a new object that combines the order data and the shipment details
-                    return { shipmentDetails: detailRes.data.response };
-                });
-
-                // Wait for all promises to resolve
-                const details = await Promise.all(detailsPromises);
-
-                // Update the state with the combined data
-                setOrderDetails(details);
             } catch (e) {
                 console.error(e);
             }
         };
-        fetchOrdersAndDetails();
+        fetchOrders();
     }, []);
 
     return (
         <>
             <Navbar onSearch={() => { }} />
             {!loggedIn && (
-                <div className="flex justify-center items-center mb-28">
+                <div className="flex mt-32 md:mt-24 justify-center items-center mb-28">
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">Please login to get your order details</h2>
                     </div>
                 </div>
             )}
             {loggedIn && (
-                <div className='mt-36 md:mt-0 mb-12 md:mb-28'>
-                    {orderDetails.length > 0 ? (
-                        orderDetails.map((orderDetail) => (
-                            <Orders
-                                key={orderDetail.shipmentDetails.orderId}
-                                orderId={orderDetail.shipmentDetails.orderId}
-                                tracking_url={orderDetail.shipmentDetails.tracking_url}
-                                name={orderDetail.shipmentDetails.customer_name}
-                                current_status={orderDetail.shipmentDetails.current_status}
-                            />
+                <div className='mt-36 md:mt-24 mb-12 md:mb-28'>
+                    {orders.length > 0 ? (
+                        orders.map((order) => (
+                            <div key={order.orderId} className="bg-white rounded-lg shadow-lg p-6 mb-4">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h2 className="text-xl font-bold text-gray-800">Order ID: {order.orderId}</h2>
+                                        <p className="text-gray-600">Shipment ID: {order.shipment_id}</p>
+                                    </div>
+                                    <button className="text-blue-500 hover:text-blue-700">
+                                        <Link href={'/under'}>More Details &rarr;</Link>
+                                    </button>
+                                </div>
+                                <p className="mt-2 text-gray-600">Shipping Address: {order.shippingAddress}</p>
+                            </div>
                         ))
                     ) : (
                         <div className="flex justify-center items-center mb-48 mt-32">
