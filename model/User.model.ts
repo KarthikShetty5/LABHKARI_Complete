@@ -14,7 +14,7 @@ const UserSchema: Schema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: false, unique: true },
     phone: { type: Number, required: true, unique: true },
-    password: { type: String, required: false },
+    password: { type: String, required: true },
     referralId: { type: String, required: false },
 });
 

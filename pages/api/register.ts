@@ -49,20 +49,28 @@ const sendMail = async (to: string, subject: string, name: string) => {
     }
 };
 
-async function sendSMS(toNumbers: any) {
+async function sendSMS(toNumbers: any, name: any) {
     try {
-        const accountSid = process.env.NEXT_PUBLIC_ACCOUNT_SID;
-        const authToken = process.env.NEXT_PUBLIC_AUTH_TOKEN;
-        const client = require('twilio')(accountSid, authToken);
-        const formattedNumbers = toNumbers.split(',').map((number: string) => `+91${number.trim()}`).join(',');
+        let phone = `+91${toNumbers}`;
+        const url = 'https://control.msg91.com/api/v5/flow';
+        const body = {
+            "template_id": "66827ed6d6fc0554464a2cf4",
+            "short_url": "0",
+            "realTimeResponse": "0",
+            "recipients": [
+                {
+                    "mobiles": phone,
+                    "var1": name
+                }
+            ]
+        };
+        const headers = {
+            'Content-Type': 'application/json',
+            'authkey': '425451ASmHe7ey66823449P1',
+            'Accept': 'application/json'
+        };
 
-        client.messages
-            .create({
-                body: "Your account has been created. Please visit the MyProfile section at http://labhkari.com/user/profile and update your details for better enjoyment of Labhkari.",
-                to: formattedNumbers,
-                from: process.env.NEXT_PUBLIC_PHONE_NUM,
-            })
-            .then((message: any) => console.log(message.sid));
+        const response = await axios.post(url, body, { headers });
     } catch (error: any) {
         throw error;
     }
@@ -119,7 +127,7 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
         });
         await newUser.save();
         if (/^user\d+@/.test(email) || password === "") {
-            await sendSMS(phone)
+            await sendSMS(phone, name)
         } else {
             await sendMail(email, "User created successfully.", name);
         }

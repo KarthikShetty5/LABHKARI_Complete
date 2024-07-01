@@ -51,6 +51,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [useId, setUseId] = useState('');
     const pathname = usePathname();
+    const [isMobile, setIsMobile] = useState(false);
+    const [otpSent, setOtpSent] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [isPhone, setIsPhone] = useState(false);
     const { count, fetchCart } = useCart();
 
 
@@ -142,32 +146,40 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         }
     }
 
+    function generateRandomEmail() {
+        const emailDomain = 'gmail.com';
+        const emailPrefix = 'user';
+        const randomNum = Math.floor(10000 + Math.random() * 90000); // Generates a random 5-digit number
+        const randomEmail = `${emailPrefix}${randomNum}@${emailDomain}`;
+        return randomEmail;
+    }
+
     const handleSignIn = async (event: any) => {
         event.preventDefault();
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/register";
 
         // Validate email format
-        if (!email?.endsWith('@gmail.com')) {
-            alert("Please enter a valid Gmail address")
-            return;
-        }
+        // if (!email?.endsWith('@gmail.com')) {
+        //     alert("Please enter a valid Gmail address")
+        //     return;
+        // }
 
-        // Validate other fields
-        if (!username || !email || !phone || !password) {
-            alert("All fields are required")
-            return;
-        }
+        // // Validate other fields
+        // if (!username || !email || !phone || !password) {
+        //     alert("All fields are required")
+        //     return;
+        // }
 
-        if (!/^\d{10}$/.test(phone)) {
-            alert("Please enter a valid 10 digits mobile number")
-            return;
-        }
+        // if (!/^\d{10}$/.test(email)) {
+        //     alert("Please enter a valid 10 digits mobile number")
+        //     return;
+        // }
 
         try {
             const response = await axios.post(url, {
                 name: username,
-                email: email,
-                phone: phone,
+                email: isPhone ? generateRandomEmail() : email,
+                phone: email,
                 password: password,
                 referralId: localStorage.getItem('ref') || null
             })
@@ -182,7 +194,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 alert("Email already exists")
             }
         } catch (error) {
-            alert("Error occured");
+            alert("Error Occured");
         }
     }
 
@@ -225,6 +237,66 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         }
     };
 
+    const handleEmailChange = (e: { target: { value: any; }; }) => {
+        const value = e.target.value;
+        setEmail(value);
+        setIsPhone(/^\d+$/.test(value));
+    };
+
+    const handleSignUps = (e: any) => {
+        if (isPhone) {
+            if (!otpSent) {
+                handleSignSendOtp();
+            } else {
+                handleSignVerifyOtp(e);
+            }
+        } else {
+            handleSignIn(e);
+        }
+    };
+
+    const handleSignSendOtp = async () => {
+        const otpUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/tokensign";
+        try {
+            const response = await axios.post(otpUrl, {
+                sendSMS: true,
+                phone: email
+            })
+            if (response.data.success) {
+                alert("Otp Sent")
+                setOtpSent(true);
+            } else {
+                alert("User already exists")
+                setOtpSent(false);
+            }
+        } catch (error) {
+            alert("Error sending OTP")
+            setOtpSent(false);
+        }
+    };
+
+    const handleSignVerifyOtp = async (e: any) => {
+        const otpUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/tokensign";
+        try {
+            const response = await axios.post(otpUrl, {
+                sendSMS: false,
+                phone: email,
+                token: otp
+            })
+            if (response.data.success) {
+                alert("Otp verified successfully")
+                handleSignIn(e)
+                setSEmail('');
+                setSPassword('');
+            } else {
+                alert("Otp expired")
+                setOtpSent(false);
+            }
+        } catch (error) {
+            alert("Invalid OTP")
+            setOtpSent(false);
+        }
+    };
 
 
     useEffect(() => {
@@ -349,8 +421,70 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
         }
     }
 
+    const handleInputChange = (e: { target: { value: any; }; }) => {
+        const value = e.target.value;
+        setSEmail(value);
+        setIsMobile(/^\d+$/.test(value));
+    };
 
+    const handleSendOtp = async () => {
+        const otpUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/token";
+        try {
+            const response = await axios.post(otpUrl, {
+                sendSMS: true,
+                phone: semail
+            })
+            if (response.data.success) {
+                alert("Otp Sent")
+                setOtpSent(true);
+            } else {
+                alert("Not registered User")
+                setOtpSent(false);
+            }
+        } catch (error) {
+            alert("Error sending OTP")
+            setOtpSent(false);
+        }
+    };
 
+    const handleVerifyOtp = async () => {
+        const otpUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/token";
+        try {
+            const response = await axios.post(otpUrl, {
+                sendSMS: false,
+                phone: semail,
+                token: spassword
+            })
+            if (response.data.success) {
+                alert("Otp verified successfully")
+                localStorage.setItem('userId', response.data.data)
+                toggleModal();
+                toggleSidebar();
+                alert("Logged in");
+                handleRefresh();
+                setSEmail('');
+                setSPassword('');
+            } else {
+                alert("Otp expired")
+                setOtpSent(false);
+            }
+        } catch (error) {
+            alert("Invalid OTP")
+            setOtpSent(false);
+        }
+    };
+
+    const handleSignIns = (e: any) => {
+        if (isMobile) {
+            if (!otpSent) {
+                handleSendOtp();
+            } else {
+                handleVerifyOtp();
+            }
+        } else {
+            handleSignUp(e);
+        }
+    };
 
     return (
         <>
@@ -374,23 +508,45 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                     <form className="bg-white rounded px-8 pt-6 pb-8 mb-4 dark:bg-white">
                                         <div className="mb-4">
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                                                Email
+                                                Email or Mobile Number
                                             </label>
-                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email" value={semail} onChange={(e) => setSEmail(e.target.value)} autoComplete="off" />
+                                            <input
+                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                id="username"
+                                                type="text"
+                                                placeholder="Email or Mobile Number"
+                                                value={semail}
+                                                onChange={handleInputChange}
+                                                autoComplete="off"
+                                            />
                                         </div>
                                         <div className="mb-6">
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                                                Password
+                                                {isMobile ? 'OTP' : 'Password'}
                                             </label>
-                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" value={spassword} onChange={(e) => setSPassword(e.target.value)} autoComplete="off" />
+                                            <input
+                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                                id="password"
+                                                type="password"
+                                                placeholder={isMobile ? 'OTP' : 'Password'}
+                                                value={spassword}
+                                                onChange={(e) => setSPassword(e.target.value)}
+                                                autoComplete="off"
+                                            />
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={handleSignUp}>
-                                                Sign In
+                                            <button
+                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                                type="button"
+                                                onClick={handleSignIns}
+                                            >
+                                                {isMobile && !otpSent ? 'Send OTP' : 'Sign In'}
                                             </button>
-                                            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/forgot">
-                                                Forgot Password?
-                                            </a>
+                                            {!isMobile && (
+                                                <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/forgot">
+                                                    Forgot Password?
+                                                </a>
+                                            )}
                                         </div>
                                     </form>
                                 ) : (
@@ -399,33 +555,89 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                                                 Username
                                             </label>
-                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="off" />
+                                            <input
+                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                id="username"
+                                                type="text"
+                                                placeholder="Username"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                autoComplete="off"
+                                            />
                                         </div>
                                         <div className="mb-4">
-                                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                                                Email
+                                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                                                Email or Mobile Number
                                             </label>
-                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="off" />
+                                            <input
+                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                id="email"
+                                                type="text"
+                                                placeholder="Email or Mobile Number"
+                                                value={email}
+                                                onChange={handleEmailChange}
+                                                autoComplete="off"
+                                            />
                                         </div>
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                                                Mobile Number
-                                            </label>
-                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Mobile Number" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="off" />
-                                        </div>
+                                        {!isPhone && (
+                                            <div className="mb-4">
+                                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
+                                                    Mobile Number
+                                                </label>
+                                                <input
+                                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    id="phone"
+                                                    type="text"
+                                                    placeholder="Mobile Number"
+                                                    value={phone}
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                        )}
+                                        {isPhone && (
+                                            <div className="mb-6">
+                                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="otp">
+                                                    OTP
+                                                </label>
+                                                <input
+                                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                                    id="otp"
+                                                    type="text"
+                                                    placeholder="OTP"
+                                                    value={otp}
+                                                    onChange={(e) => setOtp(e.target.value)}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                        )}
                                         <div className="mb-6">
                                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                                                 Password
                                             </label>
-                                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="off" />
+                                            <input
+                                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                                id="password"
+                                                type="password"
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                autoComplete="off"
+                                            />
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={handleSignIn}>
-                                                Sign Up
+                                            <button
+                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                                type="button"
+                                                onClick={handleSignUps}
+                                            >
+                                                {isPhone && !otpSent ? 'Send OTP' : 'Sign Up'}
                                             </button>
-                                            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/forgot">
-                                                Forgot Password?
-                                            </a>
+                                            {!isPhone && (
+                                                <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="/forgot">
+                                                    Forgot Password?
+                                                </a>
+                                            )}
                                         </div>
                                     </form>
                                 )}
