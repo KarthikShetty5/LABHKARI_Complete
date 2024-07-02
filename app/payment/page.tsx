@@ -55,7 +55,7 @@ const PaymentPage: React.FC = () => {
         expiryDate: '',
         cvv: '',
         email: '',
-        tag: ''
+        tag: 'Home'
     });
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -113,7 +113,7 @@ const PaymentPage: React.FC = () => {
             expiryDate: '',
             cvv: '',
             email: '',
-            tag: ''
+            tag: 'Home'
         });
         setShowNewAddressForm(true);
     };
@@ -259,6 +259,7 @@ const PaymentPage: React.FC = () => {
     };
 
     const handleSubmit = async (orderId: any, email: string, amount: any, amountPaid: any, userId: string | null, shippingAddress: string, phone: string, name: string, state: string, country: string, landmark: string, city: string, tag: string, pinCode: string) => {
+
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addShipway";
         try {
             const res = await axios.post(url, {
@@ -275,7 +276,7 @@ const PaymentPage: React.FC = () => {
                 country: country,
                 landmark: landmark,
                 city: city,
-                tag: tag,
+                tag: tag || "Home",
                 pinCode: pinCode
             });
         } catch (error) {

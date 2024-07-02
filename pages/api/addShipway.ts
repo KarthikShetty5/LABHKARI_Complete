@@ -85,7 +85,7 @@ const handleShip = async (req: SendShipRequest, res: NextApiResponse) => {
             }
             );
 
-            await axios.post(orderApiUrl, {
+            shipwayResponse.data.shipment_id && await axios.post(orderApiUrl, {
                 orderId,
                 email,
                 amount,

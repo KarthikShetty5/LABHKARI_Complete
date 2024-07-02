@@ -6,7 +6,7 @@ import Cart from '@/model/Cart.model';
 const addOrderHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { orderId, email, name, phone, amount, amountPaid, userId, itemCount, shippingAddress, state, country, landmark, city, tag, pinCode, shipment_id } = req.body;
-
+        
         const newOrder = new Order({
             orderId, email, name, phone, amount, amountPaid, userId, itemCount, shippingAddress, state, country, landmark, city, tag, pinCode, shipment_id
         });
