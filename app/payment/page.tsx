@@ -15,6 +15,7 @@ declare global {
 
 interface Address {
     id: number;
+    _id: number;
     name: string;
     address: string;
     phoneNumber: string;
@@ -85,17 +86,22 @@ const PaymentPage: React.FC = () => {
         setFormData({
             ...formData,
             name: address.name,
-            address: address.address,
-            phoneNumber: address.phoneNumber,
+            address: address.shippingAddress,
+            phoneNumber: address.phone,
             state: address.state,
             country: address.country,
             landmark: address.landmark,
             pinCode: address.pinCode,
             city: address.city,
-            tag: address.tag
+            tag: address.tag,
+            email: address.email
         });
         setShowNewAddressForm(false);
     };
+
+    useEffect(() => {
+        console.log(selectedAddress?._id)
+    })
 
     const handleNewAddressSelect = () => {
         setSelectedAddress(null);
@@ -398,7 +404,7 @@ const PaymentPage: React.FC = () => {
                                     name="address"
                                     value={address.id}
                                     onChange={() => handleAddressSelect(address)}
-                                    checked={selectedAddress ? selectedAddress.id === address.id : false}
+                                    checked={selectedAddress ? selectedAddress?._id == address._id : false}
                                     className="mr-2"
                                 />
                                 <label htmlFor={`address-${index}`}>
