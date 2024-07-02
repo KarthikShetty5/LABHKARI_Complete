@@ -42,6 +42,34 @@ const sendMail = async (to: string, subject: string, shipment_id: string, name: 
     }
 };
 
+const sendSMS = async (toNumbers: string, name: string) => {
+    try {
+        let phone = `+91${toNumbers}`;
+        const url = 'https://control.msg91.com/api/v5/flow';
+        const body = {
+            "template_id": process.env.NEXT_PUBLIC_TEMPLATE_ID_ORD,
+            "short_url": "0",
+            "realTimeResponse": "0",
+            "recipients": [
+                {
+                    "mobiles": phone,
+                    "var1": name,
+                    "var2": "https://labhkari.com/orders ."
+                }
+            ]
+        };
+        const headers = {
+            'Content-Type': 'application/json',
+            'authkey': process.env.NEXT_PUBLIC_AUTH_KEY,
+            'Accept': 'application/json'
+        };
+
+        const response = await axios.post(url, body, { headers });
+    } catch (error: any) {
+        throw error;
+    }
+};
+
 const handleShip = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
         const { order_id } = req.body;
@@ -69,6 +97,7 @@ const handleShip = async (req: NextApiRequest, res: NextApiResponse) => {
             // console.log(shipmentResponse);
             // // Send email with shipment details
             await sendMail(order.data.email, "Your Order Shipment Details", order.data.shipment_id, order.data.name);
+            await sendSMS(order.data.name, order.data.phone)
 
             res.status(200).json({ message: "shipmentResponse.data" });
         } catch (error) {

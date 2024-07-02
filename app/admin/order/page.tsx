@@ -20,6 +20,7 @@ export interface Order {
     tag: string;
     pinCode: number;
     shippingAddress: string;
+    shipment_id: string;
 }
 
 

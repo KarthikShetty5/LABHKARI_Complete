@@ -1,22 +1,34 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import User from '@/model/User.model';
-import connectDb from '@/middleware/mongoose';
+import axios from 'axios';
 
 const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { phone } = req.body;
+    const { name } = req.body;
     try {
-        const user = await User.findOne({ phone });
-        res.status(200).json({
-            success: true,
-            data: user
-        });
+        const url = 'https://control.msg91.com/api/v5/flow';
+        const body = {
+            "template_id": "66836682d6fc0565ff2cddf3",
+            "short_url": "0",
+            "realTimeResponse": "0",
+            "recipients": [
+                {
+                    "mobiles": "+919591142624",
+                    "var1": "hello",
+                    "var2": "world",
+                    "var3": "heyy"
+                }
+            ]
+        };
+        const headers = {
+            'Content-Type': 'application/json',
+            'authkey': process.env.NEXT_PUBLIC_AUTH_KEY,
+            'Accept': 'application/json'
+        };
+
+        const response = await axios.post(url, body, { headers });
+        console.log(response)
     } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: "Internal server error",
-            error: error.message
-        });
+        console.log(error);
     }
 }
 
-export default connectDb(getUser)
+export default getUser;
