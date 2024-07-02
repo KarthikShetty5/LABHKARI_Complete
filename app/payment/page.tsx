@@ -146,9 +146,12 @@ const PaymentPage: React.FC = () => {
     }
 
     const generateOtp = async (phone: string) => {
-        const url = `https://2factor.in/API/V1/${process.env.NEXT_PUBLIC_2FACTOR_API_KEY}/SMS/${phone}/AUTOGEN2/${process.env.NEXT_PUBLIC_OTP_TEMPLATE_NAME}`;
+        const otpUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/otp";
         try {
-            await axios.get(url);
+            await axios.post(otpUrl, {
+                sendOTP: true,
+                phone: phone
+            });
             alert('OTP has been sent to your phone number.');
             setIsOtpModalOpen(true);
         } catch (error) {
@@ -157,10 +160,15 @@ const PaymentPage: React.FC = () => {
     };
 
     const verifyOtp = async (phone: string, otp: string) => {
-        const url = `https://2factor.in/API/V1/${process.env.NEXT_PUBLIC_2FACTOR_API_KEY}/SMS/VERIFY3/${phone}/${otp}`;
+        const otpUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/otp";
         try {
-            const response = await axios.get(url);
-            return response.data.Status === 'Success';
+            const response = await axios.post(otpUrl, {
+                sendOTP: false,
+                phone: phone,
+                token: otp
+            });
+            console.log(response.data)
+            return response.data.success === true;
         } catch (error) {
             alert('Error verifying OTP.');
             return false;
