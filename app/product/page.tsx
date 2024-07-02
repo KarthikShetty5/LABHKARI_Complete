@@ -110,7 +110,7 @@ const PageContent: React.FC = () => {
         <>
             <Navbar onSearch={() => { }} />
             {data.length > 0 && (
-                <div className="py-8 md:mt-24 mt-28">
+                <div className="py-8 md:mt-24 mt-28 overflow-hidden">
                     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col md:flex-row -mx-4">
                             <div className="md:flex-1 px-4">

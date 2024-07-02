@@ -179,7 +179,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             const response = await axios.post(url, {
                 name: username,
                 email: isPhone ? generateRandomEmail() : email,
-                phone: email,
+                phone: phone,
                 password: password,
                 referralId: localStorage.getItem('ref') || null
             })
@@ -224,7 +224,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
             toggleModal();
             toggleSidebar();
 
-            if (semail === "admin@gmail.com") {
+            if (semail === "labhkarishop@gmail.com") {
                 localStorage.setItem('adminLoggedIn', "true");
             } else {
                 await handleUserId(userId); // Assuming userIds.userId is the correct property from your response

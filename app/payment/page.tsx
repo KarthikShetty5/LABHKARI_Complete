@@ -126,12 +126,12 @@ const PaymentPage: React.FC = () => {
         return randomEmail;
     }
 
-    const handleSign = async (phone: string) => {
+    const handleSign = async (phone: string, email: string) => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/register";
         try {
             const response = await axios.post(url, {
                 name: formData.name,
-                email: generateRandomEmail(),
+                email: email || generateRandomEmail(),
                 phone: phone,
                 password: "",
                 referralId: localStorage.getItem('ref') || " "
@@ -167,21 +167,35 @@ const PaymentPage: React.FC = () => {
         }
     };
 
+    const handleRef = async (phone: string) => {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getphoneref";
+        try {
+            const response = await axios.post(url, {
+                phone: phone,
+            })
+            if (response.data.success) {
+                localStorage.setItem('userId', response.data.data);
+            }
+        } catch (error) {
+            alert("Error please try again")
+        }
+    }
 
     const handleOtpSubmit = async () => {
         const phone = formData.phoneNumber;
+        const email = formData.email;
         const isValidOtp = await verifyOtp(phone, otp);
         if (isValidOtp) {
             if (!userSelector) {
                 alert('OTP verified successfully.');
-                handleSign(phone)
+                handleSign(phone, email)
                 setIsOtpModalOpen(false);
                 fetchAddresses();
             } else {
                 alert('OTP verified successfully.');
                 setIsOtpModalOpen(false);
+                handleRef(phone);
                 fetchAddresses();
-                localStorage.setItem('userId', uid);
             }
         } else {
             alert('Invalid OTP. Please try again.');
@@ -204,6 +218,7 @@ const PaymentPage: React.FC = () => {
                     if (response.data.success) {
                         const userConfirmed = window.confirm(`Do you want to continue as ${response.data.data.name}?`);
                         if (userConfirmed) {
+                            setUserSelector(true);
                             generateOtp(value);
                             setUid(response.data.data.userId)
                         } else {
@@ -246,7 +261,7 @@ const PaymentPage: React.FC = () => {
     const handleSubmit = async (orderId: any, email: string, amount: any, amountPaid: any, userId: string | null, shippingAddress: string, phone: string, name: string, state: string, country: string, landmark: string, city: string, tag: string, pinCode: string) => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addShipway";
         try {
-            await axios.post(url, {
+            const res = await axios.post(url, {
                 orderId: orderId,
                 email: email,
                 amount: amount,
@@ -255,16 +270,16 @@ const PaymentPage: React.FC = () => {
                 amountPaid: amountPaid,
                 userId: userId,
                 itemCount: count,
-                shippingAddress,
-                state,
-                country,
-                landmark,
-                city,
-                tag,
-                pinCode
+                shippingAddress: shippingAddress,
+                state: state,
+                country: country,
+                landmark: landmark,
+                city: city,
+                tag: tag,
+                pinCode: pinCode
             });
         } catch (error) {
-            alert("Error after successfull payment")
+            alert("Error placing the order")
         }
     };
 
@@ -281,9 +296,13 @@ const PaymentPage: React.FC = () => {
             const curl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/payment";
             const rurl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/paymentv";
 
+
             const { data: { order } } = await axios.post(curl, {
                 amount: amount + shipcost
             });
+
+            await handleSubmit(order.id, formData.email, order.amount, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
+
 
             localStorage.setItem('order', order.id);
 
@@ -308,10 +327,9 @@ const PaymentPage: React.FC = () => {
                     "color": "#121212"
                 }
             };
+
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
-
-            await handleSubmit(order.id, formData.email, order.amount, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
 
             paymentObject.on("payment.failed", function () {
                 alert("Payment failed. Please try again. Contact support for help")
@@ -402,9 +420,9 @@ const PaymentPage: React.FC = () => {
                                 <h2 className="text-lg font-semibold mb-4">New Address Details</h2>
                                 <form onSubmit={handlePayment} className="grid gap-4">
                                     <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded-md" required />
+                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded-md" required />
                                     <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="border p-2 rounded-md" required />
                                     <input type="text" name="pinCode" value={formData.pinCode} onBlur={handlePinCodeBlur} onChange={handleChange} placeholder="Pin Code" className="border p-2 rounded-md" required />
-                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded-md" required />
                                     <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border p-2 rounded-md" required />
                                     <input type="text" name="landmark" value={formData.landmark} onChange={handleChange} placeholder="Landmark" className="border p-2 rounded-md" required />
                                     <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="border p-2 rounded-md" required />
@@ -441,7 +459,7 @@ const PaymentPage: React.FC = () => {
                         </div>
                         <div className="flex justify-between font-semibold">
                             <span>Total:</span>
-                            <span>₹{(amount + gst + shipcost).toFixed(2)}</span>
+                            <span>₹{(amount + shipcost).toFixed(2)}</span>
                         </div>
                     </div>
                     {(selectedAddress || showNewAddressForm) && (
