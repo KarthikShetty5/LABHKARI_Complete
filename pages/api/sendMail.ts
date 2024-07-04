@@ -45,14 +45,14 @@ const sendMail = async (req: SendMailRequest, res: NextApiResponse) => {
                 port: 465,
                 secure: true,
                 auth: {
-                    user: "wear.from.brand@gmail.com",
-                    pass: "xdfz zzgj bmhr dtxq",
+                    user: "labhkarishop@gmail.com",
+                    pass: "doht aoql krsz cwt",
                 },
                 connectionTimeout: 5 * 60 * 1000, // 5 min
             });
 
             const info = await transporter.sendMail({
-                from: "wear.from.brand@gmail.com",
+                from: "labhkarishop@gmail.com",
                 to,
                 subject,
                 html: htmlContent,

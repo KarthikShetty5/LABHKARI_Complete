@@ -32,28 +32,33 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     const handleNotification = async (shipment_id: string) => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/sendMail";
         try {
-            const response = await axios.get(`https://apiv2.shiprocket.in/v1/external/courier/track/shipment/${shipment_id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SHIP_ROCKET_AUTH}`,
-                }
-            });
+            const response = await axios.get(`/api/tracker?shipment_id=${shipment_id}`);
+
             if (response.data.tracking_data === undefined) {
                 alert("Please push the order first")
             } else {
-                const respon = await fetch(url, {
+                const mailResponse = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ to: order.email, subject: "Track your order", url: response.data.tracking_data.track_url, status: response.data.tracking_data.shipment_track[0].current_status, shipment_id: order.shipment_id, courier_name: response.data.tracking_data.shipment_track[0].courier_name, edd: response.data.tracking_data.shipment_track[0].edd })
+                    body: JSON.stringify({
+                        to: order.email,
+                        subject: "Track your order",
+                        url: response.data.tracking_data.track_url,
+                        status: response.data.tracking_data.shipment_track[0].current_status,
+                        shipment_id: order.shipment_id,
+                        courier_name: response.data.tracking_data.shipment_track[0].courier_name,
+                        edd: response.data.tracking_data.shipment_track[0].edd
+                    })
                 });
-                const res = await respon.json();
+
+                const res = await mailResponse.json();
             }
         } catch (e: any) {
             console.log(e);
         }
-    }
+    };
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden flex items-center p-4 mb-4">
             <div className="ml-4">
