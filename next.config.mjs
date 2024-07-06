@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['images.sportsdirect.com', 'images.unsplash.com', 'th.bing.com', '', 'cdn7.dissolve.com', 'cdn.iconscout.com', 'labhkari.s3.ap-south-1.amazonaws.com'],
+        domains: ['images.sportsdirect.com', 'images.unsplash.com', 'th.bing.com', '', 'cdn7.dissolve.com', 'cdn.iconscout.com', 'labhkari.s3.ap-south-1.amazonaws.com','labhkarih-1.amazonaws.com'],
     },
     env: {
         NEXT_PUBLIC_CLIENT_URL: process.env.NEXT_PUBLIC_CLIENT_URL,

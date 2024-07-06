@@ -104,7 +104,7 @@ const ProductEditPage = () => {
                                 <label className="block mb-1 text-gray-600">Image URLs:</label>
                                 <input
                                     type="text"
-                                    name="imageUrls"
+                                    name="image"
                                     value={product.image}
                                     onChange={handleChange}
                                     className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
