@@ -67,7 +67,7 @@ const ShippingPolicy = () => (
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">Pickup Option</h2>
         <p className="text-gray-700">
-          We offer a convenient option for you to pick up your order from our nearest store location. Please select "Store Pickup" during checkout and choose your preferred pickup location.
+          We offer a convenient option for you to pick up your order from our nearest store location. Please select Store Pickup during checkout and choose your preferred pickup location.
         </p>
       </div>
 
