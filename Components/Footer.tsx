@@ -34,7 +34,7 @@ const Footer = () => {
                         </Link>
                         </div>
                         <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/delivery">
-                            <span className="text-white text-xl hover:text-gray-800">Shipping Policy</span>
+                            <span className="text-white text-xl hover:text-gray-800">Delivery Policy</span>
                         </Link>
                         </div>
                         <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/refund">

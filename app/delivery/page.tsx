@@ -2,29 +2,29 @@
 import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 
-const ShippingPolicy = () => (
+const DeliveryPolicy = () => (
   <>
     <Navbar onSearch={function (query: string): void {
             throw new Error('Function not implemented.');
         } } />
-    <div className="container mx-auto px-4 py-8 mt-24">
-      <h1 className="text-3xl font-bold mb-8">Shipping Policy</h1>
+    <div className="container mx-auto px-4 py-8 md:mt-24 mt-32">
+      <h1 className="text-3xl font-bold mb-8">Delivery Policy</h1>
 
-      {/* Shipping Destinations */}
+      {/* Delivery Destinations */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">Shipping Destinations</h2>
+        <h2 className="text-xl font-bold mb-4">Delivery Destinations</h2>
         <p className="text-gray-700">
           We currently ship products to all major cities and towns within India. If you are located in a remote area, please check service availability by putting your pin code to confirm delivery.
         </p>
       </div>
 
-      {/* Shipping Charges */}
+      {/* Delivery Charges */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">Shipping Charges</h2>
+        <h2 className="text-xl font-bold mb-4">Delivery Charges</h2>
         <ul className="list-disc list-inside text-gray-700">
-          <li>For orders above INR 1000, standard shipping is free.</li>
-          <li>For orders below INR 1000, a nominal shipping fee of INR 60 per Kg will be applied.</li>
-          <li>Express Shipping: Available at an additional cost of INR 150 per kg, ensuring faster delivery.</li>
+          <li>For orders above INR 1000, standard Delivery is free.</li>
+          <li>For orders below INR 1000, a nominal Delivery fee of INR 60 per Kg will be applied.</li>
+          <li>Express Delivery: Available at an additional cost of INR 150 per kg, ensuring faster delivery.</li>
         </ul>
       </div>
 
@@ -37,12 +37,12 @@ const ShippingPolicy = () => (
         </ul>
       </div>
 
-      {/* Shipping Time */}
+      {/* Delivery Time */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">Shipping Time</h2>
+        <h2 className="text-xl font-bold mb-4">Delivery Time</h2>
         <ul className="list-disc list-inside text-gray-700">
-          <li>Standard Shipping: Typically takes 5-7 business days.</li>
-          <li>Express Shipping: Typically takes 2-3 business days.</li>
+          <li>Standard Delivery: Typically takes 5-7 business days.</li>
+          <li>Express Delivery: Typically takes 2-3 business days.</li>
         </ul>
       </div>
 
@@ -71,17 +71,17 @@ const ShippingPolicy = () => (
         </p>
       </div>
 
-      {/* International Shipping */}
+      {/* International Delivery */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">International Shipping</h2>
+        <h2 className="text-xl font-bold mb-4">International Delivery</h2>
         <p className="text-gray-700">
-          Currently, we do not offer international shipping. We are working to expand our services and hope to serve international customers in the near future.
+          Currently, we do not offer international Delivery. We are working to expand our services and hope to serve international customers in the near future.
         </p>
       </div>
 
-      {/* Shipping Delays */}
+      {/* Delivery Delays */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">Shipping Delays</h2>
+        <h2 className="text-xl font-bold mb-4">Delivery Delays</h2>
         <p className="text-gray-700">
           While we strive to deliver your order within the estimated time frame, unforeseen circumstances such as weather conditions, customs delays, or other external factors may cause delays. We appreciate your understanding and patience.
         </p>
@@ -99,7 +99,7 @@ const ShippingPolicy = () => (
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">Customer Support</h2>
         <p className="text-gray-700">
-          For any queries or concerns regarding your order or shipping, please contact our customer service team:
+          For any queries or concerns regarding your order or Delivery, please contact our customer service team:
         </p>
         <ul className="list-disc list-inside text-gray-700">
           <li>Email: <a href="mailto:support@labhkari.com" className="text-blue-500">support@labhkari.com</a></li>
@@ -108,11 +108,11 @@ const ShippingPolicy = () => (
         </ul>
       </div>
 
-      {/* Changes to the Shipping Policy */}
+      {/* Changes to the Delivery Policy */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-bold mb-4">Changes to the Shipping Policy</h2>
+        <h2 className="text-xl font-bold mb-4">Changes to the Delivery Policy</h2>
         <p className="text-gray-700">
-          Labhkari.com reserves the right to modify this shipping policy at any time. Any changes will be posted on this page, and the revised policy will be effective immediately upon posting.
+          Labhkari.com reserves the right to modify this Delivery policy at any time. Any changes will be posted on this page, and the revised policy will be effective immediately upon posting.
         </p>
       </div>
 
@@ -124,4 +124,4 @@ const ShippingPolicy = () => (
   </>
 );
 
-export default ShippingPolicy;
+export default DeliveryPolicy;
