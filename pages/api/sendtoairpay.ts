@@ -1,38 +1,37 @@
-// pages/api/sendtoairpay.ts
-import { NextApiRequest, NextApiResponse } from 'next';
-import { check, validationResult } from 'express-validator';
-import sha256 from 'sha256';
-import dateFormat from 'dateformat';
+import { NextApiResponse, NextApiRequest } from 'next';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    // Your validation logic here using check() and validationResult()
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const {
+    TRANSACTIONID,
+    APTRANSACTIONID,
+    AMOUNT,
+    TRANSACTIONSTATUS,
+    MESSAGE,
+    ap_SecureHash,
+    CUSTOMVAR,
+  } = req.query;
 
-    const { buyerFirstName, buyerLastName, buyerPhone, amount, buyerEmail, currency, isocurrency, orderid, buyerPinCode } = req.body;
-    const now = new Date();
-
-    // Example data concatenation and hashing logic
-    const alldata = buyerEmail + buyerFirstName + buyerLastName + amount + orderid;
-    const privatekey = sha256(process.env.SECRET + '@' + process.env.USERNAME + ':|:' + process.env.PASSWORD);
-    const keySha256 = sha256(process.env.USERNAME + '~:~' + process.env.PASSWORD);
-    const aldataWithDate = alldata + dateFormat(now, 'yyyy-mm-dd');
-    const checksum = sha256(keySha256 + '@' + aldataWithDate);
-
-    // Example: Rendering data to a template
-    res.status(200).json({
-      mid: process.env.MID,
-      data: req.body,
-      privatekey: privatekey,
-      checksum: checksum,
-    });
-  } catch (error) {
-    console.error('Error processing request:', error);
-    res.status(500).json({ error: 'Server error' });
+  // Check if all required parameters are present
+  if (!TRANSACTIONID || !APTRANSACTIONID || !AMOUNT || !TRANSACTIONSTATUS || !ap_SecureHash) {
+    return res.status(400).json({ error: 'Required parameters are missing.' });
   }
-};
 
-export default handler;
+  // Validate secure hash (sCRC calculation)
+  const sParam = `${TRANSACTIONID}:${APTRANSACTIONID}:${AMOUNT}:${TRANSACTIONSTATUS}:${MESSAGE}:${process.env.MercId}:${process.env.UserName}`;
+  const crc = require('crc');
+  const sCRC = crc.crc32(sParam).toString();
+
+  if (sCRC !== ap_SecureHash) {
+    return res.status(400).json({ error: 'Secure hash validation failed.' });
+  }
+
+  // Return success response
+  res.status(200).json({
+    transid: TRANSACTIONID,
+    apTransactionID: APTRANSACTIONID,
+    amount: AMOUNT,
+    transtatus: TRANSACTIONSTATUS,
+    message: MESSAGE,
+    customvar: CUSTOMVAR,
+  });
+}
