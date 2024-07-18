@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, model, Model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface InventoryDocument extends Document {
     productId: string;
@@ -10,12 +10,12 @@ export interface InventoryDocument extends Document {
 }
 
 const InventorySchema = new Schema({
-    productId: { type: Number, required: true },
+    productId: { type: String, required: true },
     variation: { type: String, required: true },
-    batchId: { type: Number, required: true },
+    batchId: { type: String, required: true },
     openingQty: { type: Number, required: true },
     inQty: { type: Number, required: true},
-    outQty: { type: Number, required: true }
+    outQty: { type: Number, required: false}
 });
 
 const Inventory = mongoose.models.Inventory || mongoose.model<InventoryDocument>('Inventory', InventorySchema);

@@ -32,7 +32,7 @@ const handler = async (req: any, res: any) => {
                 return res.status(400).json({ success: false, message: "Images are required" });
             }
 
-            const { title, ratings, price, description, tag, category, gst, weight } = req.body;
+            const { title, ratings, description, category } = req.body;
 
             const imageUrls = (req.files as Express.MulterS3.File[]).map(file => file.location).join(',');
 
@@ -40,11 +40,7 @@ const handler = async (req: any, res: any) => {
                 title,
                 ratings,
                 image: imageUrls,
-                price,
                 description,
-                tag,
-                gst,
-                weight,
                 category
             });
 

@@ -21,7 +21,7 @@ const VariationPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/admin/addvariation";
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addvariation";
 
         try {
             const response = await fetch(url, {

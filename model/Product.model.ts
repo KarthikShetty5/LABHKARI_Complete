@@ -8,11 +8,7 @@ interface ProductDocument extends Document {
     description: string;
     category: string;
     image: string;
-    price: number;
     ratings: number;
-    tag: string;
-    gst: string;
-    weight: string;
 }
 
 const ProductSchema: Schema<ProductDocument> = new Schema({
@@ -21,11 +17,7 @@ const ProductSchema: Schema<ProductDocument> = new Schema({
     description: { type: String, required: true },
     category: { type: String, required: true },
     image: { type: String },
-    price: { type: Number, required: true },
     ratings: { type: Number, required: true },
-    tag: { type: String, required: true },
-    gst: { type: String, required: true },
-    weight: { type: String, required: true }
 });
 
 // Pre-save hook to generate auto-incrementing ID

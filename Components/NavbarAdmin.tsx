@@ -48,6 +48,11 @@ const NavbarAdmin = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/admin/variation">
+                                    <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">Add Variation</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/admin/batch">
                                     <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">Add Batch</span>
                                 </Link>
@@ -55,16 +60,6 @@ const NavbarAdmin = () => {
                             <li>
                                 <Link href="/admin/purchase">
                                     <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">Add Purchase</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/admin/inventory">
-                                    <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">Add Inventory</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/admin/variation">
-                                    <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">Add Variation</span>
                                 </Link>
                             </li>
                             <li>
