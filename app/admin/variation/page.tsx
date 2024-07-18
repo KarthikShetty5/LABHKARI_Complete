@@ -2,16 +2,26 @@
 import React, { useState } from 'react';
 import NavbarAdmin from '@/Components/NavbarAdmin';
 
-const BatchPage: React.FC = () => {
-    const [batchNo, setBatchNo] = useState('');
-    const [productId, setProductId] = useState('');
-    const [expiryDate, setExpiryDate] = useState('');
-    const [MRP,setMRP] = useState('');
-    const [manufactureDate,setManufactureDate] = useState('');
+interface VariationForm {
+    variation: string;
+    weight: number;
+    length: number;
+    breadth: number;
+    height: number;
+}
+
+const VariationPage: React.FC = () => {
+    const [formData, setFormData] = useState<VariationForm>({
+        variation: '',
+        weight: 0,
+        length: 0,
+        breadth: 0,
+        height: 0,
+    });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/admin/addbatch";
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/admin/addvariation";
 
         try {
             const response = await fetch(url, {
@@ -19,91 +29,102 @@ const BatchPage: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    batchNo,
-                    productId,
-                    expiryDate,
-                    MRP,
-                    manufactureDate
-                }),
+                body: JSON.stringify(formData),
             });
 
             if (response.ok) {
-                alert("Purchase successfully added");
-                setBatchNo('');
-                setProductId('');
-                setExpiryDate('');
-                setMRP('');
-                setManufactureDate('');
+                alert("Variation details added successfully");
+                setFormData({
+                    variation: '',
+                    weight: 0,
+                    length: 0,
+                    breadth: 0,
+                    height: 0,
+                });
             } else {
-                alert("Failed to add purchase");
+                alert("Failed to add variation details");
             }
         } catch (error) {
-            alert("Error adding purchase");
+            alert("Error adding variation details");
         }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: name === 'weight' || name === 'length' || name === 'breadth' || name === 'height' ? parseFloat(value) : value,
+        });
     };
 
     return (
         <>
             <NavbarAdmin />
             <div className="container mx-auto p-4">
-                <h1 className="text-2xl font-bold mb-6 text-center">Add Batch</h1>
+                <h1 className="text-2xl font-bold mb-6 text-center">Add Variation Details</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex flex-wrap gap-4 justify-center">
                         <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
-                            <label className="block mb-1 text-gray-600">Batch No:</label>
+                            <label className="block mb-1 text-gray-600">Variation:</label>
                             <input
                                 type="text"
-                                value={batchNo}
-                                onChange={(e) => setBatchNo(e.target.value)}
+                                name="variation"
+                                value={formData.variation}
+                                onChange={handleChange}
                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
-                                placeholder="Enter batch No"
+                                placeholder="Enter Variation"
                                 required
                             />
                         </div>
                         <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
-                            <label className="block mb-1 text-gray-600">Quantity:</label>
+                            <label className="block mb-1 text-gray-600">Weight:</label>
                             <input
                                 type="number"
-                                value={productId}
-                                onChange={(e) => setProductId(e.target.value)}
+                                name="weight"
+                                value={formData.weight}
+                                onChange={handleChange}
                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
-                                placeholder="Enter productId"
+                                placeholder="Enter Weight"
                                 required
                             />
                         </div>
                         <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
-                            <label className="block mb-1 text-gray-600">MRP:</label>
+                            <label className="block mb-1 text-gray-600">Length:</label>
                             <input
-                                type="text"
-                                value={MRP}
-                                onChange={(e) => setMRP(e.target.value)}
+                                type="number"
+                                name="length"
+                                value={formData.length}
+                                onChange={handleChange}
                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
-                                placeholder="Enter MRP"
+                                placeholder="Enter Length"
                                 required
                             />
                         </div>
                         <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
-                            <label className="block mb-1 text-gray-600">Manufacture Date:</label>
+                            <label className="block mb-1 text-gray-600">Breadth:</label>
                             <input
-                                type="date"
-                                value={manufactureDate}
-                                onChange={(e) => setManufactureDate(e.target.value)}
+                                type="number"
+                                name="breadth"
+                                value={formData.breadth}
+                                onChange={handleChange}
                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                                placeholder="Enter Breadth"
                                 required
                             />
                         </div>
                         <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
-                            <label className="block mb-1 text-gray-600">Expiry Date:</label>
+                            <label className="block mb-1 text-gray-600">Height:</label>
                             <input
-                                type="date"
-                                value={expiryDate}
-                                onChange={(e) => setExpiryDate(e.target.value)}
+                                type="number"
+                                name="height"
+                                value={formData.height}
+                                onChange={handleChange}
                                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                                placeholder="Enter Height"
                                 required
                             />
                         </div>
-                        </div>
+                    </div>
                     <div className="flex justify-center">
                         <button
                             type="submit"
@@ -118,4 +139,4 @@ const BatchPage: React.FC = () => {
     );
 };
 
-export default BatchPage;
+export default VariationPage;

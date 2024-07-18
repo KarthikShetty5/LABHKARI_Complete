@@ -10,7 +10,7 @@ export interface InventoryDocument extends Document {
 }
 
 const InventorySchema = new Schema({
-    productIdId: { type: Number, required: true },
+    productId: { type: Number, required: true },
     variation: { type: String, required: true },
     batchId: { type: Number, required: true },
     openingQty: { type: Number, required: true },

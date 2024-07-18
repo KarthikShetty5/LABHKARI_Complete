@@ -200,7 +200,7 @@ const Index = () => {
                 </li>
                 <li>
                   Sharing Products: Share products with your referral code on
-                  social media, adhering to Labhkari's guidelines.
+                  social media, adhering to Labhkaris guidelines.
                 </li>
                 <li>
                   Compliance with Laws: Comply with all laws and regulations
@@ -218,7 +218,7 @@ const Index = () => {
                 <li>
                   Limitation of Liability: Labhkari shall not be liable for any
                   indirect, incidental, special, or consequential damages
-                  arising out of or in connection with these terms. Labhkari's
+                  arising out of or in connection with these terms. Labhkaris
                   total liability to you for any damages arising from these
                   terms shall not exceed the amount of referral income and
                   bonuses earned by you.
