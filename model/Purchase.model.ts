@@ -7,6 +7,8 @@ export interface PurchaseDocument extends Document {
         purchaseCost: number;
         gst: number;
         totalCost:number;
+        name: string;
+        gstIn: string;
 }
 
 const PurchaseSchema = new Schema({
@@ -15,7 +17,9 @@ const PurchaseSchema = new Schema({
         quantity: { type: Number, required: true },
         purchaseCost: { type: Number, required: true },
         gst: { type: Number, required: true },
-        totalCost: { type: Number, required: true }
+        totalCost: { type: Number, required: true },
+        name:{type:String, required: true},
+        gstIn:{type:String, required: true}
 })
 
 const Purchase = mongoose.models.Purchase || mongoose.model<PurchaseDocument>('Purchase', PurchaseSchema);

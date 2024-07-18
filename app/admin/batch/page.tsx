@@ -6,6 +6,7 @@ interface Product {
   _id: string;
   name: string;
   customId: string;
+  title:string;
 }
 
 interface Var {
@@ -128,7 +129,7 @@ const BatchPage: React.FC = () => {
                 {products &&
                   products.map((product) => (
                     <option key={product._id} value={product.customId}>
-                      {product.customId}
+                      {product.customId} -------- {product.title}
                     </option>
                   ))}
               </select>
@@ -151,13 +152,13 @@ const BatchPage: React.FC = () => {
               </select>
             </div>
             <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
-              <label className="block mb-1 text-gray-600">Quantity:</label>
+              <label className="block mb-1 text-gray-600">Opening Quantity:</label>
               <input
                 type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
-                placeholder="Enter Quantity"
+                placeholder="Enter Opening Quantity"
                 required
               />
             </div>

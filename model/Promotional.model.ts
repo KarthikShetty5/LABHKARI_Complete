@@ -5,6 +5,7 @@ export interface PromotionalDocument extends Document {
     batchId: string;
     percentDiscount: number;
     cashAmount: number;
+    points: number;
 }
 
 const PromotionalSchema = new Schema({
@@ -12,6 +13,7 @@ const PromotionalSchema = new Schema({
     batchId: { type: String, required: true },
     percentDiscount: { type: Number, required: true },
     cashAmount: { type: Number, required: true },
+    points: { type: Number, required: true },
 });
 
 const Promotional = mongoose.models.Promotional || mongoose.model<PromotionalDocument>('Promotional', PromotionalSchema);

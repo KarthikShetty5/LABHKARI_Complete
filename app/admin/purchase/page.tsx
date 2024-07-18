@@ -15,6 +15,8 @@ const PurchasePage: React.FC = () => {
   const [gst, setGst] = useState("");
   const [totalCost, setTotalCost] = useState("");
   const [batch, setBatch] = useState<Batch[]>([]);
+  const [name,setName] = useState("");
+  const [gstIn,setGstIn] = useState("");
 
   useEffect(() => {
     fetchBatch();
@@ -54,6 +56,8 @@ const PurchasePage: React.FC = () => {
           purchaseCost: parseFloat(purchaseCost),
           gst: parseFloat(gst),
           totalCost: parseFloat(totalCost),
+          name:name,
+          gstIn:gstIn
         }),
       });
 
@@ -76,6 +80,8 @@ const PurchasePage: React.FC = () => {
         setPurchaseCost("");
         setGst("");
         setTotalCost("");
+        setName("");
+        setGstIn("");
       } else {
         alert("Failed to add purchase");
       }
@@ -130,6 +136,17 @@ const PurchasePage: React.FC = () => {
               />
             </div>
             <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
+              <label className="block mb-1 text-gray-600">Vendor Name:</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                placeholder="Enter Vendor Name"
+                required
+              />
+            </div>
+            <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
               <label className="block mb-1 text-gray-600">Purchase Cost:</label>
               <input
                 type="text"
@@ -137,6 +154,17 @@ const PurchasePage: React.FC = () => {
                 onChange={(e) => setPurchaseCost(e.target.value)}
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
                 placeholder="Enter purchase cost"
+                required
+              />
+            </div>
+            <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
+              <label className="block mb-1 text-gray-600">Gst In:</label>
+              <input
+                type="text"
+                value={gstIn}
+                onChange={(e) => setGstIn(e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                placeholder="Enter Gst In"
                 required
               />
             </div>

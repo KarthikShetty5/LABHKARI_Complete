@@ -4,7 +4,7 @@ import Product from '@/model/Product.model';
 import express, { request } from 'express';
 
 const updateProductHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { customId, title, ratings, image, price, description, tag, gst, weight, category } = req.body;
+    const { customId, title, ratings, image, description, category } = req.body;
 
     try {
         // Check if productId is provided

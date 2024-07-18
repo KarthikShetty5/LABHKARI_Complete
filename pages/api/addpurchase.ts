@@ -4,9 +4,9 @@ import connectDb from '@/middleware/mongoose';
 
 const addPurchaseHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const {  batchId,purchaseDate,quantity,purchaseCost,gst,totalCost } = req.body;
+        const {  batchId,purchaseDate,quantity,purchaseCost,gst,totalCost,gstIn,name } = req.body;
         
-        const newPurchase = new Purchase({batchId,purchaseDate,quantity,purchaseCost,gst,totalCost});
+        const newPurchase = new Purchase({batchId,purchaseDate,quantity,purchaseCost,gst,totalCost,gstIn,name});
 
         const savedPurchase = await newPurchase.save();
 
