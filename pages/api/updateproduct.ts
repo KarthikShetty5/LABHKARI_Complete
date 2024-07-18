@@ -23,11 +23,7 @@ const updateProductHandler = async (req: NextApiRequest, res: NextApiResponse) =
         product.title = title || product.title;
         product.ratings = ratings || product.ratings;
         product.image = image || product.image
-        product.price = price || product.price;
         product.description = description || product.description;
-        product.tag = tag || product.tag;
-        product.gst = gst || product.gst;
-        product.weight = weight || product.weight;
         product.category = category || product.category;
 
         // Save updated product
