@@ -191,7 +191,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                 handleRefresh();
                 alert("Registered successfully")
             } else {
+                if(response.data.message == 'Phone Number already exists')
+                alert("Phone Number already exists")
+            else{
                 alert("Email already exists")
+            }
             }
         } catch (error) {
             alert("Error Occured");
