@@ -7,9 +7,10 @@ const addVariationHandler = async (
   res: NextApiResponse
 ) => {
   try {
-    const { variation, weight, length, breadth, height } = req.body;
+    const { productId,variation, weight, length, breadth, height } = req.body;
 
     const newVariation = new Variation({
+      productId,
       variation,
       weight,
       length,
