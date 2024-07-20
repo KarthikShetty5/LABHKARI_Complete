@@ -8,39 +8,42 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { useCart } from '@/context/CartContext';
 import fetchcart from '@/pages/api/fetchcart';
 
-
 interface CardProps {
     customId: number;
     title: string;
     image: string;
     description: string;
     userId: string;
-    price: number;
-    rating: number;
-    tag: string;
+    prices: number[];
+    ratings: number;
+    tags: string[];
     path: string;
-    gst: string;
-    weight: string;
+    gsts: string[];
+    weights: string[];
+    variations: string[];
 }
 
-const Card: React.FC<CardProps> = ({ customId, title, image, description, price, rating, tag, path, gst, weight }) => {
+const Card: React.FC<CardProps> = ({ customId, title, image, description, prices, ratings, tags, path, gsts, weights, variations }) => {
     const searchParams = useSearchParams();
     const ref = searchParams ? searchParams.get('ref') : null;
     const { addToCart, fetchCart } = useCart();
 
-
+    useEffect(() => {
+        console.log(prices[0]);
+    });
 
     const handleAddToCart = async (event: any) => {
         event.preventDefault();
         const item = {
             customId: customId,
             title: title,
-            price: price,
+            price: prices[0],
             ref: ref ? ref : '',
             image: image,
-            gst: gst,
-            weight: weight,
+            gst: gsts[0],
+            weight: weights[0],
             count: 1,
+            variation: variations[0],
             userId: localStorage.getItem('userId') || " "
         };
 
@@ -54,12 +57,11 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
     };
 
     const shareOnWhatsApp = (customId: number) => {
-        const message = `Check out ${title} for ₹${price}. ${process.env.NEXT_PUBLIC_CLIENT_URL}/product?customId=${customId}&ref=${localStorage.getItem('userId')}`;
+        const message = `Check out ${title} for ₹${prices[0]}. ${process.env.NEXT_PUBLIC_CLIENT_URL}/product?customId=${customId}&ref=${localStorage.getItem('userId')}`;
         const encodedMessage = encodeURIComponent(message);
         const whatsappLink = `https://wa.me/?text=${encodedMessage}`;
         window.open(whatsappLink, '_blank');
     };
-
 
     return (
         <>
@@ -86,13 +88,13 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
 
                     {/* Price, Rating, Stock Status */}
                     <div className="flex items-center justify-between mb-4">
-                        <div className="text-xl font-semibold text-gray-700">₹ {price}</div>
+                        <div className="text-xl font-semibold text-gray-700">₹ {prices[0]}</div>
                         {/* <div className="flex items-center">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <span key={star}>
-                                {star <= rating ? (
+                                {star <= ratings ? (
                                     <FaStar className="text-yellow-400" />
-                                ) : star - rating === 0.5 ? (
+                                ) : star - ratings === 0.5 ? (
                                     <FaStarHalfAlt className="text-yellow-400" />
                                 ) : (
                                     <FaRegStar className="text-gray-400" />
@@ -100,10 +102,13 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
                             </span>
                         ))}
                     </div> */}
-                        <div className={`text-sm font-semibold ${tag === "IN" ? "text-green-500" : "text-red-500"}`}>
-                            {tag === "IN" ? "In Stock" : "Out of Stock"}
+                        <div className={`text-sm font-semibold ${tags[0] === "IN" ? "text-green-500" : "text-red-500"}`}>
+                            {tags[0] === "IN" ? "In Stock" : "Out of Stock"}
                         </div>
                     </div>
+
+                    {/* Variation */}
+                    <div className="text-sm font-semibold text-gray-600 mb-2">Variation: {variations[0]}</div>
 
                     {/* Share and Add to Cart Buttons */}
                     <div className="flex items-center justify-between mt-4">
@@ -125,7 +130,7 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, price,
                 </div>
             </div>
         </>
-    )
+    );
 }
 
 export default Card;

@@ -13,9 +13,10 @@ interface CardProps {
     count: number;
     weight: string;
     gst: string;
+    variation: string;
 }
 
-const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, userId, count, weight, gst }) => {
+const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, userId, count, weight, gst,variation }) => {
     const [quantity, setQuantity] = useState(count);
     const { fetchCart } = useCart();
 
@@ -28,7 +29,7 @@ const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, us
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ customId: customId, userId: userId, count: newQuantity, price: price, image: image, weight: weight, gst: gst }),
+                body: JSON.stringify({ customId: customId, userId: userId, count: newQuantity, price: price, image: image, weight: weight, gst: gst,variation:variation }),
             });
             const res = await response.json();
             setQuantity(res.count);
@@ -70,6 +71,7 @@ const HorizontalCard: React.FC<CardProps> = ({ title, image, price, customId, us
                         <h3 className="text-lg text-black font-semibold">{title}</h3>
                     </Link>
                     <p className="text-black">₹ {price}</p>
+                    <p className="text-black">{variation}</p>
                 </div>
                 <div className="flex items-center mr-0">
                     <button onClick={() => incrementOrDecrementQuantity(-1)} className="px-3 py-1 bg-white rounded-l-md">

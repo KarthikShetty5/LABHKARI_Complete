@@ -15,6 +15,7 @@ interface Item {
     price: number;
     weight: string;
     gst: string;
+    variation: string;
 }
 
 const Page = () => {
@@ -82,7 +83,7 @@ const Page = () => {
                                 )}
                             </div>
                             {cartItems && cartItems.map((i) => (
-                                <HorizontalCard key={i.customId} title={i.title} customId={i.customId} gst={i.gst} count={i.count} userId={i.userId} image={i.image} price={i.price} weight={i.weight} />
+                                <HorizontalCard key={i.customId} title={i.title} customId={i.customId} gst={i.gst} count={i.count} userId={i.userId} image={i.image} price={i.price} weight={i.weight} variation={i.variation} />
                             ))}
                         </div>
                         <div className="w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-4 relative">

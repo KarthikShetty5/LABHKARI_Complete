@@ -1,33 +1,25 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import ProductModel from '@/model/Product.model';
 
 const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { name } = req.body;
     try {
-        const url = 'https://control.msg91.com/api/v5/flow';
-        const body = {
-            "template_id": "66836682d6fc0565ff2cddf3",
-            "short_url": "0",
-            "realTimeResponse": "0",
-            "recipients": [
-                {
-                    "mobiles": "+919591142624",
-                    "var1": "hello",
-                    "var2": "world",
-                    "var3": "heyy"
-                }
-            ]
-        };
-        const headers = {
-            'Content-Type': 'application/json',
-            'authkey': process.env.NEXT_PUBLIC_AUTH_KEY,
-            'Accept': 'application/json'
-        };
-
-        const response = await axios.post(url, body, { headers });
-        console.log(response)
-    } catch (error: any) {
-        console.log(error);
+        const user = await ProductModel.find();
+        if (user) {
+            return res.status(200).json({
+                success: true,
+                message: "User related to reference ID",
+                data: user
+            });
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "User not found for the provided reference ID",
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(500).send("Internal server error");
     }
 }
 

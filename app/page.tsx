@@ -211,13 +211,14 @@ interface Item {
   count: number;
   userId: string;
   image: string;
-  price: number;
+  prices: number[];
   ratings: number;
-  tag: string;
+  tags: string[];
   path: string;
-  weight: string;
-  gst: string;
+  weights: string[];
+  gsts: string[];
   category: string;
+  variations:string[];
 }
 function Home() {
   const [data, setData] = useState<Item[]>([]);
@@ -244,6 +245,12 @@ function Home() {
   }
 
   setCookie('userId', '12345', 30);
+
+  useEffect(()=>{
+    data && data.map((i)=>{
+      console.log(i.gsts)
+    })
+  })
 
   // cart handler
   useEffect(() => {
@@ -391,13 +398,14 @@ function Home() {
               customId={item.customId}
               title={item.title}
               description={item.desc}
-              price={item.price}
+              prices={item.prices}
               image={item.image}
-              rating={item.ratings}
-              tag={item.tag}
+              ratings={item.ratings}
+              tags={item.tags}
               path={item.path}
-              gst={item.gst}
-              weight={item.weight}
+              gsts={item.gsts}
+              weights={item.weights}
+              variations={item.variations}
               userId=''
             />
           ))

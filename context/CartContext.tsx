@@ -21,6 +21,7 @@ interface CartItem {
     price: number;
     weight: string;
     gst: string;
+    variation:string;
 }
 
 interface CartContextState {
@@ -71,11 +72,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
                 body: JSON.stringify({ uid: uid }),
             });
             const res = await response.json();
-            const totals = res.data.reduce((acc: { totalCount: number, totalShipCost: number, totalGst: number, totalActualCost: number }, item: { price: number, count: number, gst: string, weight: string }) => {
+            const totals = res.data.reduce((acc: { totalCount: number, totalShipCost: number, totalGst: number, totalActualCost: number }, item: { price: number, count: number, gst: string, weight: string,variation:string }) => {
                 const weightInGrams = parseFloat(item.weight);
                 const weightInKg = isNaN(weightInGrams) ? 0 : weightInGrams / 1000;
                 const shipCost = weightInKg * 60;
                 const gstPercentMatch = item.gst;
+                const variation = item.variation;
                 const gstPercent = gstPercentMatch ? parseFloat(gstPercentMatch) : 0;
                 const price = parseFloat(item.price.toString());
                 const priceExcludingGST = price / (1 + (gstPercent / 100));

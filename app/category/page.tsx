@@ -12,13 +12,14 @@ interface Item {
     count: number;
     userId: string;
     image: string;
-    price: number;
+    prices: number[];
     ratings: number;
-    tag: string;
+    tags: string[];
     path: string;
-    weight: string;
-    gst: string;
+    weights: string[];
+    gsts: string[];
     category: string;
+    variations:string[];
 }
 
 const Page: React.FC = () => {
@@ -71,13 +72,14 @@ const Page: React.FC = () => {
                                 customId={item.customId}
                                 title={item.title}
                                 description={item.desc}
-                                price={item.price}
+                                prices={item.prices}
                                 image={item.image}
-                                rating={item.ratings}
-                                tag={item.tag}
+                                ratings={item.ratings}
+                                tags={item.tags}
                                 path={item.path}
-                                gst={item.gst}
-                                weight={item.weight}
+                                gsts={item.gsts}
+                                weights={item.weights}
+                                variations={item.variations}
                                 userId=''
                             />
                         ))}
