@@ -37,6 +37,14 @@ const PaymentPage: React.FC = () => {
     const [otp, setOtp] = useState('');
     const [uid, setUid] = useState('');
     const [userSelector, setUserSelector] = useState<boolean>();
+    const [idsString, setIdsString] = useState<string>('');
+
+    useEffect(() => {
+        const idsArray = searchParams ? searchParams.getAll('ids') : [];
+        const idsString = idsArray.join(',');
+        setIdsString(idsString);
+    }, [searchParams]);
+    
 
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setOtp(e.target.value);
@@ -223,7 +231,7 @@ const PaymentPage: React.FC = () => {
             [name]: value
         });
 
-        if (name === 'phoneNumber' && value.length === 10) {
+        if (name === 'phoneNumber' && value.length === 10 && !value.startsWith('0')) {
             const userId = localStorage.getItem('userId');
             if (1) {
                 const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchusernumber";
@@ -274,7 +282,7 @@ const PaymentPage: React.FC = () => {
 
     const handleSubmit = async (orderId: any, email: string, amount: any, amountPaid: any, userId: string | null, shippingAddress: string, phone: string, name: string, state: string, country: string, landmark: string, city: string, tag: string, pinCode: string) => {
 
-        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addShipway";
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/addorder";
         try {
             const res = await axios.post(url, {
                 orderId: orderId,
@@ -291,9 +299,11 @@ const PaymentPage: React.FC = () => {
                 landmark: landmark,
                 city: city,
                 tag: tag || "Home",
-                pinCode: pinCode
+                pinCode: pinCode,
+                productId:idsString || " "
             });
         } catch (error) {
+            console.log(error)
             alert("Error placing the order")
         }
     };
@@ -313,10 +323,10 @@ const PaymentPage: React.FC = () => {
 
 
             const { data: { order } } = await axios.post(curl, {
-                amount: amount + shipcost
+                amount: 1
             });
 
-            await handleSubmit(order.id, formData.email, order.amount, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
+            await handleSubmit(order.id, formData.email, amount + shipcost, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
 
 
             localStorage.setItem('order', order.id);

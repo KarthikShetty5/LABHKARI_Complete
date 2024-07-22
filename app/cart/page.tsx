@@ -25,13 +25,20 @@ const Page = () => {
             await fetchCart();
         }
         handleCart();
-    });
+    },[]);
     const [arr, setArr] = useState<Item[]>([]);
     const [done, setDone] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState(false);
     const handleCheckout = () => {
         setShowPopup(true);
     };
+
+    const [customIds, setCustomIds] = useState<number[]>([]);
+
+    useEffect(() => {
+        const ids:number[] = cartItems.map(item => item.customId);
+        setCustomIds(ids);
+    }, [cartItems]);
 
 
     return (
@@ -102,7 +109,7 @@ const Page = () => {
                                     <p className="text-lg">✓ You saved ₹ 0.00 on this order</p>
                                 </div> */}
                                 <div className="mt-6"></div>
-                                <button className="hidden lg:block w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>Shipping Address</Link></button>
+                                <button className="hidden lg:block w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost,ids:customIds } }}>Shipping Address</Link></button>
                                 <button className="hidden lg:block w-full bg-black text-white py-2 rounded"><Link href={'/under'}>Select E-Shop</Link></button>
                             </div>
                             {/* <div className="mt-4 border p-4 rounded-lg shadow-md mb-4">
@@ -141,7 +148,7 @@ const Page = () => {
                                 <Link href={'/'}><button className="w-full bg-gray-500 text-white py-2 mt-4 rounded md:mb-10 mb-24">CONTINUE SHOPPING</button></Link>
                             </div>
                             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white p-4 shadow-lg lg:hidden">
-                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost } }}>Shipping Address</Link></button>
+                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost,ids:customIds } }}>Shipping Address</Link></button>
                                 <button className=" w-full bg-black text-white py-2 rounded"><Link href={'/under'}>Select E-Shop</Link></button>
                             </div>
                         </div>

@@ -22,6 +22,7 @@ interface Item {
   shipc: string;
   weights: string[];
   variations: string[];
+  batchId: string[];
 }
 
 interface CartItem {
@@ -48,6 +49,9 @@ const PageContent: React.FC = () => {
   const [selectedGst, setSelectedGst] = useState<string>("");
   const [selectedWeight, setSelectedWeight] = useState<string>("");
   const [availability, setAvailability] = useState<string>("OUT");
+  const [batchId, setBatchId] = useState<string>("");
+  const [promotion, setPromotion] = useState<number>(0);
+  const [originalPrice, setOriginalPrice] = useState<number>(0);
 
   useEffect(() => {
     if (ref) {
@@ -74,15 +78,42 @@ const PageContent: React.FC = () => {
           setSelectedGst(res.data[0].gsts[0]);
           setSelectedWeight(res.data[0].weights[0]);
           setAvailability(res.data[0].tags[0]);
+          setBatchId(res.data[0].batchId[0]);
         }
       } catch (error) {
-        alert("Error occured");
+        alert("Error occurred");
       }
     };
     if (id) {
       handleCart();
     }
   }, [id]);
+
+  useEffect(() => {
+    const fetchPromotion = async () => {
+      if (batchId) {
+        const promoUrl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getpromo";
+        try {
+          const response = await fetch(promoUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ batchId }),
+          });
+          const res = await response.json();
+          if (res.data[0] && res.data[0].percentDiscount) {
+            setPromotion(res.data[0].percentDiscount);
+            setOriginalPrice(selectedPrice);
+            setSelectedPrice(selectedPrice - (selectedPrice * res.data[0].percentDiscount) / 100);
+          }
+        } catch (error) {
+          console.error("Error fetching promotion:", error);
+        }
+      }
+    };
+    fetchPromotion();
+  }, [batchId]);
 
   const handleVariationChange = (variation: string) => {
     const index = data[0].variations.indexOf(variation);
@@ -92,6 +123,7 @@ const PageContent: React.FC = () => {
       setSelectedGst(data[0].gsts[index]);
       setSelectedWeight(data[0].weights[index]);
       setAvailability(data[0].tags[index]);
+      setBatchId(data[0].batchId[index]);
     }
   };
 
@@ -131,7 +163,7 @@ const PageContent: React.FC = () => {
       userId: localStorage.getItem("userId") || " ",
     };
 
-    console.log("product",item)
+    console.log("product", item);
 
     try {
       await addToCart(item);
@@ -179,6 +211,11 @@ const PageContent: React.FC = () => {
                 </div>
               </div>
               <div className="md:flex-1 px-4 mt-3">
+                {promotion > 0 && (
+                  <div className="bg-yellow-100 text-yellow-900 p-4 mb-4 rounded-lg shadow-lg">
+                    Special Offer! {promotion}% off on this product.
+                  </div>
+                )}
                 <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
                   <h2 className="text-2xl font-bold text-black dark:text-black mb-2">
                     {data[0].title}
@@ -249,11 +286,16 @@ const PageContent: React.FC = () => {
                       <span className="text-2xl leading-none align-baseline">
                         ₹{" "}
                       </span>
+                      {promotion > 0 && (
+                        <span className="line-through text-red-500 mr-2">
+                          {originalPrice}
+                        </span>
+                      )}
                       <span className="font-bold text-5xl leading-none align-baseline">
                         {selectedPrice}
                       </span>
                       <span className="text-2xl leading-none align-baseline">
-                        .00
+                        
                       </span>
                     </div>
                     <div className="flex-1 md:ml-8">
@@ -273,6 +315,7 @@ const PageContent: React.FC = () => {
                               shipc:
                                 ((parseFloat(selectedWeight) || 0) / 1000) *
                                 60,
+                              ids: id,
                             },
                           }}
                         >

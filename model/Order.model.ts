@@ -16,7 +16,7 @@ export interface OrderDocument extends Document {
     tag: string;
     pinCode: number;
     shippingAddress: string;
-    shipment_id: string;
+    productId: string;
 }
 
 const OrderSchema: Schema = new Schema({
@@ -35,7 +35,7 @@ const OrderSchema: Schema = new Schema({
     tag: { type: String, required: true },
     pinCode: { type: Number, required: true },
     shippingAddress: { type: String, required: true },
-    shipment_id: { type: String, required: true }
+    productId: { type: String, required: true } 
 });
 
 const Order = mongoose.models.Order || mongoose.model<OrderDocument>('Order', OrderSchema);
