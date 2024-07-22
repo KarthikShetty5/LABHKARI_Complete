@@ -323,7 +323,7 @@ const PaymentPage: React.FC = () => {
 
 
             const { data: { order } } = await axios.post(curl, {
-                amount: 1
+                amount: amount + shipcost
             });
 
             await handleSubmit(order.id, formData.email, amount + shipcost, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
@@ -337,7 +337,7 @@ const PaymentPage: React.FC = () => {
                 currency: "INR",
                 name: "Labhkari",
                 description: "Your paying this amount to Labhkari",
-                image: "https://th.bing.com/th/id/R.d19fc8033978f7ba694994af8d413037?rik=S65%2f9ke1xQqbzw&riu=http%3a%2f%2frndr.juniqe-production.juniqe.com%2fmedia%2fcatalog%2fproduct%2fcache%2fx800%2f265%2f132%2f265-132-101P.jpg&ehk=uEsPKOlz8MlF8gJi44a%2fK5tBQJdSlmHy%2fyMcriONBV0%3d&risl=&pid=ImgRaw&r=0",
+                image: "https://labhkari.s3.ap-south-1.amazonaws.com/1721671728201-labhkari.logo.png",
                 order_id: order.id,
                 callback_url: rurl,
                 prefill: {
@@ -349,7 +349,7 @@ const PaymentPage: React.FC = () => {
                     "address": "Razorpay Corporate Office"
                 },
                 theme: {
-                    "color": "#121212"
+                    "color": "#103178"
                 }
             };
 
