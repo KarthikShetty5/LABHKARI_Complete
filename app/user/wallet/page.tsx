@@ -8,8 +8,21 @@ import Footer from "@/Components/Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+interface Wallet{
+    WalletId: string;
+    referralIncome: number;
+    promos:string;
+    performanceBonus:number;
+    eShopEarning:number;
+    leaderShipBonus:number;
+    otherFund:number;
+    points: number;
+    userId: string;
+}
+
 const Home = () => {
   const [exists, setExists] = useState(false);
+  const [data, setData] = useState<Wallet>();
 
   const router = useRouter();
 
@@ -33,6 +46,37 @@ const Home = () => {
       }
     };
     fetchKycDetails();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const userId = localStorage.getItem("userId");
+      try {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getwallet";
+        const res = await axios.post(url, { userId:userId });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchDetails();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const userId = localStorage.getItem("userId");
+      try {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getwalletdetails";
+        const res = await axios.post(url, { userId:userId });
+        if (res.data.success){
+         setData(res.data.data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchDetails();
   }, []);
 
   return (
@@ -78,7 +122,7 @@ const Home = () => {
         <div className="pt-20 px-4">
           <div className="bg-[#103178] text-white rounded-lg p-6">
             <div className="text-lg">My Wallet Balance</div>
-            <div className="text-2xl font-bold">₹ 00.00</div>
+            <div className="text-2xl font-bold">₹ {data ? (data.referralIncome+data.otherFund+data.leaderShipBonus+data.eShopEarning+data.performanceBonus) : '00.00'}</div>
           </div>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <button className="flex flex-col items-center justify-center bg-white rounded-lg p-4 shadow-md">
@@ -183,27 +227,27 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             <div className="bg-white shadow-md rounded-lg p-4">
               <div className="text-lg font-bold">Referral Income</div>
-              <div className="text-xl font-bold text-[#103178] ">₹ 0.00</div>
+              <div className="text-xl font-bold text-[#103178] ">₹ {data ? data.referralIncome : "0.00"}</div>
             </div>
             <div className="bg-white shadow-md rounded-lg p-4">
               <div className="text-lg font-bold">Promos/Offers</div>
-              <div className="text-xl font-bold text-[#103178] ">₹ 0.00</div>
+              <div className="text-xl font-bold text-[#103178] ">₹ {data ? data.promos : "0.00"}</div>
             </div>
             <div className="bg-white shadow-md rounded-lg p-4">
               <div className="text-lg font-bold">Performance Bonus</div>
-              <div className="text-xl font-bold text-[#103178] ">₹ 0.000</div>
+              <div className="text-xl font-bold text-[#103178] ">₹ {data ? data.performanceBonus : "0.00"}</div>
             </div>
             <div className="bg-white shadow-md rounded-lg p-4">
               <div className="text-lg font-bold">eShop Earnings</div>
-              <div className="text-xl font-bold text-[#103178] ">₹ 0.00</div>
+              <div className="text-xl font-bold text-[#103178] ">₹ {data ? data.eShopEarning : "0.00"}</div>
             </div>
             <div className="bg-white shadow-md rounded-lg p-4">
               <div className="text-lg font-bold">Leadership Bonus</div>
-              <div className="text-xl font-bold text-[#103178] ">₹ 0.00</div>
+              <div className="text-xl font-bold text-[#103178] ">₹ {data ? data.leaderShipBonus : "0.00"}</div>
             </div>
             <div className="bg-white shadow-md rounded-lg p-4">
               <div className="text-lg font-bold">Travel/House/Car Fund</div>
-              <div className="text-xl font-bold text-[#103178] ">₹ 0.00</div>
+              <div className="text-xl font-bold text-[#103178] ">₹ {data ? data.otherFund : "0.00"}</div>
             </div>
           </div>
         </div>

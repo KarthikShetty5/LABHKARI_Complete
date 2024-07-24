@@ -757,7 +757,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                                                                 </Link>
                                                             </li>
                                                             <li>
-                                                                <Link href="/orders" passHref>
+                                                                <Link href="/user/wallet" passHref>
                                                                     <span className="flex items-center text-gray-800 hover:text-green-500 transition-colors duration-300 py-2 px-4">
                                                                         <FaWallet className="mr-2 text-pink-500" />
                                                                         <span>Wallet</span>

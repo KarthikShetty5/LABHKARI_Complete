@@ -53,13 +53,13 @@ const Page = () => {
                                 className="bg-blue-500 text-white py-2 rounded"
                                 onClick={() => { }}
                             >
-                                Shipping Address
+                                Delivery Address
                             </button>
                             <button
                                 className="bg-green-500 text-white py-2 rounded"
                                 onClick={() => { }}
                             >
-                                Self Pickup (Select E-Shop)
+                                Self Pickup
                             </button>
                         </div>
                     </div>
@@ -148,8 +148,8 @@ const Page = () => {
                                 <Link href={'/'}><button className="w-full bg-gray-500 text-white py-2 mt-4 rounded md:mb-10 mb-24">CONTINUE SHOPPING</button></Link>
                             </div>
                             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white p-4 shadow-lg lg:hidden">
-                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost,ids:customIds } }}>Shipping Address</Link></button>
-                                <button className=" w-full bg-black text-white py-2 rounded"><Link href={'/under'}>Select E-Shop</Link></button>
+                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost,ids:customIds } }}>Delivery Address</Link></button>
+                                <button className=" w-full bg-black text-white py-2 rounded"><Link href={'/under'}>Self Pickup</Link></button>
                             </div>
                         </div>
                     </div>

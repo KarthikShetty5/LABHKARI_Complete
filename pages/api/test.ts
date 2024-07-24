@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import ProductModel from '@/model/Product.model';
+import OrderModel from '@/model/Order.model';
 
 const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
+    const { userId} = req.body;
+
     try {
-        const user = await ProductModel.find();
+        const user = await OrderModel.find({userId:userId});
         if (user) {
             return res.status(200).json({
                 success: true,

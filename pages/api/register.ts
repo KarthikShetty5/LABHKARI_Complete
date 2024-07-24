@@ -127,12 +127,9 @@ const userRegister = async (req: NextApiRequest, res: NextApiResponse) => {
             referralId,
         });
         await newUser.save();
-        if (/^user\d+@/.test(email) || password === "") {
             await sendSMS(phone, name)
-        } else {
             await sendMail(email, "User created successfully.", name);
-        }
-
+        
         return res.status(200).json({
             success: true,
             message: "User created successfully",

@@ -1,9 +1,4 @@
 "use client";
-import axios from "axios";
-import { urlToUrlWithoutFlightMarker } from "next/dist/client/components/app-router";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -42,28 +37,7 @@ interface ProductSchema {
   gstIn: number;
 }
 
-const Page = () => {
-  const searchParams = useSearchParams();
-  const success = searchParams ? searchParams.get("success") : null;
-
-  useEffect(() => {
-    const handler = async () => {
-      const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/order";
-      const oid = localStorage.getItem("order");
-      try {
-        await axios.post(url, {
-          order_id: oid,
-        });
-      } catch (e) {
-        console.log(e);
-        alert("Error adding order");
-      }
-    };
-    if (success) {
-      handler();
-    }
-  }, [success]);
-
+export default function Home() {
   const invoiceRef = useRef<HTMLDivElement | null>(null);
   const [currentDate, setCurrentDate] = useState("");
   const [order, setOrder] = useState<Order | null>(null);
@@ -81,7 +55,6 @@ const Page = () => {
     setCurrentDate(formattedDate);
 
     // Fetch order details by orderId
-    const oid = localStorage.getItem("order");
     const fetchOrderDetails = async () => {
       const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getorderid";
       try {
@@ -91,7 +64,7 @@ const Page = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            orderId: oid, // Replace with actual orderId
+            orderId: "order_ObH1b33DDS8u02", // Replace with actual orderId
           }),
         });
         const data: { data: Order[] } = await response.json();
@@ -153,66 +126,23 @@ const Page = () => {
     }
   };
 
-  const numberToWords = (num: any) => {
-    const units = [
-      "",
-      "One",
-      "Two",
-      "Three",
-      "Four",
-      "Five",
-      "Six",
-      "Seven",
-      "Eight",
-      "Nine",
-    ];
-    const teens = [
-      "Eleven",
-      "Twelve",
-      "Thirteen",
-      "Fourteen",
-      "Fifteen",
-      "Sixteen",
-      "Seventeen",
-      "Eighteen",
-      "Nineteen",
-    ];
-    const tens = [
-      "",
-      "Ten",
-      "Twenty",
-      "Thirty",
-      "Forty",
-      "Fifty",
-      "Sixty",
-      "Seventy",
-      "Eighty",
-      "Ninety",
-    ];
-
-    const belowHundred = (n: number) =>
-      n < 10
-        ? units[n]
-        : n < 20
-        ? teens[n - 11]
-        : tens[Math.floor(n / 10)] + (n % 10 ? " " + units[n % 10] : "");
-
-    const belowThousand = (n: number) =>
-      n < 100
-        ? belowHundred(n)
-        : units[Math.floor(n / 100)] +
-          " Hundred" +
-          (n % 100 ? " " + belowHundred(n % 100) : "");
-
-    if (num === 0) return "Zero";
-
+  const numberToWords = (num:any) => {
+    const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+    const teens = ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const tens = ['', 'Ten', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  
+    const belowHundred = (n: number) => n < 10 ? units[n] : (n < 20 ? teens[n - 11] : tens[Math.floor(n / 10)] + (n % 10 ? ' ' + units[n % 10] : ''));
+  
+    const belowThousand = (n: number) => (n < 100 ? belowHundred(n) : units[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + belowHundred(n % 100) : ''));
+  
+    if (num === 0) return 'Zero';
+  
     const integerPart = Math.floor(num);
     const decimalPart = Math.round((num - integerPart) * 100);
-
-    return `${belowThousand(integerPart)} ${
-      decimalPart ? `and ${belowThousand(decimalPart)} Paise` : ""
-    }`.trim();
+  
+    return `${belowThousand(integerPart)} ${decimalPart ? `and ${belowThousand(decimalPart)} Paise` : ''}`.trim();
   };
+
 
   return (
     <div className="container mx-auto p-4">
@@ -263,8 +193,8 @@ const Page = () => {
                 <td className="border-t px-4 py-2 text-right">
                   ₹{order?.amount || 0}
                 </td>
-                <td className="border-t px-4 py-2 text-right">{0}%</td>
-                <td className="border-t px-4 py-2 text-right">{0}%</td>
+                <td className="border-t px-4 py-2 text-right">{ 0}%</td>
+                <td className="border-t px-4 py-2 text-right">{ 0}%</td>
                 <td className="border-t px-4 py-2 text-right">
                   {order?.itemCount || 1}
                 </td>
@@ -282,9 +212,7 @@ const Page = () => {
           </tbody>
         </table>
         <div className="mt-4">
-          <p className="text-sm">
-            {numberToWords(order?.amount || 0)} Rupees Only
-          </p>
+          <p className="text-sm">{numberToWords(order?.amount || 0)} Rupees Only</p>
           <div className="flex justify-end">
             <div className="text-right">
               <p>Sub-total: ₹{order?.amount || 0}</p>
@@ -306,30 +234,8 @@ const Page = () => {
           >
             Download PDF
           </button>
-          <div className="flex justify-center items-center space-x-4">
-            <Link
-              href="/"
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Continue Shopping
-            </Link>
-            <Link
-              href="/orders"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              View Orders
-            </Link>
-          </div>
         </div>
       </div>
     </div>
   );
-};
-
-const PageWrapper = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <Page />
-  </Suspense>
-);
-
-export default PageWrapper;
+}
