@@ -92,6 +92,9 @@ const Home = () => {
                     <button onClick={handleBack} className="bg-[#103178] text-white px-3 py-1 rounded-md shadow-sm font-medium">Back</button>
                 </div>
             </header> */}
+              <div className="bg-red-500 text-white text-center py-2 font-semibold md:mt-24 mt-32">
+              Our wallet page is under development—it may show incorrect numbers
+        </div>
       <Navbar onSearch={() => {}} />
       <div className="min-h-screen bg-gray-100 text-black md:mt-4 mt-32 md:mb-0 mb-36">
         {!exists && (

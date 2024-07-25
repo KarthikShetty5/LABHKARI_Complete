@@ -96,8 +96,8 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, prices
                     </div>
                 </div>
 
-                <div className="text-sm font-semibold text-gray-600 mb-2">
-                    Variation: 
+                <div className="text-xl font-semibold text-gray-600 mb-2">
+                    {/* Variation:  */}
                     <select onChange={handleVariationChange} className="ml-2 border border-gray-300 rounded-md">
                         {variations.map((variation, index) => (
                             <option key={index} value={index}>{variation}</option>
