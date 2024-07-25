@@ -973,10 +973,6 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
       {/* Main Navbar */}
 
       <header className="fixed top-0 left-0 right-0 z-30 shadow-2xl">
-        <div className="bg-yellow-500 text-white text-center py-2 font-semibold">
-          We are improving our site—some features are live, others are coming
-          soon!
-        </div>
         <nav className="bg-white lg:px-6 pt-2.5 pb-2 md:pb-1.5">
           <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <Link href="/">

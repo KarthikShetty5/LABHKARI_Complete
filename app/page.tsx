@@ -317,9 +317,14 @@ function Home() {
 
   return (
     <>
+      
       <Navbar onSearch={handleSearch} />
 
-      <div className={`md:mt-24 overflow-hidden mt-40 ${isSearching ? 'blur-sm' : ''}`}>
+      <div className={`md:mt-16 overflow-hidden mt-36 ${isSearching ? 'blur-sm' : ''}`}>
+      <div className="bg-yellow-500 text-white text-center py-2 font-semibold mb-2">
+          We are improving our site—some features are live, others are coming
+          soon!
+        </div>
         <div id="default-carousel" className={`relative w-auto -mr-1 ml-2 ${isSearching ? 'hidden' : ''}`} data-carousel="slide" ref={carouselRef}>
           <div className="relative overflow-hidden rounded-lg  h-52 md:h-[400px] mb-6">
             <div className="duration-700 ease-in-out" data-carousel-item>
