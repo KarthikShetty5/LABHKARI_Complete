@@ -1,4 +1,5 @@
-"use client";
+'use client';
+import Navbar from "@/Components/Navbar";
 import { useState } from "react";
 
 const Index = () => {
@@ -19,8 +20,39 @@ const Index = () => {
     setModalIsOpen(false);
   };
 
-  const handleSubmit = async (e: any) => {
+  const validateForm = (): boolean => {
+    let isValid = true;
+
+    // Validate PAN Card Format (ABCTY1234D)
+    const panPattern = /^[A-Z]{3}[A-Z]{2}[0-9]{4}[A-Z]{1}$/;
+    if (!panPattern.test(pancard)) {
+      alert("Invalid PAN Card format. Should be in the format 'ABCTY1234D'.");
+      isValid = false;
+    }
+
+    // Validate Account Number (assuming it should be numeric and 10-12 digits long)
+    const accountPattern = /^[0-9]{10,12}$/;
+    if (!accountPattern.test(accountNumber)) {
+      alert("Invalid Account Number. Should be numeric and 10-12 digits long.");
+      isValid = false;
+    }
+
+    // Validate IFSC Code (assuming the format should be like 'AAAA00298')
+    const ifscPattern = /^[A-Z]{4}00[0-9]{3}$/;
+    if (!ifscPattern.test(ifscCode)) {
+      alert("Invalid IFSC Code. Should be in the format 'AAAA0BBBBBB'.");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     const formData = {
       userId: localStorage.getItem("userId"),
@@ -43,19 +75,32 @@ const Index = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      console.log("KYC form submitted successfully");
+
+      // Show success alert
+      alert("KYC form submitted successfully");
+      setPancard("");
+      setAccountNumber("");
+      setIfscCode("");
+      setAgreed(false);
+      closeModal();
     } catch (error) {
       console.error("Error submitting KYC form:", error);
+      alert("Error submitting KYC form. Please try again.");
     }
   };
 
   return (
+    <>
+    <Navbar onSearch={function (query: string): void {
+        throw new Error("Function not implemented.");
+      } } />
     <div className="flex justify-center items-center h-screen">
       <form
         onSubmit={handleSubmit}
         className="max-w-md w-full p-6 bg-white rounded shadow-lg"
       >
         <h2 className="text-xl font-bold mb-4">KYC Details</h2>
+
         <div className="mb-4">
           <label
             htmlFor="pancard"
@@ -255,6 +300,7 @@ const Index = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

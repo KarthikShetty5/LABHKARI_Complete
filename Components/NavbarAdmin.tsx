@@ -78,6 +78,11 @@ const NavbarAdmin = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/admin/inventory">
+                                    <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">Inventory</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <button onClick={handleAdminLogOut}>
                                     <span className="text-gray-600 hover:text-blue-600 transition duration-300 ease-in-out">LogOut</span>
                                 </button>

@@ -13,6 +13,8 @@ interface PromotionalForm {
 interface Batch {
   _id: string;
   batchNo: string;
+  productId:string;
+  variation:string;
 }
 
 const PromotionalPage: React.FC = () => {
@@ -125,7 +127,7 @@ const PromotionalPage: React.FC = () => {
                 {batch &&
                   batch.map((product) => (
                     <option key={product._id} value={product.batchNo}>
-                      {product.batchNo}
+                      {product.batchNo} --{'>'} PID:{product.productId} --{'>'} {product.variation}
                     </option>
                   ))}
               </select>

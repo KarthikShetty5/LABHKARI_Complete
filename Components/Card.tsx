@@ -68,6 +68,22 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, prices
         window.open(whatsappLink, '_blank');
     };
 
+    const shareViaWebShareAPI = (customId: number) => {
+        if (navigator.share) {
+          navigator.share({
+            title: title,
+            text: `Check out ${title} for ₹${prices[selectedVariation]}.`,
+            url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/product?customId=${customId}&ref=${localStorage.getItem('userId')}`,
+          }).then(() => {
+            console.log('Thanks for sharing!');
+          }).catch((error) => {
+            console.log('Error sharing:', error);
+          });
+        } else {
+          shareOnWhatsApp(customId); // Fallback to WhatsApp if Web Share API is not supported
+        }
+      };
+
     return (
         <div className="max-w-md w-full bg-gray-100 shadow-lg rounded-xl overflow-hidden relative">
             <div className="relative" style={{ marginTop: "-1rem" }}>
@@ -107,7 +123,7 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, prices
 
                 <div className="flex items-center justify-between mt-4">
                     <button
-                        onClick={() => shareOnWhatsApp(customId)}
+                        onClick={() => shareViaWebShareAPI(customId)}
                         className="flex items-center text-[#103178] hover:text-white bg-white hover:bg-[#103178] transition duration-300 border border-[#103178] px-3 py-1 rounded-full shadow-md"
                     >
                         <AiOutlineShareAlt className="w-5 h-5 mr-1" />

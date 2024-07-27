@@ -38,15 +38,14 @@ interface Order {
     _id: string;
 }
 
+interface Kyc {
+    PanCard: string;
+    AccountNumber: string;
+    IFSCCode: string;
+}
+
 const ProfilePage = () => {
     const [userId, setUserId] = useState<string | null>(null);
-
-    useEffect(() => {
-        const uid = localStorage.getItem('userId'); // Replace with actual userId
-        setUserId(uid);
-    }, []);
-
-    // State to store user data
     const [user, setUser] = useState<User>({
         name: '',
         fullName: '',
@@ -58,11 +57,18 @@ const ProfilePage = () => {
         language: '',
         timezone: '',
     });
-
-    // State to store order data
     const [order, setOrder] = useState<Order | null>(null);
+    const [kyc, setKyc] = useState<Kyc>({
+        PanCard: '',
+        AccountNumber: '',
+        IFSCCode: ''
+       });
 
-    // Fetch user data
+    useEffect(() => {
+        const uid = localStorage.getItem('userId');
+        setUserId(uid);
+    }, []);
+
     useEffect(() => {
         if (userId) {
             const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getuserid";
@@ -77,12 +83,10 @@ const ProfilePage = () => {
                 const data = await response.json();
                 setUser(data.data);
             };
-
             fetchUserData();
         }
     }, [userId]);
 
-    // Fetch orders for the user to get shipping address and other details
     useEffect(() => {
         if (userId) {
             const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorderid";
@@ -99,10 +103,45 @@ const ProfilePage = () => {
                     setOrder(data.data[0]);
                 }
             };
-
             fetchOrders();
         }
     }, [userId]);
+
+    useEffect(() => {
+        if (userId) {
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getkyc";
+            const fetchKyc = async () => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId }),
+                });
+                const data = await response.json();
+                setKyc(data.data);
+            };
+            fetchKyc();
+        }
+    }, [userId]);
+
+    const handleKycUpdate = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/updatekyc";
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...kyc, userId }),
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert('KYC information updated successfully');
+        } else {
+            alert('Failed to update KYC information');
+        }
+    };
 
     return (
         <div className="min-h-screen mt-36 md:mt-28">
@@ -119,7 +158,7 @@ const ProfilePage = () => {
                             <div className="flex items-center">
                                 <Image width={50} height={50} className="h-12 w-12 rounded-full object-cover mr-4" src={test} alt='missing' />
                                 <div className="ml-2">
-                                    {/* <h3 className="text-lg font-medium leading-6 text-gray-900">{user.fullName}</h3> */}
+                                    <h3 className="text-lg font-medium leading-6 text-gray-900">{user.fullName}</h3>
                                     <p className="mt-1 text-sm text-gray-500">{user.name}</p>
                                 </div>
                             </div>
@@ -139,15 +178,15 @@ const ProfilePage = () => {
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">Gender</dt>
-                                        {/* <dd className="mt-1 text-sm text-gray-900">{user.gender}</dd> */}
+                                        <dd className="mt-1 text-sm text-gray-900">{user.gender}</dd>
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">Language</dt>
-                                        {/* <dd className="mt-1 text-sm text-gray-900">{user.language}</dd> */}
+                                        <dd className="mt-1 text-sm text-gray-900">{user.language}</dd>
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">Timezone</dt>
-                                        {/* <dd className="mt-1 text-sm text-gray-900">{user.timezone}</dd> */}
+                                        <dd className="mt-1 text-sm text-gray-900">{user.timezone}</dd>
                                     </div>
                                 </dl>
                                 <div>
@@ -206,6 +245,60 @@ const ProfilePage = () => {
                         </div>
                     </div>
                 )}
+
+                {/* KYC Card */}
+                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div className="px-4 py-5 sm:px-6">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900">KYC Information</h3>
+                    </div>
+                    <div className="border-t border-gray-200">
+                        <form className="bg-white px-4 py-5 sm:px-6" onSubmit={handleKycUpdate}>
+                            <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                                <div className="sm:col-span-1">
+                                    <dt className="text-sm font-medium text-gray-500">PAN Card</dt>
+                                    <dd className="mt-1 text-sm text-gray-900">
+                                        <input
+                                            type="text"
+                                            className="w-full border border-gray-300 rounded p-2"
+                                            value={kyc.PanCard}
+                                            onChange={(e) => setKyc({ ...kyc, PanCard: e.target.value })}
+                                            required
+                                        />
+                                    </dd>
+                                </div>
+                                <div className="sm:col-span-1">
+                                    <dt className="text-sm font-medium text-gray-500">Account Number</dt>
+                                    <dd className="mt-1 text-sm text-gray-900">
+                                        <input
+                                            type="text"
+                                            className="w-full border border-gray-300 rounded p-2"
+                                            value={kyc.AccountNumber}
+                                            onChange={(e) => setKyc({ ...kyc, AccountNumber: e.target.value })}
+                                            required
+                                        />
+                                    </dd>
+                                </div>
+                                <div className="sm:col-span-1">
+                                    <dt className="text-sm font-medium text-gray-500">IFSC Code</dt>
+                                    <dd className="mt-1 text-sm text-gray-900">
+                                        <input
+                                            type="text"
+                                            className="w-full border border-gray-300 rounded p-2"
+                                            value={kyc.IFSCCode}
+                                            onChange={(e) => setKyc({ ...kyc, IFSCCode: e.target.value })}
+                                            required
+                                        />
+                                    </dd>
+                                </div>
+                            </dl>
+                            <div className="sm:col-span-1">
+                                <button type="submit" className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">
+                                    Update KYC Information
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div className='mb-48'></div>
             <Footer />
