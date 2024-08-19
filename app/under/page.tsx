@@ -21,7 +21,7 @@ const PageContent: React.FC = () => {
 
 const Page: React.FC = () => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>Page is Loading ...</div>}>
             <PageContent />
         </Suspense>
     );
