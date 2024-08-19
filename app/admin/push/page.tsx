@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import NavbarAdmin from '@/Components/NavbarAdmin';
@@ -184,4 +184,12 @@ const OrderPage = () => {
   );
 };
 
-export default OrderPage;
+const Page: React.FC = () => {
+  return (
+      <Suspense fallback={<div>Loading...</div>}>
+          <OrderPage />
+      </Suspense>
+  );
+};
+
+export default Page;
