@@ -20,6 +20,9 @@ interface Item {
 
 const Page = () => {
     const { actCost, gst, cartAmount, count, shipCost, cartItems, fetchCart } = useCart();
+
+    const shipc = cartAmount > 1000 ? 0 : shipCost;
+
     useEffect(() => {
         const handleCart = async () => {
             await fetchCart();
@@ -34,10 +37,19 @@ const Page = () => {
     };
 
     const [customIds, setCustomIds] = useState<number[]>([]);
+    const [quantity, setQuantity] = useState<number[]>([]);
+    const [productAmount, setProductAmount] = useState<number[]>([]);
 
     useEffect(() => {
         const ids:number[] = cartItems.map(item => item.customId);
         setCustomIds(ids);
+
+        const qtys:number[] = cartItems.map(item => item.count);
+        setQuantity(qtys);
+
+        const amts:number[] = cartItems.map(item => item.price);
+        setProductAmount(amts)
+
     }, [cartItems]);
 
 
@@ -97,7 +109,7 @@ const Page = () => {
                             <div className="border p-4 rounded-lg shadow-md mb-4 bg-green-100">
                                 <div className="flex justify-between items-baseline mb-4">
                                     <h3 className="text-xl font-semibold">You Pay</h3>
-                                    <p className="text-2xl font-bold">₹{cartAmount.toFixed(2)}</p>
+                                    <p className="text-2xl font-bold">₹{cartAmount - shipCost}</p>
                                 </div>
                                 <div className='flex justify-between'>
                                     <Link href={'/terms'}>
@@ -110,7 +122,7 @@ const Page = () => {
                                 </div> */}
                                 <div className="mt-6"></div>
                                 <button className="hidden lg:block w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost,ids:customIds } }}>Shipping Address</Link></button>
-                                <button className="hidden lg:block w-full bg-blue-900 text-white py-2 rounded"><Link href={'/under'}>Select E-Shop</Link></button>
+                                <button className="hidden lg:block w-full bg-blue-900 text-white py-2 rounded"><Link href={'/selfpickup'}>Select E-Shop</Link></button>
                             </div>
                             {/* <div className="mt-4 border p-4 rounded-lg shadow-md mb-4">
                                 <label className="flex items-center">
@@ -122,16 +134,16 @@ const Page = () => {
                                 <div className="border-t mt-4 pt-4">
                                     <div className="flex justify-between border-b py-1">
                                         <p>Total price MRP</p>
-                                        <p>₹{cartAmount.toFixed(2)}</p>
+                                        <p>₹{cartAmount - shipCost}</p>
                                     </div>
                                     {/* <div className="flex justify-between border-b py-1">
                                         <p>Distributor price discount</p>
                                         <p>- ₹ 0.00</p>
                                     </div> */}
-                                    <div className="flex justify-between border-b py-1">
+                                    {/* <div className="flex justify-between border-b py-1">
                                         <p>Delivery charges</p>
                                         {cartAmount > 1000 ? <p className="text-green-500">Free</p> : <p>₹ {shipCost}</p>}
-                                    </div>
+                                    </div> */}
                                     {/* <div className="flex justify-between border-b py-1">
                                         <p>Rounding Item amount</p>
                                         <p>- ₹0.00</p>
@@ -148,8 +160,8 @@ const Page = () => {
                                 <Link href={'/'}><button className="w-full bg-gray-500 text-white py-2 mt-4 rounded md:mb-10 mb-24">CONTINUE SHOPPING</button></Link>
                             </div>
                             <div className="fixed bottom-0 left-0 right-0 z-50 bg-white p-4 shadow-lg lg:hidden">
-                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipCost,ids:customIds } }}>Delivery Address</Link></button>
-                                <button className=" w-full bg-blue-900 text-white py-2 rounded"><Link href={'/under'}>Self Pickup</Link></button>
+                                <button className=" w-full bg-black text-white py-2 rounded mb-2"><Link href={{ pathname: '/payment', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: shipc,ids:customIds,qtys:quantity,amts:productAmount } }}>Delivery Address</Link></button>
+                                <button className=" w-full bg-blue-900 text-white py-2 rounded"><Link href={{ pathname: '/selfpickup', query: { amount: (cartAmount - shipCost), count: count, gst: Math.round(gst), shipc: 0,ids:customIds,qtys:quantity,amts:productAmount } }}>Self Pickup</Link></button>
                             </div>
                         </div>
                     </div>

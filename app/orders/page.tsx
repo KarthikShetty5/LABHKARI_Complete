@@ -6,17 +6,88 @@ import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-interface Order {
+export interface Order {
+    _id: string;
     orderId: string;
-    shipment_id: string;
-    customer_name: string;
-    current_status: string;
+    email: string;
+    name: string;
+    phone: string;
+    amount: number;
+    amountPaid: boolean;
+    productId:string;
+    state: string;
+    country: string;
+    landmark: string;
+    city: string;
+    userId: string;
+    itemCount: number;
+    tag: string;
+    pinCode: number;
     shippingAddress: string;
+    shipment_id: string;
+    products:string[]
 }
+
+interface Product {
+    _id:string;
+    desc: string;
+    customId: number;
+    title: string;
+    count: number;
+    userId: string;
+    image: string;
+    price: number;
+    ratings: number;
+    tag: string;
+    path: string;
+    weight: string;
+    gst: string;
+    category: string;
+}
+
+interface CombinedData {
+
+    productData:any
+    _id:string;
+    desc: string;
+    customId: number;
+    title: string;
+    count: number;
+    userId: string;
+    image: string;
+    price: number;
+    ratings: number;
+    tag: string;
+    path: string;
+    weight: string;
+    gst: string;
+    category: string;
+    orderId: string;
+    email: string;
+    name: string;
+    phone: string;
+    amount: number;
+    amountPaid: boolean;
+    productId:string[] | string;
+    state: string;
+    country: string;
+    landmark: string;
+    city: string;
+    itemCount: number;
+    pinCode: number;
+    shippingAddress: string;
+    shipment_id: string;
+    products:string[]
+    
+}
+
+
 
 const Page: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
+    const [combinedData, setCombinedData] = useState<CombinedData[]>([]);
+
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -30,10 +101,48 @@ const Page: React.FC = () => {
 
             try {
                 const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorderid";
+                const url2 = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getproductid";
+
                 const res = await axios.post<{ data: Order[] }>(url, { userId });
                 const ordersData = res.data.data;
 
                 setOrders(ordersData);
+
+                const productPromises = ordersData.flatMap((order: Order) => {
+                    const productIds = order.productId.split(',').map((id: string) => id.trim());
+                    return productIds.map((productId: string) => {
+                        const payload = { customId: productId };
+                        return fetch(url2, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload),
+                        }).then(productResponse => {
+                            if (!productResponse.ok) {
+                                // throw new Error(`Failed to fetch product for productId ${productId}`);
+                                return productResponse.json().then((productData: Product) => ({
+                                    order,
+                                }));
+                            }
+                            return productResponse.json().then((productData: Product) => ({
+                                order,
+                                productData
+                            }));
+                        });
+                    });
+                });
+
+                // Wait for all product fetch promises to complete
+                const allProductData: any = await Promise.all(productPromises);
+
+                // Combine product data with order data
+                const combined = allProductData.map(({ order, productData }: { order: Order, productData: Product }) => ({
+                    ...order,
+                    productData
+                }));
+
+                console.log('prod data',combined)
+                // Set the combin  ed data in the state
+                setCombinedData(combined);
             } catch (e) {
                 console.error(e);
             }
@@ -53,16 +162,18 @@ const Page: React.FC = () => {
             )}
             {loggedIn && (
                 <div className='mt-36 md:mt-24 mb-12 md:mb-28'>
-                    {orders.length > 0 ? (
-                        orders.map((order) => (
+                    {combinedData.length > 0 ? (
+                        combinedData.map((order) => (
                             <div key={order.orderId} className="bg-white rounded-lg shadow-lg p-6 mb-4">
                                 <div className="flex justify-between items-center">
                                     <div>
                                         <h2 className="text-xl font-bold text-gray-800">Order ID: {order.orderId}</h2>
-                                        <p className="text-gray-600">Shipment ID: {order.shipment_id}</p>
+                                        <p className="text-gray-600">Shipment ID: {order.shipment_id}</p>                                     
                                     </div>
                                     <button className="text-blue-500 hover:text-blue-700">
-                                        <Link href={'/under'}>More Details &rarr;</Link>
+                                        <Link href={`/viewOrder?orderId=${order.orderId}`}>
+                                            More Details &rarr;
+                                        </Link>                                   
                                     </button>
                                 </div>
                                 <p className="mt-2 text-gray-600">Shipping Address: {order.shippingAddress}</p>

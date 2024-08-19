@@ -6,7 +6,7 @@ import Head from 'next/head';
 const Page = () => {
     return (
         <>
-            {/* <Navbar onSearch={() => { }} /> */}
+            <Navbar onSearch={() => { }} />
             <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 mt-28 md:mt-20">
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-3xl font-semibold text-gray-900 mb-4 justify-center text-center">About Us</h1>

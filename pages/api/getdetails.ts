@@ -29,7 +29,7 @@ interface PurchaseType {
 }
 
 
-const getProductId = async (req: NextApiRequest, res: NextApiResponse) => {
+const getDetails = async (req: NextApiRequest, res: NextApiResponse) => {
     const { customId } = req.body;
 
     if (!customId) {
@@ -40,6 +40,7 @@ const getProductId = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
+        console.log(customId)
         const product = await Product.findOne({ customId }).lean();
 
         if (!product) {
@@ -87,4 +88,4 @@ const getProductId = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 };
 
-export default connectDb(getProductId);
+export default connectDb(getDetails);

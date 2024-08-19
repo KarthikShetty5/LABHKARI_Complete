@@ -260,7 +260,7 @@ const ProfilePage = () => {
                                         <input
                                             type="text"
                                             className="w-full border border-gray-300 rounded p-2"
-                                            value={kyc.PanCard}
+                                            value={kyc?.PanCard}
                                             onChange={(e) => setKyc({ ...kyc, PanCard: e.target.value })}
                                             required
                                         />
@@ -272,7 +272,7 @@ const ProfilePage = () => {
                                         <input
                                             type="text"
                                             className="w-full border border-gray-300 rounded p-2"
-                                            value={kyc.AccountNumber}
+                                            value={kyc?.AccountNumber}
                                             onChange={(e) => setKyc({ ...kyc, AccountNumber: e.target.value })}
                                             required
                                         />
@@ -284,7 +284,7 @@ const ProfilePage = () => {
                                         <input
                                             type="text"
                                             className="w-full border border-gray-300 rounded p-2"
-                                            value={kyc.IFSCCode}
+                                            value={kyc?.IFSCCode}
                                             onChange={(e) => setKyc({ ...kyc, IFSCCode: e.target.value })}
                                             required
                                         />

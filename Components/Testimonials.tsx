@@ -38,7 +38,7 @@ const Testimonials = () => {
     };
 
     return (
-        <div className="container mx-auto py-8 px-4 mb-10 mt-14">
+        <div className="container mx-auto py-8 px-8 mb-10 mt-14">
             <h2 className="text-center text-3xl font-semibold mb-8">What People Have To Say About Us</h2>
             <Slider {...settings}>
                 {testimonials.map((testimonial, index) => (

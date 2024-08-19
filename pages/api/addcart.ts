@@ -16,7 +16,6 @@ const addCartItem = async (req: NextApiRequest, res: NextApiResponse) => {
       weight,
       variation,
     } = req.body;
-
     // Check if the item already exists in the cart
     const existingCartItem = await Cart.findOne({ customId, userId,variation });
 

@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import React from 'react';
 import { MdEdit, MdDelete } from 'react-icons/md';
-
+import axios from 'axios';
 
 interface Item {
-    desc: string
+    _id:string;
+    desc: string;
     customId: number;
     title: string;
     count: number;
@@ -25,6 +26,21 @@ interface ProductCardProps {
 }
 
 const AdCard: React.FC<ProductCardProps> = ({ product }) => {
+
+    const deleteProduct = () => {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/deleteproduct";
+        axios.post(url, {
+            productId: product.customId,
+        })
+            .then((response) => {
+                alert('Product deleted:');
+            })
+            .catch((error) => {
+                console.log('error',error)
+                alert('Error deleting product:');
+            });
+    };
+
     return (
         <div className="flex items-center justify-between bg-white rounded-lg shadow-md p-4 mb-4">
             <div className="flex items-center">
@@ -37,7 +53,7 @@ const AdCard: React.FC<ProductCardProps> = ({ product }) => {
                         <MdEdit className="text-blue-500 cursor-pointer" size={24} />
                     </Link>
                 </button>
-                <button>
+                <button onClick={deleteProduct}>
                     <MdDelete className="text-red-500 cursor-pointer" size={24} />
                 </button>
             </div>

@@ -4,6 +4,7 @@ import ProductCard from '@/Components/AdCard'; // Adjust the import path as per 
 import NavbarAdmin from '@/Components/NavbarAdmin';
 
 interface Item {
+    _id:string;
     desc: string;
     customId: number;
     title: string;

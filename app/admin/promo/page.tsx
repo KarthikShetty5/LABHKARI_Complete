@@ -8,6 +8,7 @@ interface PromotionalForm {
   percentDiscount: number;
   cashAmount: number;
   points: number;
+  gst:number
 }
 
 interface Batch {
@@ -25,6 +26,7 @@ const PromotionalPage: React.FC = () => {
     percentDiscount: 0,
     cashAmount: 0,
     points: 0,
+    gst:0
   });
 
   useEffect(() => {
@@ -62,7 +64,6 @@ const PromotionalPage: React.FC = () => {
       });
 
       if (response.ok) {
-        console.log(formData);
         alert("Promotional details added successfully");
         setFormData({
           applicableDate: "",
@@ -70,6 +71,7 @@ const PromotionalPage: React.FC = () => {
           percentDiscount: 0,
           cashAmount: 0,
           points: 0,
+          gst:0
         });
       } else {
         alert("Failed to add promotional details");
@@ -170,6 +172,18 @@ const PromotionalPage: React.FC = () => {
                 required
               />
             </div>
+            {/* <div className="w-full md:w-1/2 lg:w-1/3 p-4 bg-white rounded-lg shadow-md">
+              <label className="block mb-1 text-gray-600">GST:</label>
+              <input
+                type="number"
+                name="gst"
+                value={formData.gst}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+                placeholder="Enter Cash Amount"
+                required
+              />
+            </div> */}
           </div>
           <div className="flex justify-center">
             <button

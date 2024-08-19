@@ -1,3 +1,42 @@
+// 'use client';
+// import Footer from '@/Components/Footer';
+// import Navbar from '@/Components/Navbar';
+// import { Suspense } from 'react';
+
+// const PageContent: React.FC = () => {
+//     return (
+//         <>
+//             <Navbar onSearch={() => { }} />
+//             <div className="min-h-screen flex items-center justify-center bg-gray-100">
+//                 <div className="max-w-lg p-8 bg-white shadow-lg rounded-lg">
+//                     <h1 className="text-3xl font-bold text-center mb-4">This Page is</h1>
+//                     <h1 className="text-2xl font-bold text-center mb-4">Under Progress</h1>
+//                     <p className="text-lg text-center mb-8">We will get back to you soon.</p>
+//                 </div>
+//             </div>
+//             <Footer />
+//         </>
+//     );
+// }
+
+// const Page: React.FC = () => {
+//     return (
+//         <Suspense fallback={<div>Loading...</div>}>
+//             <PageContent />
+//         </Suspense>
+//     );
+// };
+
+// export default Page;
+
+
+
+
+
+
+
+
+
 'use client';
 import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
@@ -27,6 +66,18 @@ interface Address {
     tag: string;
 }
 
+interface User {
+    name: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    avatar: string;
+    birthdate: string;
+    gender: string;
+    language: string;
+    timezone: string;
+}
+
 const PaymentPage: React.FC = () => {
     const searchParams = useSearchParams();
     const amount = searchParams ? parseFloat(searchParams.get('amount') || '0') : 0;
@@ -35,15 +86,22 @@ const PaymentPage: React.FC = () => {
     const count = searchParams ? parseInt(searchParams.get('count') || '0', 10) : 0;
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
     const [otp, setOtp] = useState('');
+    const [isOtpVerified, setIsOtpVerified] = useState(false);
     const [uid, setUid] = useState('');
     const [userSelector, setUserSelector] = useState<boolean>();
     const [idsString, setIdsString] = useState<string>('');
-    const [quantitiesString, setQuantitiesString] = useState<string>('');
-    const [amountsString, setAmountsString] = useState<string>('');
 
-    useEffect(()=>{
-        console.log(idsString);
-    })
+    const [user, setUser] = useState<User>({
+        name: '',
+        fullName: '',
+        email: '',
+        phone: '',
+        avatar: '',
+        birthdate: '',
+        gender: '',
+        language: '',
+        timezone: '',
+    });
 
     useEffect(() => {
         const idsArray = searchParams ? searchParams.getAll('ids') : [];
@@ -56,8 +114,8 @@ const PaymentPage: React.FC = () => {
 
         const amtsArray = searchParams ? searchParams.getAll('amts') : [];
         const amtsString = amtsArray.join(',');
-        setAmountsString(amtsString)
-
+        setAmountsString(amtsString);
+        
     }, [searchParams]);
     
     const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,24 +142,8 @@ const PaymentPage: React.FC = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
     const [showNewAddressForm, setShowNewAddressForm] = useState(false);
-
-    const addUniqueAddress = (newAddress: Address) => {
-        setAddresses(prevAddresses => {
-            console.log('prev add',prevAddresses)
-          // Check if the new address already exists in the state
-          const isDuplicate = prevAddresses.some(address => 
-            address.landmark === newAddress.landmark && 
-            address.pinCode === newAddress.pinCode && 
-            address.phoneNumber === newAddress.phoneNumber &&
-            address.name === newAddress.name
-          );          
-          // If not a duplicate, add it to the state
-          if (!isDuplicate) {
-            return [...prevAddresses, newAddress];
-          }
-          return prevAddresses; // Return previous state if it's a duplicate
-        });
-      };
+    const [quantitiesString, setQuantitiesString] = useState<string>('');
+    const [amountsString, setAmountsString] = useState<string>('');
 
     const fetchAddresses = async () => {
         const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/fetchorderid";
@@ -109,11 +151,7 @@ const PaymentPage: React.FC = () => {
             const response = await axios.post(url, {
                 userId: localStorage.getItem('userId')
             });
-
-            const fetchedAddresses = response.data.data
-
-            fetchedAddresses.forEach((address: Address) => addUniqueAddress(address))
-            // setAddresses(fetchedAddresses)
+            setAddresses(response.data.data);
         } catch (error) {
             alert('Error fetching addresses:');
         }
@@ -124,46 +162,33 @@ const PaymentPage: React.FC = () => {
         if (uid !== '12345') {
             fetchAddresses();
         }
+        setUid(uid || '')
     }, []);
 
-    const handleAddressSelect = (address: any) => {
-        setSelectedAddress(address);
-        setFormData({
-            ...formData,
-            name: address.name,
-            address: address.shippingAddress,
-            phoneNumber: address.phone,
-            state: address.state,
-            country: address.country,
-            landmark: address.landmark,
-            pinCode: address.pinCode,
-            city: address.city,
-            tag: address.tag,
-            email: address.email
-        });
-        setShowNewAddressForm(false);
-    };
+    useEffect(() => {
+        if (uid) {
+            const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getuserid";
+            const fetchUserData = async () => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId:uid }),
+                });
+                const data = await response.json();
+                setUser(data.data);
+                console.log('data',data.data)
+            };
+            fetchUserData();
+        }
+    }, [uid]);
 
-    const handleNewAddressSelect = () => {
-        setSelectedAddress(null);
-        setFormData({
-            name: '',
-            address: '',
-            phoneNumber: '',
-            state: '',
-            country: '',
-            landmark: '',
-            pinCode: '',
-            city: '',
-            paymentMethod: 'qr',
-            cardNumber: '',
-            expiryDate: '',
-            cvv: '',
-            email: '',
-            tag: 'Home'
-        });
-        setShowNewAddressForm(true);
-    };
+    useEffect(() => {
+        console.log(selectedAddress?._id)
+    })
+
+
 
     function generateRandomEmail() {
         const emailDomain = 'gmail.com';
@@ -214,6 +239,8 @@ const PaymentPage: React.FC = () => {
                 phone: phone,
                 token: otp
             });
+            console.log(response.data)
+            setIsOtpVerified(true);
             return response.data.success === true;
         } catch (error) {
             alert('Error verifying OTP.');
@@ -294,23 +321,6 @@ const PaymentPage: React.FC = () => {
         }
     };
 
-    const handlePinCodeBlur = async () => {
-        const pincode = formData.pinCode;
-        if (pincode.length === 6) {
-            const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
-            const postOffice = response.data[0]?.PostOffice?.[0];
-            if (postOffice) {
-                setFormData({
-                    ...formData,
-                    state: postOffice.State,
-                    country: postOffice.Country,
-                    city: postOffice.District
-                });
-            } else {
-                alert('Invalid pincode');
-            }
-        }
-    };
 
     const handleSubmit = async (orderId: any, email: string, amount: any, amountPaid: any, userId: string | null, shippingAddress: string, phone: string, name: string, state: string, country: string, landmark: string, city: string, tag: string, pinCode: string) => {
 
@@ -342,14 +352,8 @@ const PaymentPage: React.FC = () => {
         }
     };
 
-    const isFormValid = () => {
-        const { name, address, phoneNumber, state, country, pinCode, city, email } = formData;
-        return name && address && phoneNumber && state && country && pinCode && city;
-    };
-
     const handlePayment = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-
         if (formData) {
             const url = process.env.NEXT_PUBLIC_SERVER_URL + "/payment/getkey";
             const curl = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/payment";
@@ -358,6 +362,8 @@ const PaymentPage: React.FC = () => {
             const { data: { order } } = await axios.post(curl, {
                 amount: amount + shipcost
             });
+
+            await handleSubmit(order.id, formData?.email || user?.email || '', amount + shipcost, true, localStorage.getItem('userId'), formData?.address || " ", formData?.phoneNumber || user?.phone || ' ', formData?.name || user?.name || ' ', ' ', ' ',  ' ',' ', ' ', ' ');
 
             localStorage.setItem('order', order.id);
 
@@ -380,31 +386,15 @@ const PaymentPage: React.FC = () => {
                 },
                 theme: {
                     "color": "#103178"
-                },
-                handler: async function (response: any) {
-                    clearTimeout(abandonmentTimeout); // Clear timeout if payment is successful
-
-                    await handleSubmit(order.id, formData.email, amount + shipcost, true, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
-                },
-                modal: {
-                    escape: false
                 }
             };
 
+            console.log('options',options)
             const paymentObject = new window.Razorpay(options);
-
-            const abandonmentTimeout = setTimeout(async () => {
-                // This function will be called if the payment modal is closed or abandoned
-                await handleSubmit(order.id, formData.email, amount + shipcost, false, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
-                return ;
-            }, 300000); // Set this to a reasonable timeout period (e.g., 30 seconds)
-    
             paymentObject.open();
-    
-            paymentObject.on("payment.failed", async function () {
-                clearTimeout(abandonmentTimeout); // Clear timeout if payment fails
-                alert("Payment failed. Please try again. Contact support for help");
-                await handleSubmit(order.id, formData.email, amount + shipcost, false, localStorage.getItem('userId'), formData.address, formData.phoneNumber, formData.name, formData.state, formData.country, formData.landmark, formData.city, formData.tag, formData.pinCode);
+
+            paymentObject.on("payment.failed", function () {
+                alert("Payment failed. Please try again. Contact support for help")
             });
         }
     };
@@ -451,67 +441,21 @@ const PaymentPage: React.FC = () => {
                         <AiOutlineArrowLeft className="text-lg mr-2 cursor-pointer" />
                         <h1 className="text-xl font-semibold" onClick={handleBackClick}>Shipping Details</h1>
                     </div>
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <h2 className="text-lg font-semibold mb-4">Select Address</h2>
-                        {addresses && addresses.map((address, index) => (
-                            <div key={index} className="mb-4">
-                                <input
-                                    type="radio"
-                                    id={`address-${index}`}
-                                    name="address"
-                                    value={address.id}
-                                    onChange={() => handleAddressSelect(address)}
-                                    checked={selectedAddress ? selectedAddress?._id == address._id : false}
-                                    className="mr-2"
-                                />
-                                <label htmlFor={`address-${index}`}>
-                                    <div>
-                                        <span className="font-semibold">{address.name}</span> - {address.phoneNumber}
-                                    </div>
-                                    <div>{address.address}</div>
-                                    <div>{address.city}, {address.state}, {address.country}, {address.pinCode}</div>
-                                    <div>{address.tag}</div>
-                                </label>
-                            </div>
-                        ))}
-                        <div className="mb-4">
-                            <input
-                                type="radio"
-                                id="new-address"
-                                name="address"
-                                value="new"
-                                onChange={handleNewAddressSelect}
-                                checked={showNewAddressForm}
-                                className="mr-2"
-                            />
-                            <label htmlFor="new-address">Add New Address</label>
-                        </div>
-                        {showNewAddressForm && (
+
+                    {uid === '12345' &&
+                        <>
+                        <div className="bg-white p-6 rounded-lg shadow-md">
                             <>
                                 <hr className="my-6" />
-                                <h2 className="text-lg font-semibold mb-4">New Address Details</h2>
+                                <h2 className="text-lg font-semibold mb-4">Enter Contact Details</h2>
                                 <form onSubmit={handlePayment} className="grid gap-4">
-                                    <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded-md" required />
-                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded-md"/>
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded-md" required />
                                     <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="border p-2 rounded-md" required />
-                                    <input type="text" name="pinCode" value={formData.pinCode} onBlur={handlePinCodeBlur} onChange={handleChange} placeholder="Pin Code" className="border p-2 rounded-md" required />
-                                    <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border p-2 rounded-md" required />
-                                    <input type="text" name="landmark" value={formData.landmark} onChange={handleChange} placeholder="Landmark" className="border p-2 rounded-md" required />
-                                    <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="City" className="border p-2 rounded-md" required />
-                                    <input type="text" name="state" value={formData.state} onChange={handleChange} placeholder="State" className="border p-2 rounded-md" required />
-                                    <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="border p-2 rounded-md" required />
-                                    <label>Tag:</label>
-                                    <select name="tag" value={formData.tag} onChange={(e) => handleTagChange(e.target.value)} className="border p-2 rounded-md">
-                                        <option value="Home">Home</option>
-                                        <option value="Office">Office</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-
-
                                 </form>
                             </>
-                        )}
-                    </div>
+                        </div>
+                        </>
+                    }
                 </div>
                 <div className="w-full md:w-1/3 mt-6 md:mt-0 md:ml-6">
                     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -526,15 +470,15 @@ const PaymentPage: React.FC = () => {
                         </div>
                         <div className="flex justify-between mb-2">
                             <span>Shipping Cost:</span>
-                            <span>₹{(amount+shipcost > 1000) ? "FREE" : shipcost.toFixed(2)}</span>
+                            <span>₹{shipcost.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between font-semibold">
                             <span>Total:</span>
-                            <span>₹{(amount+shipcost > 1000) ? (amount).toFixed(2) : (amount + shipcost).toFixed(2)}</span>
+                            <span>₹{(amount + shipcost).toFixed(2)}</span>
                         </div>
                     </div>
-                    {(selectedAddress || showNewAddressForm) && (
-                        <button onClick={handlePayment} className="bg-blue-500 text-white p-2 rounded-md mt-4 w-full" disabled={!isFormValid()}>
+                    {(isOtpVerified || uid != '12345') && (
+                        <button onClick={handlePayment} className="bg-blue-500 text-white p-2 rounded-md mt-4 w-full">
                             Proceed to Payment
                         </button>
                     )}

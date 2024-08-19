@@ -52,6 +52,8 @@ const PageContent: React.FC = () => {
   const [batchId, setBatchId] = useState<string>("");
   const [promotion, setPromotion] = useState<number>(0);
   const [originalPrice, setOriginalPrice] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true); // Loader state
+  
 
   useEffect(() => {
     if (ref) {
@@ -72,6 +74,7 @@ const PageContent: React.FC = () => {
         });
         const res = await response.json();
         setData(res.data);
+        console.log('prod data',res.data)
         if (res.data[0].variations.length > 0) {
           setSelectedVariation(res.data[0].variations[0]);
           setSelectedPrice(res.data[0].prices[0]);
@@ -80,10 +83,12 @@ const PageContent: React.FC = () => {
           setAvailability(res.data[0].tags[0]);
           setBatchId(res.data[0].batchId[0]);
         }
+        setLoading(false); // Set loading to false after data is fetched
       } catch (error) {
         alert("Error occurred");
+        setLoading(false); // Set loading to false even if there is an error
       }
-    };
+    }
     if (id) {
       handleCart();
     }
@@ -172,6 +177,15 @@ const PageContent: React.FC = () => {
       alert("Failed to add to Cart");
     }
   };
+
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-2xl font-bold">Loading Product...</p>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -7,14 +7,15 @@ const addPromotionalHandler = async (
   res: NextApiResponse
 ) => {
   try {
-    const { applicableDate, batchId, percentDiscount, cashAmount, points } = req.body;
+    const { applicableDate, batchId, percentDiscount, cashAmount, points,gst } = req.body;
 
     const newPromotional = new Promotional({
       applicableDate,
       batchId,
       percentDiscount,
       cashAmount,
-      points
+      points,
+      gst
     });
 
     const savedPromotional = await newPromotional.save();

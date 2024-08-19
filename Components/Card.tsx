@@ -29,12 +29,37 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, prices
     const [selectedVariation, setSelectedVariation] = useState(0);
 
     useEffect(() => {
+
+        console.log('prices',prices)
         // This will log the first price as default when the component is mounted
-        console.log(prices[selectedVariation]);
+        console.log('prices with var',prices[selectedVariation]);
     }, [selectedVariation]);
 
     const handleVariationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedVariation(parseInt(event.target.value));
+    };
+
+    const checkInQty = async (variation:string, productId:number) => {
+        const url = process.env.NEXT_PUBLIC_CLIENT_URL + "/api/getinqty";
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ variation, productId })
+            });
+            const res = await response.json();
+            if((res.data.inQty + res.data.openingQty - res.data.outQty) > 0){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (error) {
+            alert("Error occured");
+            return false;
+        }
     };
 
     const handleAddToCart = async (event: any) => {
@@ -53,9 +78,13 @@ const Card: React.FC<CardProps> = ({ customId, title, image, description, prices
         };
 
         try {
-            await addToCart(item);
-            await fetchCart();
-            alert("Added to Cart successfully!");
+            if(await checkInQty(item.variation, item.customId)){
+                console.log("stock is available")
+                await addToCart(item);
+                await fetchCart();
+                alert("Added to Cart successfully!");
+            }
+            return ;
         } catch (error) {
             alert("Failed to Add to Cart");
         }

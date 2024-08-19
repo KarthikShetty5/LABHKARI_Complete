@@ -32,7 +32,6 @@ ProductSchema.pre('save', async function (next) {
             { $inc: { sequence_value: 1 } }, // Increment sequence value
             { new: true, upsert: true } // Create if not exists
         );
-
         (this as ProductDocument).customId = sequence.sequence_value;
         next();
     } catch (error: any) {

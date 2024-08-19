@@ -742,7 +742,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
 
       {/* Sidebar */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 z-40">
+        <div className="fixed overflow-y-auto inset-0 z-40">
           {/* Background blur */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
           <div className="absolute inset-y-0 right-0 md:h-full h-full w-full md:w-64 bg-white shadow-lg transition-transform transform">
@@ -754,7 +754,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
               <FaTimes className="h-6 w-6 text-[#103178]" />
             </button>
             {/* Sidebar content */}
-            <div className="max-w-xs mx-auto mt-10 h-full p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+            <div className="max-w-xs mx-auto overflow-y-auto mt-10 h-full p-6 bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
               <ul className="flex flex-col space-y-6">
                 <li>
                   <div className="flex items-center text-gray-800">

@@ -71,11 +71,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
                 },
                 body: JSON.stringify({ uid: uid }),
             });
+
             const res = await response.json();
-            const totals = res.data.reduce((acc: { totalCount: number, totalShipCost: number, totalGst: number, totalActualCost: number }, item: { price: number, count: number, gst: string, weight: string,variation:string }) => {
+
+            const totalWeight = res.data.reduce((acc: number,data: { weight: number; count: number; }) =>{
+                return acc + (Number(data.weight) * data.count);
+            },0)
+
+            const shipCost = Math.ceil(totalWeight / 1000) * 60;
+
+            const totals = res.data.reduce((acc: { totalCount: number, totalGst: number, totalActualCost: number }, item: { price: number, count: number, gst: string, weight: string,variation:string }) => {
                 const weightInGrams = parseFloat(item.weight);
                 const weightInKg = isNaN(weightInGrams) ? 0 : weightInGrams / 1000;
-                const shipCost = weightInKg * 60;
                 const gstPercentMatch = item.gst;
                 const variation = item.variation;
                 const gstPercent = gstPercentMatch ? parseFloat(gstPercentMatch) : 0;
@@ -84,19 +91,21 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
                 const gstAmount = price - priceExcludingGST;
                 const itemTotalExcludingGST = priceExcludingGST * item.count;
                 const itemTotalGST = gstAmount * item.count;
-                const itemTotalShipCost = shipCost * item.count;
-                const itemTotal = itemTotalExcludingGST + itemTotalGST + itemTotalShipCost;
+                const itemTotalShipCost = shipCost;
+                const itemTotal = itemTotalExcludingGST + itemTotalGST;
                 acc.totalCount += itemTotal;
-                acc.totalShipCost += itemTotalShipCost;
+                
+                // acc.totalShipCost += itemTotalShipCost;
+
                 acc.totalGst += itemTotalGST;
                 acc.totalActualCost += itemTotalExcludingGST;
                 return acc;
-            }, { totalCount: 0, totalShipCost: 0, totalGst: 0, totalActualCost: 0 });
+            }, { totalCount: 0, totalGst: 0, totalActualCost: 0 });
 
             setActCost(totals.totalActualCost);
             setGst(totals.totalGst);
-            setShipCost(totals.totalShipCost);
-            setCartAmount(totals.totalCount);
+            setShipCost(shipCost);
+            setCartAmount(totals.totalCount + shipCost);
             setCartItems(res.data);
             setCount(res.data.length);
             setDone(true);

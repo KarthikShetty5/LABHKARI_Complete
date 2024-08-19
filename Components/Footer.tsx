@@ -5,8 +5,8 @@ import { FaFacebook, FaTwitter, FaInstagram, FaWhatsapp, FaLinkedin, FaYoutube, 
 
 const Footer = () => {
     return (
-        <div className='-mr-2'>
-            <section className="bg-[#103178] py-6 shadow-lg">
+        <div className=''>
+            <section className="bg-[#103178] py-6 px-4 shadow-lg">
                 <div className="container mx-auto">
                     <div className="flex flex-wrap items-center justify-around text-center md:text-left">
                         <div className="w-full md:w-1/3 mb-6 md:mb-0">
@@ -25,8 +25,8 @@ const Footer = () => {
                 </div>
             </section>
 
-            <div className="border-t border-[#CCCCCC]"></div>
-            <section className="bg-[#103178] py-6 shadow-lg">
+            <div className="border-t  border-[#CCCCCC]"></div>
+            <section className="bg-[#103178] py-6 px-4 shadow-lg">
                 <div className="container mx-auto">
                     <div className="flex flex-wrap items-center justify-around text-center md:text-left">
                         <div className="w-full md:w-1/3 mb-6 md:mb-0"><Link href="/faq">

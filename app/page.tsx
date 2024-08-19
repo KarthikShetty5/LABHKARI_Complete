@@ -265,6 +265,7 @@ function Home() {
         });
         const res = await response.json();
         setData(res.data);
+        console.log("res on home page",res.data)
         setFilteredProducts(res.data); // Initialize filteredProducts with all data
       } catch (error) {
         console.error('Error:', error);
@@ -320,7 +321,7 @@ function Home() {
       
       <Navbar onSearch={handleSearch} />
 
-      <div className={`md:mt-16 overflow-hidden mt-36 ${isSearching ? 'blur-sm' : ''}`}>
+       <div className={`md:mt-16 overflow-hidden mt-36 ${isSearching ? 'blur-sm' : ''}`}>
       <div className="bg-yellow-500 text-white text-center py-2 font-semibold mb-2">
           We are improving our site—some features are live, others are coming
           soon!
@@ -383,18 +384,18 @@ function Home() {
           </button>
         </div>
       </div>
-
+      
       <h1 className='text-center md:text-3xl text-xl font-bold mb-2'>OUR PRODUCTS</h1>
       <div className="flex items-center justify-center mb-4">
         <hr className="w-1/4 md:border-t-4 border-t-2 border-black mr-4" />
         <span className="text-[#103178] md:text-5xl text-2xl"><AiOutlineShoppingCart /></span>
         <hr className="w-1/4 md:border-t-4 border-t-2 border-black ml-4" />
       </div>
-
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ml-5 mr-5">
         {isLoading ? (
           <div className="flex items-center justify-center w-full h-screen">
-            <div className="loader">Loading...</div> {/* Step 3: Display Loader */}
+            <div className="loader">Loading...</div>
           </div>
         ) : filteredProducts && filteredProducts.length > 0 ? (
           filteredProducts.map((item) => (
@@ -421,21 +422,15 @@ function Home() {
           </div>
         )}
       </div>
-
-
-
-      {/* <div className="grid sm:grid-cols-2 grid-cols-3 gap-4 mt-8">
-        <Status />
-        <Status />
-        <Status />
-      </div> */}
-
+      
+      
       <div className='mt-5'>
         <Testimonials />
       </div>
 
       <Footer />
     </>
+
   )
 }
 

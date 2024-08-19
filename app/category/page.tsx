@@ -26,6 +26,7 @@ const Page: React.FC = () => {
     const [data, setData] = useState<Item[]>([]);
     const searchParams = useSearchParams();
     const cat = searchParams ? searchParams.get('cat') : null;
+    const [loading, setLoading] = useState<boolean>(true); // Loader state
 
     useEffect(() => {
         const handler = async () => {
@@ -40,8 +41,10 @@ const Page: React.FC = () => {
                 });
                 const res = await response.json();
                 setData(res.data);
+                setLoading(false); // Set loading to false after data is fetched
             } catch (error) {
-                alert("Error occured");
+              alert("Error occurred");
+              setLoading(false); // Set loading to false even if there is an error
             }
         };
         if (cat) {
@@ -52,6 +55,14 @@ const Page: React.FC = () => {
     const capitalizeFirstLetter = (string: string) => {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
+
+    if (loading) {
+        return (
+          <div className="flex items-center justify-center h-screen">
+            <p className="text-2xl font-bold">Loading the Category...</p>
+          </div>
+        );
+      }
 
     return (
         <>
