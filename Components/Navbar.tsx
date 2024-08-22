@@ -37,7 +37,7 @@ import { BiSolidNetworkChart } from "react-icons/bi";
 import { usePathname } from "next/navigation";
 import { IoMdLogOut } from "react-icons/io";
 import { useCart } from "@/context/CartContext";
-import { useRouter } from "next/navigation";
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface Item {
   id: number;
@@ -79,6 +79,35 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
   const [otp, setOtp] = useState("");
   const [isPhone, setIsPhone] = useState(false);
   const { count, fetchCart } = useCart();
+
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [isVerified, setIsVerified] = useState(false);
+
+  async function handleCaptchaSubmission(token: string | null) {
+    try {
+      if (token) {
+        await fetch("/api/cap", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+        setIsVerified(true);
+      }
+    } catch (e) {
+      setIsVerified(false);
+    }
+  }
+
+  const handleChange = (token: string | null) => {
+    handleCaptchaSubmission(token);
+  };
+
+  function handleExpired() {
+    setIsVerified(false);
+  }
 
   const handleSearchChange = (event: {
     target: { value: React.SetStateAction<string> };
@@ -583,10 +612,18 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch }) => {
                         autoComplete="off"
                       />
                     </div>
+                      <ReCAPTCHA
+                          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+                          ref={recaptchaRef}
+                          onChange={handleChange}
+                          onExpired={handleExpired}
+                      />
+                      <div className="mb-3"></div>
                     <div className="flex items-center justify-between">
                       <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="button"
+                        disabled={!isVerified}
                         onClick={handleSignIns}
                       >
                         {isMobile && !otpSent ? "Send OTP" : "Sign In"}

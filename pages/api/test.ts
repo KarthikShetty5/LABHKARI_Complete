@@ -1,28 +1,25 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
-import OrderModel from '@/model/Order.model';
+import Order from '@/model/Order.model';
+import connectDb from '@/middleware/mongoose';
+import User from '@/model/User.model';
 
-const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { userId} = req.body;
-
+const getRecentOrders = async (req: NextApiRequest, res: NextApiResponse) => {
+    const { num } = req.body;
     try {
-        const user = await OrderModel.find({userId:userId});
-        if (user) {
-            return res.status(200).json({
-                success: true,
-                message: "User related to reference ID",
-                data: user
-            });
-        } else {
-            return res.status(400).json({
-                success: false,
-                message: "User not found for the provided reference ID",
-            });
-        }
-    } catch (error) {
-        console.error("Error:", error);
-        return res.status(500).send("Internal server error");
-    }
-}
+        // Fetch the most recent two orders
+        const recentOrders = await User.find({phone:num});
 
-export default getUser;
+        res.status(200).json({
+            success: true,
+            data: recentOrders,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: error.message,
+        });
+    }
+};
+
+export default connectDb(getRecentOrders);

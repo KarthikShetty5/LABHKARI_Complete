@@ -48,19 +48,22 @@ const calculatePerformanceBonus = (points: number, bv: number): number => {
       if (referralId && !kyc) {
         const recentOrder = await Order.findOne({ userId: userId }).sort({ createdAt: -1 });
         if (recentOrder) {
-          const productId = recentOrder.productId;
-          const batch = await Batch.findOne({ productId: productId });
-          if (batch) {
+          const productIds = recentOrder.productId.split(','); // Assuming productId is a comma-separated string
+          console.log("here",productIds)
+          for (const productId of productIds) {
+          const batch = await Batch.findOne({ productId: productId.trim() });
+            if (batch) {
             const batchId = batch.batchNo;
             const promo = await Promotional.findOne({ batchId: batchId }).sort({ applicableDate: -1 });
             if (promo) {
               const wallet = await Wallet.findOne({ userId: referralId });
-  
               if (wallet?.processedOrderIds.includes(recentOrder._id.toString())) {
-                return res.status(200).json({
-                  success: true,
-                  message: "Order has already been processed for wallet update",
-                });
+                console.log("pid",productId)
+                // return res.status(200).json({
+                //   success: true,
+                //   message: "Order has already been processed for wallet update",
+                // });
+                continue;
               }
   
               const cashAmount = promo.cashAmount;
@@ -88,6 +91,7 @@ const calculatePerformanceBonus = (points: number, bv: number): number => {
             }
           }
         }
+      }
   
         return res.status(200).json({
           success: true,
